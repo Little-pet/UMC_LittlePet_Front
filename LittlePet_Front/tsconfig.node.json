@@ -18,7 +18,16 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Alias 설정 */
+    "baseUrl": ".", // 프로젝트 루트 기준
+    "paths": {
+      "#/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"],
+      "@assets/*": ["src/assets/*"] // alias 설정
+    }
   },
   "include": ["vite.config.ts"]
 }
