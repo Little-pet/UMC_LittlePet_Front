@@ -13,7 +13,7 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 100 }}
-          className='absolute top-20 right-0 w-full h-full z-20 text-black bg-primary'
+          className='fixed right-0 w-full h-full z-20 text-black'
         >
           <div>
             <ul className='flex flex-col justify-center items-start gap-12 px-25px py-50px'>

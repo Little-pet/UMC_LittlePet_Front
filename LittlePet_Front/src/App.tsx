@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '#/components/Navbar/Navbar';
-const App = () => {
+const App: React.FC= () => {
   return (
     <div className='overflow-x-hidden'>
       <Navbar />

@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         primary: '#6EA8FE',
+        border: '#E6E6E6'
       },
       container: {
         center: true,
@@ -17,7 +18,7 @@ export default {
         },
       },
       fontWeight: {
-        500: '500',
+        '500': '500',
       },
       fontSize: {
         '22px': '22px',

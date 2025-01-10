@@ -11,14 +11,14 @@ const Navbar: FC = () => {
 
   return (
     <>
-      <nav>
-        <div className='container flex justify-between items-center px-10px py-25px'>
+      <nav className='border-b border'>
+        <div className='container flex items-center px-25px py-10px'>
           {/* logo section */}
           <div>
             <img src={logo} alt='로고' className='h-9 w-auto' />
           </div>
           {/* menu section */}
-          <div className='hidden md:block'>
+          <div className='hidden md:block ml-auto'>
             <ul className='flex items-center gap-6 text-gray-600'>
               {NavbarMenu.map((item) => (
                 <li key={item.id}>
@@ -33,12 +33,18 @@ const Navbar: FC = () => {
             </ul>
           </div>
           {/* Icons section */}
-          <IoMdNotificationsOutline className='w-6 h-6 hidden md:block' />
+          <div className='ml-auto md:ml-9 mr-6'>
+          {!open && ( // open 상태가 false일 때만 렌더링
+            <IoMdNotificationsOutline className='w-6 h-6' />
+          )}
+          </div>
+          
 
           {/* Mobile hamburger Menu section */}
           <div className='md:hidden' onClick={() => setOpen(!open)}>
             {open ? (
-              <img src={close} alt='닫기' className='text-4xl' /> // X 아이콘
+              <img src={close} alt='닫기' className='text-4xl' />
+               
             ) : (
               <img src={hamburger} alt='햄버거' className='text-4xl' /> // 햄버거 아이콘
             )}
@@ -48,6 +54,10 @@ const Navbar: FC = () => {
       {/* Mobile Sidebar section */}
       <ResponsiveMenu open={open} /> {/* open prop 전달 */}
     </>
+
+    // 홈, 커뮤니티, 관리방법, 건강  Navbar
+    
+    
   );
 };
 
