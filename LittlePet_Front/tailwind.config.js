@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         primary: '#6EA8FE',
-        border: '#E6E6E6'
+        bordercolor: '#D9D9D9',
+        text: '#262627'
       },
       container: {
         center: true,
@@ -28,6 +29,14 @@ export default {
         '50px': '50px',
         '10px': '10px',
       },
+      height: {
+        '45px': '45px',
+        '50px': '50px',
+      },
+      borderWidth:{
+        '0.5':'0.5px',
+        '1': '1px',
+      }
     },
   },
   plugins: [],
