@@ -18,6 +18,9 @@ export default {
           '2xl': '6rem',
         },
       },
+      fontFamily: {
+        sans: ['Pretendard', 'ui-sans-serif', 'system-ui'], // Pretendard 추가
+      },
       fontWeight: {
         '500': '500',
       },
@@ -32,11 +35,15 @@ export default {
       height: {
         '45px': '45px',
         '50px': '50px',
+        '164px':'164px'
       },
       borderWidth:{
         '0.5':'0.5px',
         '1': '1px',
-      }
+      },
+      spacing: {
+        
+      },
     },
   },
   plugins: [],

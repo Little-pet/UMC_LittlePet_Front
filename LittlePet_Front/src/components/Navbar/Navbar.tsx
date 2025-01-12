@@ -25,7 +25,7 @@ const Navbar: FC = () => {
                 <li key={item.id}>
                   <a
                     href={item.link}
-                    className='inline-block py-1 px-3 hover:text-primary font-semibold'
+                    className='inline-block py-1 px-3 cursor-pointer font-semibold'
                   >
                     {item.title}
                   </a>

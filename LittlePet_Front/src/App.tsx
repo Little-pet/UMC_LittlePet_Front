@@ -1,10 +1,23 @@
 import React from 'react';
-import Navbar from '#/components/Navbar/Navbar';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import LoginPage from '#/pages/LoginPage'; // LoginPage 컴포넌트
+import RootLayout from '#/layout/RootLayout';
+const router = createBrowserRouter([{
+  path: '/',
+    element: <RootLayout />,
+    children: [
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+    ],
+}])
 const App: React.FC= () => {
   return (
-    <div className='overflow-x-hidden'>
-      <Navbar />
-    </div>
+    <>
+      <RouterProvider router={router} />
+    </>
+    
   );
 };
 
