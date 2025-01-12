@@ -7,11 +7,12 @@ const RootLayout: FC = () => {
 
   // 로그인 페이지 여부 확인
   const isLoginPage = location.pathname === '/login';
+  const isOnBoardingPage = location.pathname === '/onboarding';
 
   return (
     <div className="flex flex-col h-screen">
       {/* Navbar */}
-      {!isLoginPage && (
+      {!isLoginPage && !isOnBoardingPage && (
         <div className="overflow-x-hidden">
           <Navbar />
         </div>

@@ -1,3 +1,4 @@
+import OnBoardingPage from '#/pages/OnBoardingPage';
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,10 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
   const handleLoginClick = () => {
     navigate('/login'); // '/login' 경로로 이동
   };
+
+  const handleOnBoarding = () => {
+    navigate('/onboarding'); // '/onboarding' 경로로 이동
+  };
   
   return (
     <AnimatePresence>
@@ -25,7 +30,7 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
           <div>
             <ul className='flex flex-col justify-center items-start gap-12 px-25px py-50px'>
               <button className='text-22px font-500' onClick={handleLoginClick}>로그인 / 회원가입</button>
-              <li className='text-22px font-500'>ABOUT</li>
+              <li className='text-22px font-500' onClick={handleOnBoarding}>ABOUT</li>
               <li className='text-22px font-500'>CONTACT</li>
             </ul>
           </div>
