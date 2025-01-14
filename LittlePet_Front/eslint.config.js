@@ -15,7 +15,7 @@ export default [
   ...tseslint.configs.recommended, // TypeScript 추천 규칙
   pluginReact.configs.flat.recommended, // React 추천 규칙
   {
-    settings: {
+    settings: { 
       react: {
         version: 'detect', // React 버전 자동 감지
       },

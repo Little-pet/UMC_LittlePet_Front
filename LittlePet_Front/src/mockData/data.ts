@@ -8,7 +8,7 @@ export const NavbarMenu: NavbarItem[] = [
   {
     id: 1,
     title: '로그인 / 회원가입',
-    link: '/',
+    link: '/login',
   },
   {
     id: 2,

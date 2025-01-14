@@ -6,7 +6,7 @@ const Navbar2: FC = () => {
   const menuItems: string[] = ['홈', '커뮤니티', '관리방법', '건강']; // 메뉴 항목
 
   return (
-    <nav className='border-b border-gray-300'>
+    <nav className='border-b border-bordercolor'>
       <div className='container flex justify-center items-center h-[45px] px-25'>
         <div className='flex gap-10'>
           {menuItems.map((item) => (
