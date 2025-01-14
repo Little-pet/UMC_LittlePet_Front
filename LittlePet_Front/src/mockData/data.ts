@@ -4,7 +4,7 @@ export interface NavbarItem {
   link: string;
 }
 
-export const NavbarMenu: NavbarItem[] = [
+export const NavbarTopMenu: NavbarItem[] = [
   {
     id: 1,
     title: '로그인 / 회원가입',

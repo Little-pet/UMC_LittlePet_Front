@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '#/assets/logo.png';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 const OnBoardingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,16 +15,19 @@ const OnBoardingPage: React.FC = () => {
   };
 
   return (
-    
-    <div className="flex flex-col items-center gap-[52px] ">
-      <img src = {logo} alt='logo' className ='mt-[195px] w-[165px]'/>
-      <p className='text-text font-sans font-medium text-center' >
+    <div className='flex flex-col items-center gap-[52px] '>
+      <img src={logo} alt='logo' className='mt-[195px] w-[165px]' />
+      <p className='text-text font-sans font-medium text-center'>
         리틀펫의 회원이 되신 걸 환영합니다! <br />
-        반려 소동물을 등록해볼까요?</p>
-      
+        반려 소동물을 등록해볼까요?
+      </p>
+
       <div className='flex flex-col items-center gap-[25px]'>
         {/* 반려동물 등록하는 버튼 */}
-        <button onClick={handleRegister} className= 'bg-primary text-white py-[10px] w-[343px] rounded-[5px]'>
+        <button
+          onClick={handleRegister}
+          className='bg-primary text-white py-[10px] w-[343px] rounded-[5px]'
+        >
           나의 반려 소동물 등록하기
         </button>
 
@@ -32,13 +35,9 @@ const OnBoardingPage: React.FC = () => {
         <p onClick={handleHome} className='border-b border-text'>
           일단 먼저 둘러 볼게요
         </p>
-
       </div>
-      
     </div>
   );
 };
-
-
 
 export default OnBoardingPage;
