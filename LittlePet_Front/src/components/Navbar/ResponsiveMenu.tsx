@@ -15,7 +15,7 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
   };
 
   const handleOnBoarding = () => {
-    navigate('/onboarding'); // '/onboarding' 경로로 이동
+    navigate('/onboarding'); // '/onboarding' 경로로 이동. 추후 회원가입 완료시 이동동
   };
   
   return (

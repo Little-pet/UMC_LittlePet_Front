@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
+import styled from 'styled-components';
 import { NavbarTopMenu } from '#/mockData/data';
-import logo from '#/assets/logo_blue.png';
+import logo from '#/assets/logo_blue.svg';
 import hamburger from '#/assets/hamburger.png';
 import close from '#/assets/close.png';
-import { IoMdNotificationsOutline } from 'react-icons/io';
+import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
 
@@ -12,52 +13,105 @@ const NavbarTop: FC = () => {
 
   return (
     <>
-      <nav className='border-b-1 border-bordercolor'>
-        <div className='container flex items-center h-50px px-25px py-10px'>
+      <Nav>
+        <NavContainer>
           {/* logo section */}
-          <div>
-            <img src={logo} alt='로고' className='h-9 w-auto' />
-          </div>
+          <Logo src={logo} alt='로고' />
+
+          
           {/* menu section */}
-          <div className='hidden md:block ml-auto'>
-            <ul className='flex items-center gap-6 text-gray-600'>
+          <Menu>
+            <MenuContainer>
               {NavbarTopMenu.map((item) => (
-                <li key={item.id}>
-                  <a
-                    href={item.link}
-                    className='inline-block py-1 px-3 cursor-pointer font-semibold'
-                  >
-                    {item.title}
-                  </a>
-                </li>
+                <MenuItem key={item.id}>
+                  <MenuLink href={item.link}>{item.title}</MenuLink>
+                </MenuItem>   
               ))}
-            </ul>
-          </div>
+            </MenuContainer>
+          </Menu>
+
           {/* Icons section */}
-          <div className='ml-auto md:ml-9 mr-6'>
-            {!open && ( // open 상태가 false일 때만 렌더링
-              <IoMdNotificationsOutline className='w-6 h-6' />
-            )}
-          </div>
+          <IconContainer>
+            {!open && <NotificationIcon src={notifications} alt='알림'/>}
+          </IconContainer>
+          
 
           {/* Mobile hamburger Menu section */}
-          <div className='md:hidden' onClick={() => setOpen(!open)}>
-            {open ? (
-              <img src={close} alt='닫기' className='text-4xl' />
-            ) : (
-              <img src={hamburger} alt='햄버거' className='text-4xl' /> // 햄버거 아이콘
-            )}
-          </div>
-        </div>
-      </nav>
+          <HamburgerIcon onClick={() => setOpen(!open)}>
+            <img src={open ? close : hamburger} alt={open ? '닫기' : '햄버거'} />
+          </HamburgerIcon>
+        </NavContainer>
+      </Nav>
+
       {/* Mobile Sidebar section */}
-      <ResponsiveMenu open={open} /> 
-      {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-      {!open && ( // open 상태가 false일 때만 렌더링
-        <Navbar menuItems={['홈', '커뮤니티', '관리방법', '건강']} /> //menu item props전달달
-      )}
+      <ResponsiveMenu open={open} /> {/* open prop 전달 */}
+
+     {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
+    
+    //{!open && ( // open 상태가 false일 때만 렌더링
+        <Navbar menuItems = {['홈','커뮤니티', '관리방법', '건강']} />
+    )}
     </>
   );
 };
 
 export default NavbarTop;
+
+const Nav = styled.nav`
+  border-bottom: 1px solid #D9D9D9`;
+
+const NavContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 25px 10px;
+`;
+
+const Logo = styled.img`
+  width: 31px;
+  height: auto;
+  `; 
+
+const Menu = styled.div`
+  display: none; 
+  @media (min-width: 768px) {
+    display: block; /* md 이상에서는 block */
+  }`;
+
+const MenuContainer = styled.ul`
+  display:flex;
+  align-items:center;
+  gap: 24px;
+  color: #262627;
+  `;
+
+const MenuItem = styled.li`
+  list-style: none;
+`;
+
+const MenuLink = styled.a`
+  display: inline-block;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: 'Pretendard-Medium';
+  text-decoration: none;
+
+`;
+
+const IconContainer = styled.div`
+  margin-left: auto;
+  margin-right: 24px;
+`;
+
+const NotificationIcon = styled.img`
+  width:24px;
+  height:24px;
+`;
+
+const HamburgerIcon = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 22px;
+  height: auto;
+`;
