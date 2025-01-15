@@ -4,6 +4,7 @@ import LoginPage from '#/pages/LoginPage'; // LoginPage 컴포넌트
 import RootLayout from '#/layout/RootLayout';
 import OnBoardingPage from '#/pages/OnBoardingPage';
 import HomePage from './pages/HomePage';
+//import MyPage from './pages/MyPage';
 
 const router = createBrowserRouter([
   {
@@ -13,8 +14,7 @@ const router = createBrowserRouter([
       { path: '', element: <HomePage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'onboarding', element: <OnBoardingPage /> },
-      //{ path: 'mypage', element: <MyPage /> },
-      //{ path: 'home', element: <HomePage /> },
+      //{ path: 'mypage', element: <MyPage /> }
     ],
   },
 ]);

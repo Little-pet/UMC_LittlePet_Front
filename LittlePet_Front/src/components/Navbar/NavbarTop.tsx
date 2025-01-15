@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { NavbarTopMenu } from '#/mockData/data';
+import { NavbarTopMenu, NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
-import hamburger from '#/assets/hamburger.png';
-import close from '#/assets/close.png';
+import hamburger from '#/assets/hamburger.svg';
+import close from '#/assets/close.svg';
 import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
@@ -18,39 +18,37 @@ const NavbarTop: FC = () => {
           {/* logo section */}
           <Logo src={logo} alt='로고' />
 
-          
           {/* menu section */}
           <Menu>
             <MenuContainer>
               {NavbarTopMenu.map((item) => (
                 <MenuItem key={item.id}>
                   <MenuLink href={item.link}>{item.title}</MenuLink>
-                </MenuItem>   
+                </MenuItem>
               ))}
             </MenuContainer>
           </Menu>
 
           {/* Icons section */}
           <IconContainer>
-            {!open && <NotificationIcon src={notifications} alt='알림'/>}
+            {!open && <NotificationIcon src={notifications} alt='알림' />}
           </IconContainer>
-          
 
           {/* Mobile hamburger Menu section */}
           <HamburgerIcon onClick={() => setOpen(!open)}>
-            <img src={open ? close : hamburger} alt={open ? '닫기' : '햄버거'} />
+            <img
+              src={open ? close : hamburger}
+              alt={open ? '닫기' : '햄버거'}
+            />
           </HamburgerIcon>
         </NavContainer>
       </Nav>
-
       {/* Mobile Sidebar section */}
       <ResponsiveMenu open={open} /> {/* open prop 전달 */}
-
-     {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-    
-    //{!open && ( // open 상태가 false일 때만 렌더링
-        <Navbar menuItems = {['홈','커뮤니티', '관리방법', '건강']} />
-    )}
+      {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
+      {!open && ( // open 상태가 false일 때만 렌더링
+        <Navbar menuItems={NavbarMainMenu} />
+      )}
     </>
   );
 };
@@ -58,32 +56,36 @@ const NavbarTop: FC = () => {
 export default NavbarTop;
 
 const Nav = styled.nav`
-  border-bottom: 1px solid #D9D9D9`;
+  border-bottom: 0.5px solid #d9d9d9;
+  margin: 0;
+`;
 
 const NavContainer = styled.div`
   display: flex;
   align-items: center;
   height: 50px;
-  padding: 25px 10px;
+  padding: 10px 25px;
+  box-sizing: border-box;
+  margin: 0;
 `;
 
 const Logo = styled.img`
   width: 31px;
   height: auto;
-  `; 
+`;
 
 const Menu = styled.div`
-  display: none; 
+  display: none;
   @media (min-width: 768px) {
     display: block; /* md 이상에서는 block */
-  }`;
+  }
+`;
 
 const MenuContainer = styled.ul`
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   gap: 24px;
-  color: #262627;
-  `;
+`;
 
 const MenuItem = styled.li`
   list-style: none;
@@ -95,7 +97,7 @@ const MenuLink = styled.a`
   cursor: pointer;
   font-family: 'Pretendard-Medium';
   text-decoration: none;
-
+  color: #262627;
 `;
 
 const IconContainer = styled.div`
@@ -104,8 +106,8 @@ const IconContainer = styled.div`
 `;
 
 const NotificationIcon = styled.img`
-  width:24px;
-  height:24px;
+  width: 24px;
+  height: 24px;
 `;
 
 const HamburgerIcon = styled.div`
@@ -114,4 +116,5 @@ const HamburgerIcon = styled.div`
   cursor: pointer;
   width: 22px;
   height: auto;
+  color: #d9d9d9;
 `;
