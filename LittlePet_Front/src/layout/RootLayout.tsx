@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Navbar from '#/components/Navbar/Navbar';
+import NavbarTop from '#/components/Navbar/NavbarTop';
 
 const RootLayout: FC = () => {
   const location = useLocation();
@@ -10,18 +10,18 @@ const RootLayout: FC = () => {
   const isOnBoardingPage = location.pathname === '/onboarding';
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className='flex flex-col h-screen'>
       {/* Navbar */}
       {!isLoginPage && !isOnBoardingPage && (
-        <div className="overflow-x-hidden">
-          <Navbar />
+        <div className='overflow-x-hidden'>
+          <NavbarTop />
         </div>
       )}
 
       {/* Main content */}
-      <div className="flex flex-1">
+      <div className='flex flex-1'>
         {/* Outlet for nested routes */}
-        <main className="flex-1 bg-gray-50">
+        <main className='flex-1 bg-gray-50'>
           <Outlet />
         </main>
       </div>
