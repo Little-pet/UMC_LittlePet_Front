@@ -47,7 +47,6 @@ const MotionMenu = styled(motion.div)`
   right: 0;
   width: 100%;
   height: 100%;
-  z-index: 20;
   background-color: #fff; /* 배경색 추가 */
   color: black;
 `;
