@@ -1,9 +1,13 @@
 import styled from 'styled-components';
-import { useState, useRef, useEffect } from 'react';
-import arrowIcon from '#/assets/arrow.png';
-import pictureIcon from '#/assets/사진 첨부.png';
-import videoIcon from '#/assets/영상 첨부.png';
-import animalIcon from '#/assets/동물 아이콘.png';
+import React, { useState, useRef, useEffect } from 'react';
+import arrowIcon from '#/assets/arrow.svg';
+import pictureIcon from '#/assets/사진 첨부.svg';
+import animalIcon from '#/assets/동물 아이콘.svg';
+// 최대 업로드 개수 & 파일 크기
+const MAX_IMAGES = 5;
+const MAX_SIZE = 20 * 1024 * 1024; // 20MB
+const VALID_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
+
 const AnimalWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -21,14 +25,12 @@ const AnimalIcon = styled.img`
   width: 17px;
   height: 17px;
 `;
-// 카테고리에 글 등록하기 페이지에서 종 카테고리 드롭다운을 누르면 나오는 팝업
-const AnimalItem = ({
-  name,
-  onClick,
-}: {
+interface AnimalItemProps {
   name: string;
   onClick?: () => void;
-}) => {
+}
+// 카테고리에 글 등록하기 페이지에서 종 카테고리 드롭다운을 누르면 나오는 팝업
+const AnimalItem: React.FC<AnimalItemProps> = ({ name, onClick }) => {
   return (
     <AnimalWrapper onClick={onClick}>
       <AnimalIcon src={animalIcon} alt={`${name} Icon`} />
@@ -55,15 +57,17 @@ const CategoryButtonText = styled.div<{ isSelected: boolean }>`
   color: ${({ isSelected }: { isSelected: boolean }) =>
     isSelected ? '#6EA8FE' : '#737373'};
 `;
-// 카테고리에 글 등록하기 페이지에 있는 카테고리 버튼 컴포넌트(Q&A, 일상, 소개)
-const TagButton = ({
-  label,
-  onClick,
-  isSelected,
-}: {
+
+interface TagButtonProps {
   label: string;
   onClick: () => void;
   isSelected: boolean;
+}
+// 카테고리에 글 등록하기 페이지에 있는 카테고리 버튼 컴포넌트(Q&A, 일상, 소개)
+const TagButton: React.FC<TagButtonProps> = ({
+  label,
+  onClick,
+  isSelected,
 }) => (
   <CategoryButtonWrapper onClick={onClick} isSelected={isSelected}>
     <CategoryButtonText isSelected={isSelected}>{label}</CategoryButtonText>
@@ -113,7 +117,7 @@ const Form = styled.form`
 `;
 const MediaIconContainer = styled.div`
   display: flex;
-  gap: 15px;
+  gap: 10px;
   height: 23px;
   align-items: center;
 `;
@@ -148,7 +152,7 @@ const ContentBox = styled.textarea`
   }
 `;
 
-const SubmitButton = styled.div`
+const SubmitButton = styled.button`
   height: 48px;
   border-radius: 5px;
   background-color: #6ea8fe;
@@ -159,6 +163,7 @@ const SubmitButton = styled.div`
   bottom: 25px;
   width: 343px;
   cursor: pointer;
+  border: none;
 `;
 
 const ButtonText = styled.div`
@@ -184,17 +189,16 @@ const DropdownMenu = styled.ul`
   gap: 15px;
 `;
 
-const AddPage = () => {
-  const [view, setView] = useState(false);
+const AddPage: React.FC = () => {
+  const [view, setView] = useState<boolean>(false);
   const [tagSelected, setTagSelected] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
-  const [uploadImg, setUploadImg] = useState<File>('');
-  const [uploadVideo, setUploadVideo] = useState<File>('');
+  const [postImgs, setPostImgs] = useState([]); // 서버에 전송할 파일 자체
+  const [previewImg, setPreviewImg] = useState([]); // 미리보기 이미지 생성
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);
   const imgRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLInputElement>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = content.trim().length >= 1 && content.length <= 1000;
 
@@ -213,58 +217,45 @@ const AddPage = () => {
       title: '소개',
     },
   ];
-
+  // 태그 클릭
   const handleTagClick = (type: string) => {
     setTagSelected(type);
   };
-
+  // 종 카테고리 선택
   const handleCategoryClick = (name: string) => {
     setCategoryText(name);
     setView(false);
   };
-  const onChangeImgUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(uploadFile);
-    reader.onloadend = () => {
-      setUploadImg(reader.result);
-    };
+  const onChangeImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileArr = e.target.files;
+    let fileURLs = [];
+    let fileRead = new FileReader();
+    console.log(fileArr);
+    setPostImgs(Array.from(fileArr));
+    console.log(postImgs);
+    console.log(fileRead);
   };
   const handleImageClick = () => {
     if (imgRef.current) {
       imgRef.current.click(); // 숨겨진 input 클릭
     }
   };
-  const onChangeVideoUpload = (e) => {
-    const { files } = e.target;
-    const uploadFile = files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(uploadFile);
-    reader.onloadend = () => {
-      setUploadVideo(reader.result);
-    };
-  };
-  const handleVideoClick = () => {
-    if (videoRef.current) {
-      videoRef.current.click(); // 숨겨진 input 클릭
-    }
-  };
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (categoryText === '') {
-      alert('종 카테고리를 선택해주세요.');
+      alert('종 카테고리를 선택해주세요!');
       return;
     }
     if (tagSelected === '') {
-      alert('태그를 선택해 주세요.');
+      alert('글 카테고리를 선택해주세요!');
       return;
     }
     if (!isTitleValid) {
-      alert('제목을 1자~30자 입력해주세요.');
+      alert('제목을 입력해주세요!');
       return;
     }
     if (!isContentValid) {
-      alert('내용을 1자~1000자 입력해주세요.');
+      alert('내용을 입력해주세요!');
       return;
     }
   };
@@ -283,7 +274,7 @@ const AddPage = () => {
 
   return (
     <Container>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <DropdownContainer
           onClick={() => {
             setView(!view);
@@ -331,36 +322,27 @@ const AddPage = () => {
             ref={imgRef}
             style={{ display: 'none' }} // input 숨김
           />
-          <img
-            src={videoIcon}
-            style={{ width: '23.77px', height: '16.45px', cursor: 'pointer' }}
-            onClick={handleVideoClick} // 비디오 클릭 이벤트
-          />
-          <input
-            type='file'
-            accept='video/*'
-            onChange={onChangeVideoUpload}
-            ref={videoRef}
-            style={{ display: 'none' }} // input 숨김
-          />
         </MediaIconContainer>
         <Title
           placeholder='제목을 입력하세요'
           onChange={(e) => setTitle(e.target.value)}
+          value={title}
         />
         <Divider />
         <ContentBox
           placeholder='내용을 입력하세요'
           onChange={(e) => setContent(e.target.value)}
+          value={content}
         />
         {valid === true ? (
-          <SubmitButton onClick={handleSubmit}>
+          <SubmitButton type='submit'>
             <ButtonText>등록하기</ButtonText>
           </SubmitButton>
         ) : (
           <SubmitButton
-            onClick={handleSubmit}
             style={{ backgroundColor: '#E6E6E6' }}
+            type='submit'
+            value='제출'
           >
             <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
           </SubmitButton>

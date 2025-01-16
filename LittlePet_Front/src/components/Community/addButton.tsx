@@ -1,8 +1,9 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import addIcon from '#/assets/add.png';
+import addIcon from '#/assets/add.svg';
 
-const AddButtonWrapper = styled.div`
+const AddButtonWrapper = styled.button`
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -14,12 +15,13 @@ const AddButtonWrapper = styled.div`
   bottom: 20px;
   right: 20px;
   cursor: pointer;
+  border: none;
 `;
 // 커뮤니티 글 등록 버튼
-const AddButton = () => {
+const AddButton: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
+  const handleNavigate = (): void => {
     navigate('/community/add');
   };
 

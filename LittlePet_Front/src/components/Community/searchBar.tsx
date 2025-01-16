@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import searchIcon from '../assets/Vector.png';
+import searchIcon from '#/assets/돋보기.svg';
+import React from 'react';
 
 const SearchContainer = styled.div`
   border: 2px solid #6ea8fe;
@@ -18,18 +19,25 @@ const SearchIcon = styled.img`
   height: 20px;
 `;
 
-const SearchText = styled.div`
-  color: #737373;
+const SearchInput = styled.input`
+  padding-left: 15px;
+  border: none;
+  outline: none;
+  flex: 1;
   font-size: 14px;
   font-family: 'Pretendard-SemiBold';
-  margin-left: 10px;
+  color: #737373;
 `;
+
+interface SearchBarProps {
+  placeholder: string;
+}
 // 카테고리에 있는 검색 버튼
-const SearchBar = ({ text }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ placeholder }) => {
   return (
     <SearchContainer>
       <SearchIcon src={searchIcon} alt='Search Icon' />
-      <SearchText>{text}</SearchText>
+      <SearchInput type='text' placeholder={placeholder} />
     </SearchContainer>
   );
 };

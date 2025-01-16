@@ -1,33 +1,59 @@
+import React from 'react';
 import { useParams } from 'react-router-dom';
-import animalIcon from '../assets/동물 아이콘.png';
-import femaleIcon from '#/assets/성별여자.png';
-import vectorIcon from '#/assets/Vector 7.png';
-import likeIcon from '#/assets/thumb-up.png';
-import maleIcon from '#/assets/성별남자.png';
+import PostContent from '#/components/Community/Post/postContent';
+import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
-const Footer = styled.div`
-  height: 22px;
+import Reply from '#/components/Community/Post/reply';
+import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
+const Container = styled.div`
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
 `;
-const FooterContainer = styled.div`
+const CommentList = styled.div``;
+
+const CommentHeader = styled.div`
+  height: 44px;
+  border-top: 3px solid #e9e9e9;
+  border-bottom: 3px solid #e9e9e9;
+  box-sizing: border-box;
   display: flex;
+  padding: 8px 25px;
   align-items: center;
 `;
-const FooterItem = styled.div`
-  font-size: 12px;
-  font-family: 'Pretendard-Medium';
-  margin-right: 12px;
-  color: ##737373;
+
+const Title = styled.div`
+  font-size: 14px;
+  font-family: 'Pretendard-SemiBold';
 `;
-const VectorIcon = styled.img`
-  width: 1px;
-  height: 10px;
+
+const Count = styled.div`
+  font-size: 14px;
+  font-family: 'Pretendard-SemiBold';
+  color: #6ea8fe;
 `;
-const DetailPage = () => {
-  const { postId } = useParams();
-  const footerData = ['896', '8', '17'];
+interface CommentData {
+  userName: string;
+  animal: string;
+  gender: 'male' | 'female';
+  content: string;
+  date: string;
+  time: string;
+  isReply?: boolean; // 댓글인지 대댓글(Reply)인지 여부
+}
+// CommentList의 높이를 어떻게 고정시킬껀지는 생각해봐야겠다..
+const DetailPage: React.FC = () => {
+  const { postId } = useParams<{ postId: string }>();
   // 추후 백엔드와 연결
   /*  const { data, isLoading, isError } = useQuery({
     queryFn: () => useGetDetail({ postId }),
@@ -35,224 +61,70 @@ const DetailPage = () => {
   }); */
 
   return (
-    <div>
-      <div style={{ padding: '0 25px', marginTop: '20px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div style={{ fontSize: '20px', fontFamily: 'Pretendard-SemiBold' }}>
-            토끼가 어느 순간부터 사료를 먹지 않아요..
-          </div>
-          <div style={{ display: 'flex', gap: '15px' }}>
-            <div
-              style={{ fontSize: '14px', fontFamily: 'Pretendard-SemiBold' }}
-            >
-              천혜향
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '3px' }}
-              >
-                <img
-                  src={animalIcon}
-                  style={{ width: '18px', height: '18px' }}
-                />
-                <div
-                  style={{
-                    fontSize: '14px',
-                    fontFamily: 'Pretendard-SemiBold',
-                  }}
-                >
-                  토끼
-                </div>
-              </div>
-              <img src={femaleIcon} style={{ width: '8px', height: '13px' }} />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div
-                style={{
-                  fontSize: '12px',
-                  fontFamily: 'Pretendard-Medium',
-                  color: '#737373',
-                }}
-              >
-                2024.12.23
-              </div>
-              <div
-                style={{
-                  fontSize: '12px',
-                  fontFamily: 'Pretendard-Medium',
-                  color: '#737373',
-                }}
-              >
-                12:52
-              </div>
-            </div>
-          </div>
-          <Footer>
-            {footerData.map((item: string, index: number) => {
-              return index === 0 ? (
-                <FooterContainer key={index}>
-                  <FooterItem style={{ margin: '0' }}>조회&nbsp;</FooterItem>
-                  <FooterItem>{item}</FooterItem>
-                  <VectorIcon src={vectorIcon} />
-                </FooterContainer>
-              ) : index === 1 ? (
-                <FooterContainer key={index}>
-                  <FooterItem style={{ margin: '0' }}>좋아요&nbsp;</FooterItem>
-                  <FooterItem style={{ color: '#C76B6B' }}>{item}</FooterItem>
-                  <VectorIcon src={vectorIcon} />
-                </FooterContainer>
-              ) : (
-                <FooterContainer key={index}>
-                  <FooterItem style={{ margin: '0' }}>댓글&nbsp;</FooterItem>
-                  <FooterItem style={{ color: '#6EA8FE' }}>{item}</FooterItem>
-                </FooterContainer>
-              );
-            })}
-          </Footer>
-
-          <div
-            style={{
-              fontSize: '12px',
-              fontFamily: 'Pretendard-Medium',
-              color: '#262627CC',
-              lineHeight: '18px',
-            }}
-          >
-            원래 매우 잘 먹던 아이가 한 일주일 정도 지났나.. 사료를 안
-            먹네요.이렇게 두다가는 굶을까봐 간식을 줬는데 간식은 또 잘
-            먹더라구요...
-          </div>
-        </div>
-        <div
-          style={{
-            width: '68px',
-            height: '30px',
-            borderRadius: '25px',
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 14px',
-            boxSizing: 'border-box',
-            justifyContent: 'space-between',
-            marginTop: '13px',
-            boxShadow: '0px 2px 5px #00000040',
-          }}
-        >
-          <img src={likeIcon} style={{ width: '15px', height: '15px' }} />
-          <div
-            style={{
-              fontSize: '16px',
-              fontFamily: 'Pretendard-SemiBold',
-              color: '#C76B6B',
-            }}
-          >
-            11
-          </div>
-        </div>
-      </div>
-      <div style={{ marginTop: '20px' }}>
-        <div
-          style={{
-            height: '44px',
-            borderTop: '3px solid #E9E9E9',
-            borderBottom: '3px solid #E9E9E9',
-            boxSizing: 'border-box',
-            display: 'flex',
-            padding: '0 25px',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ fontSize: '14px', fontFamily: 'Pretendard-SemiBold' }}>
-            전체 댓글&nbsp;
-          </div>
-          <div
-            style={{
-              fontSize: '14px',
-              fontFamily: 'Pretendard-SemiBold',
-              color: '#6EA8FE',
-            }}
-          >
-            [29]
-          </div>
-        </div>
-        <div className='댓글 리스트'>
-          <div
-            style={{
-              borderBottom: '1px solid #E6E6E6',
-              padding: '10px 25px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div
-                style={{ fontSize: '12px', fontFamily: 'Pretendard-SemiBold' }}
-              >
-                감초
-              </div>
-              <div
-                style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
-              >
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '2px' }}
-                >
-                  <img
-                    src={animalIcon}
-                    style={{ width: '14px', height: '14px' }}
-                  />
-                  <div
-                    style={{
-                      fontSize: '10px',
-                      fontFamily: 'Pretendard-Medium',
-                    }}
-                  >
-                    햄스터
-                  </div>
-                </div>
-                <img src={maleIcon} />
-              </div>
-            </div>
-            <div
-              style={{
-                fontSize: '10px',
-                fontFamily: 'Pretendard-Medium',
-                color: '#262627CC',
-                lineHeight: '18px',
-              }}
-            >
-              사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요...
-              건초는 주셨나요?
-            </div>
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <div
-                style={{
-                  fontSize: '10px',
-                  fontFamily: 'Pretendard-Medium',
-                  color: '#737373',
-                }}
-              >
-                2024.12.23 13:01
-              </div>
-              <div
-                style={{
-                  width: '56px',
-                  height: '22px',
-                  borderRadius: '5px',
-                  border: '1px solid #E6E6E6',
-                  fontSize: '10px',
-                  fontFamily: 'Pretendard-Medium',
-                  color: '#737373',
-                  lineHeight: '22px',
-                  textAlign: 'center',
-                }}
-              >
-                답글 쓰기
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Container>
+      <PostContent
+        title='토끼가 어느 순간부터 사료를 먹지 않아요..'
+        author='천혜향'
+        badgeType='challenge'
+        animal='토끼'
+        gender='male'
+        date='2024.12.23'
+        time='12:52'
+        footerData={['896', '8', '17']}
+        description='원래 매우 잘 먹던 아이가 한 일주일 정도 지났나.. 사료를 안 먹네요. 이렇게 두다가는 굶을까봐 간식을 줬는데 간식은 또 잘 먹더라구요...'
+        likeCount={11}
+      />
+      <CommentHeader>
+        <Title>전체 댓글&nbsp;</Title>
+        <Count>[29]</Count>
+      </CommentHeader>
+      <CommentList>
+        <Comment
+          userName='감초'
+          animal='햄스터'
+          gender='male'
+          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
+          date='2025.01.15'
+          time='13:01'
+        />
+        <Comment
+          userName='감초'
+          animal='햄스터'
+          gender='male'
+          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
+          date='2025.01.15'
+          time='13:01'
+        />
+        <Reply
+          userName='천혜향'
+          animal='토끼'
+          gender='female'
+          content='헉... 그런가요..ㅠㅠ 건초를 줘도 안 먹더라구요... 간식만 먹어요 오직 간식만....저도 어떻게 해야할지 모르겠네요.'
+          date='2025.01.15'
+          time='13:01'
+        />
+        <Comment
+          userName='감초'
+          animal='햄스터'
+          gender='male'
+          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
+          date='2025.01.15'
+          time='13:01'
+        />
+        <Reply
+          userName='천혜향'
+          animal='토끼'
+          gender='female'
+          content='헉... 그런가요..ㅠㅠ 건초를 줘도 안 먹더라구요... 간식만 먹어요 오직 간식만....저도 어떻게 해야할지 모르겠네요.'
+          date='2025.01.15'
+          time='13:01'
+        />
+      </CommentList>
+      <CommentHeader>
+        <Title>댓글 쓰기</Title>
+      </CommentHeader>
+      <CommentWriteBox />
+    </Container>
   );
 };
 export default DetailPage;

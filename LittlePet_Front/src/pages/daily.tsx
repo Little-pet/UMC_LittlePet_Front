@@ -1,23 +1,37 @@
-import SearchBar from '#/components/searchBar';
-import Item from '#/components/item';
+import SearchBar from '#/components/Community/searchBar';
+import Item from '#/components/Community/item';
 import 고슴도치 from '#/assets/고슴도치.png';
-import AddButton from '#/components/addButton';
+import AddButton from '#/components/Community/addButton';
+import React, { useState } from 'react';
 import {
   Container,
   ContentWrapper,
   Header,
-  HeaderTitle,
-  HeaderLink,
+  HeaderFilter,
   ItemList,
-} from '#/components/styles/common';
-const DailyPage = () => {
+} from '#/components/Community/styles/common';
+const DailyPage: React.FC = () => {
+  const [selected, setSelected] = useState<'popular' | 'new'>('popular');
+  const handleClick = (filter: 'popular' | 'new') => {
+    setSelected(filter);
+  };
   return (
     <Container>
-      <SearchBar text='일상에서 검색' />
+      <SearchBar placeholder='일상에서 검색' />
       <ContentWrapper>
         <Header>
-          <HeaderTitle>일상</HeaderTitle>
-          <HeaderLink to='/community/daily/total'>전체보기</HeaderLink>
+          <HeaderFilter
+            onClick={() => handleClick('popular')}
+            isActive={selected === 'popular'}
+          >
+            인기순
+          </HeaderFilter>
+          <HeaderFilter
+            onClick={() => handleClick('new')}
+            isActive={selected === 'new'}
+          >
+            최신순
+          </HeaderFilter>
         </Header>
         <ItemList>
           <Item

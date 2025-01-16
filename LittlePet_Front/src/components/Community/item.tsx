@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import animalIcon from '../assets/동물 아이콘.png';
-import vectorIcon from '#/assets/Vector 7.png';
+import React from 'react';
+import animalIcon from '#/assets/동물 아이콘.svg';
+import vectorIcon from '#/assets/Vector.svg';
 import { Link } from 'react-router-dom';
 
 // Styled Components
@@ -51,6 +52,7 @@ const Content = styled.div`
   width: 94%;
   font-size: 12px;
   font-family: 'Pretendard-Medium';
+  line-height: 18px;
   box-sizing: border-box;
   color: #737373;
 `;
@@ -94,8 +96,19 @@ const Icon = styled.img`
 `;
 
 const VectorIcon = styled.img``;
+
+// Props 타입 정의
+interface ItemProps {
+  title: string;
+  postId: string | number;
+  subText: string;
+  description: string;
+  content: string;
+  footerData: string[];
+  img?: string; // 이미지가 없을 수 있으므로 선택적 프로퍼티로 설정
+}
 // 카테고리를 들어가자마자 볼 수 있는 미리보기 글들의 컴포넌트
-const Item = ({
+const Item: React.FC<ItemProps> = ({
   title,
   postId,
   subText,
