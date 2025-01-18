@@ -21,21 +21,25 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000); // 3초 후 스플래쉬 스크린 종료
+    const isFirstVisit = localStorage.getItem('isFirstVisit');
 
-    return () => clearTimeout(timer); // 타이머 클린업
+    if (!isFirstVisit) {
+      setShowSplash(true);
+      localStorage.setItem('isFirstVisit', 'true');
+      setTimeout(() => {
+        setShowSplash(false);
+      }, 3000);
+    }
   }, []);
 
-  return (
-    <>
-      {showSplash ? <SplashScreen /> : <RouterProvider router={router} />}
-    </>
-  );
+  if (showSplash) {
+    return <SplashScreen />;
+  }
+
+  return <RouterProvider router={router} />;
 };
 
 export default App;
