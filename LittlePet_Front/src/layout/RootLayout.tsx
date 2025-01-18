@@ -48,8 +48,7 @@ const NavbarContainer = styled.div`
 `;
 
 const MainContent = styled.main`
-  flex: 1;
-  background-color: #f9fafb; /* Equivalent to bg-gray-50 */
+  flex: 1; 
   display: flex;
   width: 100%;
   padding: 0;

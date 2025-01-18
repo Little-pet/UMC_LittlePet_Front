@@ -19,10 +19,7 @@ const HomePage: React.FC = () => {
       <ContentContainer>
         <SearchBar text='찾으시는 커뮤니티 글이 있으신가요?' />
         <ChallengeSection />
-        <QuizSection
-          participantCount={participantCount}
-          onParticipate={handleParticipation}
-        />
+        <QuizSection/>
         <PopularSection />
       </ContentContainer>
     </Container>
