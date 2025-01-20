@@ -33,7 +33,7 @@ const EditProfilePage: React.FC = () => {
 
   return (
     <Container>
-      <Title>프로필 수정</Title>
+      <Title>반려동물 프로필 등록</Title>
       
       <ProfileWrapper>
         <ProfileImgContainer onClick={() => document.getElementById('fileInput')?.click()}>
@@ -49,34 +49,20 @@ const EditProfilePage: React.FC = () => {
       <Form>
         
         <InputContainer>
-          <Label>닉네임</Label>
-          <NickNameBox>
-            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-            <CheckButton>중복확인</CheckButton>
-          </NickNameBox>
-          
+          <Label>이름</Label>
+          <Input type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </InputContainer>
 
    
         <InputContainer>
-          <Label>전화번호</Label>
+          <Label>생년월일</Label>
           <Input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </InputContainer>
         
-        <BioContainer>
-          <InputContainer>
-            <Label>자기소개</Label>
-            <Input type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
-            
-          </InputContainer>
-          <CharacterCount>
-            {bio.length}/<MaxCount>50</MaxCount>
-          </CharacterCount>
-        </BioContainer>
-        
+     
       </Form>
 
-      <SaveButton onClick={handleSave}>수정하기</SaveButton>
+      <SaveButton onClick={handleSave}>등록하기</SaveButton>
     </Container>
   );
 };
@@ -92,7 +78,6 @@ const Container = styled.div`
   padding: 20px;
   font-family: 'Pretendard';
   margin-top: -45px;
-
 `;
 
 const Title = styled.h1`
@@ -177,47 +162,6 @@ const Input = styled.input`
   padding:0;
   
 `;
-
-const NickNameBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%; 
-  
-`;
-const CheckButton = styled.button`
-
-  padding: 5px 9px;
-  background-color: #ffffff;
-  color:#6EA8FE;
-  font-size: 12px;
-  border: 1px solid #6EA8FE;
-  border-radius: 5px;
-  cursor: pointer;
-  height:27px;
-  width:67px;
-  align-items:center;
-  font-family:'Pretendard';
-
- 
-`;
-
-
-const CharacterCount = styled.div`
-  text-align: right;
-  font-size: 12px;
-  color: #262627
-  ;
-  height:22px;
-  margin-top:10px;
-`;
-
-const MaxCount = styled.p`
-  color:#737373;
-  display:inline;`
-
-const BioContainer = styled.div`
- `
 
 const SaveButton = styled.button`
   width: 100%;

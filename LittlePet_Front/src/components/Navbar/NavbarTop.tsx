@@ -13,7 +13,8 @@ const NavbarTop: FC = () => {
   const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
   const location = useLocation();
   const isMyPage = location.pathname === '/mypage';
-
+  const isEditProfile = location.pathname === '/edit-profile';
+  const isEditPetProfile = location.pathname === '/pet-register';
   return (
     <>
       <Nav>
@@ -50,7 +51,7 @@ const NavbarTop: FC = () => {
       <ResponsiveMenu open={open} />
 
       {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-      {!open && !isMyPage && (
+      {!open && !isMyPage && !isEditProfile && !isEditPetProfile &&(
         // open 상태가 false, 마이페이지가 아닐 때만 렌더링
         <Navbar menuItems={NavbarMainMenu} />
       )}

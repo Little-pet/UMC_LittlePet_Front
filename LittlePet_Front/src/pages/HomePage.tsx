@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import SearchBar from '#/components/searchBar';
 import Carousel from '@components/HomePageSections/Carousel';
@@ -7,12 +7,7 @@ import QuizSection from '@components/HomePageSections/QuizSection';
 import PopularSection from '@components/HomePageSections/PopularSection';
 
 const HomePage: React.FC = () => {
-  const [participantCount, setParticipantCount] = useState(0);
-
-  const handleParticipation = () => {
-    setParticipantCount((prevCount) => prevCount + 1);
-  };
-
+ 
   return (
     <Container>
       <Carousel />
