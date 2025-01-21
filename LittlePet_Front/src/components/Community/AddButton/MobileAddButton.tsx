@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import addIcon from '#/assets/add.svg';
 
 // 커뮤니티 글 등록 버튼
-const AddButton: React.FC = () => {
+const MobileAddButton: React.FC = () => {
   const navigate = useNavigate();
 
   const handleNavigate = (): void => {
@@ -18,7 +18,7 @@ const AddButton: React.FC = () => {
   );
 };
 
-export default AddButton;
+export default MobileAddButton;
 const AddButtonWrapper = styled.button`
   width: 70px;
   height: 70px;
@@ -32,4 +32,7 @@ const AddButtonWrapper = styled.button`
   right: 20px;
   cursor: pointer;
   border: none;
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;

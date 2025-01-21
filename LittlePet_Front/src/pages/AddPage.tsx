@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import arrowIcon from '#/assets/arrow.svg';
-import AnimalItem from '#/components/Community/Add/animalItem';
-import TagButton from '#/components/Community/Add/tagButton';
+import AnimalItem from '#/components/Community/AddPage/animalItem';
+import TagButton from '#/components/Community/AddPage/tagButton';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import DOMPurify from 'dompurify';
@@ -24,6 +24,7 @@ const AddPage: React.FC = () => {
   const [valid, setValid] = useState<boolean>(false);
   const imgRef = useRef<HTMLInputElement>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
+  const isContentValid = textCount > 0;
   // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
   // 사용자 접속시 그 악성코드가 실행되는 것을 XSS, 보안을 위해 sanitize 추가
   const sanitizedContent = DOMPurify.sanitize(content);
@@ -68,10 +69,10 @@ const AddPage: React.FC = () => {
       alert('제목을 입력해주세요!');
       return;
     }
-    /* if (!isContentValid) {
+    if (!isContentValid) {
       alert('내용을 입력해주세요!');
       return;
-    } */
+    }
   };
   useEffect(() => {
     // 글자 수 계산 (HTML 태그 제거 후)
@@ -86,7 +87,12 @@ const AddPage: React.FC = () => {
     setTextCount(textCount);
     setImgCount(imgCount);
 
-    if (isTitleValid && categoryText !== '' && tagSelected !== '') {
+    if (
+      plainText.length > 0 &&
+      isTitleValid &&
+      categoryText !== '' &&
+      tagSelected !== ''
+    ) {
       setValid(true);
     } else {
       setValid(false);
@@ -166,17 +172,21 @@ const AddPage: React.FC = () => {
           /> */}
         </div>
         {valid === true ? (
-          <SubmitButton type='submit'>
-            <ButtonText>등록하기</ButtonText>
-          </SubmitButton>
+          <ButtonWrapper>
+            <SubmitButton type='submit'>
+              <ButtonText>등록하기</ButtonText>
+            </SubmitButton>
+          </ButtonWrapper>
         ) : (
-          <SubmitButton
-            style={{ backgroundColor: '#E6E6E6' }}
-            type='submit'
-            value='제출'
-          >
-            <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
-          </SubmitButton>
+          <ButtonWrapper>
+            <SubmitButton
+              style={{ backgroundColor: '#E6E6E6' }}
+              type='submit'
+              value='제출'
+            >
+              <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
+            </SubmitButton>
+          </ButtonWrapper>
         )}
       </Form>
     </Container>
@@ -184,13 +194,10 @@ const AddPage: React.FC = () => {
 };
 export default AddPage;
 const Container = styled.div`
-  margin-left: 200px;
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  width: 393px;
-  height: 669px;
-  border: 1px solid black;
+  height: 656px;
   position: relative;
 `;
 const DropdownContainer = styled.div`
@@ -223,6 +230,9 @@ const Form = styled.form`
   flex-direction: column;
   gap: 20px;
   margin-top: 20px;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
 `;
 
 const Title = styled.input`
@@ -241,9 +251,14 @@ const Divider = styled.hr`
   border-top: 1px solid #e6e6e6;
   margin: 1px 0;
 `;
-
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
 const SubmitButton = styled.button`
   height: 48px;
+  box-sizing: border-box;
+  width: 87.5%;
   border-radius: 5px;
   background-color: #6ea8fe;
   display: flex;
@@ -251,9 +266,12 @@ const SubmitButton = styled.button`
   align-items: center;
   position: absolute;
   bottom: 25px;
-  width: 343px;
   cursor: pointer;
   border: none;
+  @media only screen and (min-width: 800px) {
+    width: 150px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
+  }
 `;
 
 const ButtonText = styled.div`

@@ -55,6 +55,9 @@ const CommentContainer = styled.div`
   flex-direction: column;
   gap: 5px;
   background-color: #6ea8fe0d;
+  @media only screen and (min-width: 800px) {
+    margin: 0 96px;
+  }
 `;
 
 const Header = styled.div`

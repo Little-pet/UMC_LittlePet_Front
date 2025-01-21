@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface NavbarItem {
@@ -13,9 +14,10 @@ interface NavbarProps {
 
 const Navbar: FC<NavbarProps> = ({ menuItems }) => {
   const [active, setActive] = useState<number>(menuItems[0].id); // 초기 활성화 상태
-
-  const handleMenuClick = (id: number) => {
+  const navigate = useNavigate();
+  const handleMenuClick = (id: number, link: string) => {
     setActive(id); // 활성화 상태 업데이트
+    navigate(link); // 페이지 이동
   };
 
   return (
@@ -23,8 +25,13 @@ const Navbar: FC<NavbarProps> = ({ menuItems }) => {
       <NavContainer>
         <ItemContainer>
           {menuItems.map((item) => (
-            <MenuItem key={item.id} onClick={() => handleMenuClick(item.id)}>
-              <MenuLink href={item.link}>{item.title}</MenuLink>
+            <MenuItem key={item.id}>
+              <MenuLink
+                onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
+                className={active === item.id ? 'active' : ''}
+              >
+                {item.title}
+              </MenuLink>
               {active === item.id && <ActiveItem />}
             </MenuItem>
           ))}

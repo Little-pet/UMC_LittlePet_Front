@@ -4,7 +4,6 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 393px;
   overflow: hidden;
 `;
 
@@ -15,9 +14,19 @@ export const ContentWrapper = styled.div`
   gap: 24px;
   margin-top: 30px;
 `;
-
+export const HeaderWrapper = styled.ul`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  @media only screen and (min-width: 800px) {
+  }
+`;
 export const Header = styled.ul`
   display: flex;
+  align-items: center;
+  @media only screen and (min-width: 800px) {
+    margin-left: 90px;
+  }
 `;
 
 export const HeaderFilter = styled.li<{ isActive: boolean }>`
@@ -27,6 +36,9 @@ export const HeaderFilter = styled.li<{ isActive: boolean }>`
   font-family: 'Pretendard-SemiBold';
   cursor: pointer;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
+  @media (min-width: 800px) {
+    width: 85px;
+  }
 `;
 
 export const ItemList = styled.div`

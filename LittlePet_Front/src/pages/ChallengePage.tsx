@@ -1,11 +1,16 @@
-import ChallengeCard from '#/components/Community/challengeCard';
-import ChallengeItem from '#/components/Community/challengeItem';
+import ChallengeCard from '#/components/Community/ChallengeCard';
+import ChallengeItem from '#/components/Community/ChallengeItem';
 import styled from 'styled-components';
-import AddButton from '#/components/Community/addButton';
+import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
-
-const ChanllengePage: React.FC = () => {
+import { useNavigate } from 'react-router-dom';
+const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
+  const navigate = useNavigate();
+
+  const handleNavigate = (): void => {
+    navigate('/community/add');
+  };
   const handleClick = (filter: 'popular' | 'new') => {
     setSelected(filter);
   };
@@ -48,6 +53,15 @@ const ChanllengePage: React.FC = () => {
           />
         </ChallengeWrapper>
       </ContentWrapper>
+      <BannerContainer>
+        <BannerTextContainer>
+          <Title>이번 주 챌린지에 참여하세요! 👑</Title>
+          <Subtitle style={{ fontSize: '18px', color: '#737373' }}>
+            너... 동물 아니지, 사람이지! 했던 순간을 공유해요!
+          </Subtitle>
+        </BannerTextContainer>
+        <BannerButton onClick={handleNavigate}>챌린지 참여하기</BannerButton>
+      </BannerContainer>
       <ContentWrapper>
         <HeaderWrapper>
           <Title>이번 주 챌린지 🔥</Title>
@@ -104,11 +118,11 @@ const ChanllengePage: React.FC = () => {
           />
         </ItemList>
       </ContentWrapper>
-      <AddButton />
+      <MobileAddButton />
     </Container>
   );
 };
-export default ChanllengePage;
+export default ChallengePage;
 
 const Container = styled.div`
   display: flex;
@@ -132,12 +146,44 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 `;
+const BannerContainer = styled.div`
+  background-color: #6ea8fe1a;
+  margin: 0 96px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+const BannerTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
 
+const BannerButton = styled.button`
+  width: 255px;
+  padding: 11px 80px;
+  border: none;
+  background-color: #6ea8fe;
+  color: #ffffff;
+  font-family: 'Pretendard-SemiBold';
+  font-size: 15px;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 10px;
+  align-self: flex-end;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
+`;
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 0 25px;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
 `;
 
 const Title = styled.div`
@@ -167,11 +213,18 @@ const ChallengeWrapper = styled.div`
 
   /* 파이어폭스에서 스크롤바 숨기기 */
   scrollbar-width: none; 
+   @media only screen and (min-width: 800px) {
+    padding-left: 96px;
+  }
 }
 `;
 const Header = styled.ul`
   display: flex;
   margin: 0;
+  @media only screen and (min-width: 800px) {
+    margin: 10px 0;
+    margin-left: 75px;
+  }
 `;
 
 const HeaderFilter = styled.li<{ isActive: boolean }>`
@@ -181,10 +234,17 @@ const HeaderFilter = styled.li<{ isActive: boolean }>`
   font-family: 'Pretendard-SemiBold';
   cursor: pointer;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
+  @media only screen and (min-width: 800px) {
+    font-size: 16px;
+    width: 75px;
+  }
 `;
 const ItemList = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 25px;
   flex-wrap: wrap;
+  @media only screen and (min-width: 700px) {
+    padding: 0 96px;
+  }
 `;

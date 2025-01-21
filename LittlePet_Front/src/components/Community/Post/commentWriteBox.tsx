@@ -64,6 +64,9 @@ const CommentForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  @media only screen and (min-width: 800px) {
+    margin: 0 96px;
+  }
 `;
 
 // 헤더(닉네임, 동물 정보) 래퍼

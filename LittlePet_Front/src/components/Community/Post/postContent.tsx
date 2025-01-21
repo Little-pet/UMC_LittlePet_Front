@@ -1,5 +1,5 @@
 import React from 'react';
-import BadgeComponent from '#/components/Community/badge'; // 실제 컴포넌트 경로로 수정
+import BadgeComponent from '#/components/Community/Badge'; // 실제 컴포넌트 경로로 수정
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
 import animalIcon from '#/assets/동물 아이콘.svg';
@@ -85,6 +85,10 @@ const ContentBox = styled.div`
   padding: 0 25px;
   margin: 20px 0;
   margin-top: 30px;
+  @media only screen and (min-width: 800px) {
+    margin: 20px 96px;
+    margin-top: 30px;
+  }
 `;
 const PostContentWrapper = styled.div`
   display: flex;

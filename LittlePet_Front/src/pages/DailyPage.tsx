@@ -1,11 +1,13 @@
-import SearchBar from '#/components/Community/searchBar';
-import Item from '#/components/Community/item';
+import SearchBar from '#/components/Community/SearchBar';
+import Item from '#/components/Community/Item';
 import 고슴도치 from '#/assets/고슴도치.png';
-import AddButton from '#/components/Community/addButton';
+import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
+import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
 import {
   Container,
   ContentWrapper,
+  HeaderWrapper,
   Header,
   HeaderFilter,
   ItemList,
@@ -19,20 +21,30 @@ const DailyPage: React.FC = () => {
     <Container>
       <SearchBar placeholder='일상에서 검색' />
       <ContentWrapper>
-        <Header>
-          <HeaderFilter
-            onClick={() => handleClick('popular')}
-            isActive={selected === 'popular'}
-          >
-            인기순
-          </HeaderFilter>
-          <HeaderFilter
-            onClick={() => handleClick('new')}
-            isActive={selected === 'new'}
-          >
-            최신순
-          </HeaderFilter>
-        </Header>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingRight: '96px',
+          }}
+        >
+          <Header>
+            <HeaderFilter
+              onClick={() => handleClick('popular')}
+              isActive={selected === 'popular'}
+            >
+              인기순
+            </HeaderFilter>
+            <HeaderFilter
+              onClick={() => handleClick('new')}
+              isActive={selected === 'new'}
+            >
+              최신순
+            </HeaderFilter>
+          </Header>
+          <DesktopAddButton />
+        </div>
         <ItemList>
           <Item
             title='Q&A'
@@ -54,7 +66,7 @@ const DailyPage: React.FC = () => {
           />
         </ItemList>
       </ContentWrapper>
-      <AddButton />
+      <MobileAddButton />
     </Container>
   );
 };

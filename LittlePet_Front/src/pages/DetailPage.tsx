@@ -109,6 +109,9 @@ const CommentHeader = styled.div`
   display: flex;
   padding: 8px 25px;
   align-items: center;
+  @media only screen and (min-width: 800px) {
+    margin: 0 96px;
+  }
 `;
 
 const Title = styled.div`

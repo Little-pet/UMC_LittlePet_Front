@@ -31,7 +31,7 @@ export const NavbarMainMenu: NavbarItem[] = [
   {
     id: 2,
     title: '커뮤니티',
-    link: '/health',
+    link: '/community',
   },
   {
     id: 3,

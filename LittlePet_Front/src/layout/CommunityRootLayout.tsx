@@ -26,34 +26,28 @@ const CommunityRootLayout: React.FC = () => {
       path: '/community/challenge',
     },
   ];
-  const [selected, setSelected] = useState<string>(() => {
-    // 로컬 스토리지에서 초기 값 로드
-    return localStorage.getItem('selectedCategory') || '';
-  });
+  const [selected, setSelected] = useState<string>('qna');
   const handleClick = (type: string) => {
     setSelected(type);
-    localStorage.setItem('selectedCategory', type); // 로컬 스토리지에 저장
   };
-  useEffect(() => {
-    const savedSelected = localStorage.getItem('selectedCategory');
-    if (savedSelected) {
-      setSelected(savedSelected);
-    }
-  }, []);
+
   return (
     <Container>
       <Header>
-        {categories.map((category, index) => (
-          <MenuItem
-            key={index}
-            to={category.path}
-            onClick={() => handleClick(category.type)}
-            isActive={selected === category.type}
-          >
-            {category.title}
-          </MenuItem>
-        ))}
+        <ItemContainer>
+          {categories.map((category, index) => (
+            <MenuItem
+              key={index}
+              to={category.path}
+              onClick={() => handleClick(category.type)}
+              isActive={selected === category.type}
+            >
+              {category.title}
+            </MenuItem>
+          ))}
+        </ItemContainer>
       </Header>
+
       {/* 자식 라우트가 이 위치에서 렌더링 */}
       <Outlet />
     </Container>
@@ -63,13 +57,9 @@ const CommunityRootLayout: React.FC = () => {
 export default CommunityRootLayout;
 
 const Container = styled.div`
-  margin-left: 200px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
-  width: 393px;
   height: 669px;
-  border: 1px solid black;
   position: relative;
 `;
 
@@ -82,7 +72,10 @@ const Header = styled.div`
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
 `;
-
+const ItemContainer = styled.div`
+  display: flex;
+  gap: 50px;
+`;
 const MenuItem = styled(Link)<{ isActive: boolean }>`
   font-family: Pretendard-Medium;
   line-height: 42px;

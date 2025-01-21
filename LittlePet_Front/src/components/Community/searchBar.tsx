@@ -19,7 +19,8 @@ export default SearchBar;
 
 const SearchContainer = styled.div`
   border: 2px solid #6ea8fe;
-  width: 343px;
+  width: 88%;
+  margin: 0 25px;
   height: 48px;
   border-radius: 5px;
   padding: 10px 15px;

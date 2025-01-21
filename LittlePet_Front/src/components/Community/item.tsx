@@ -87,6 +87,9 @@ const ContainerLink = styled(Link)`
   gap: 10px;
   padding: 0 25px;
   text-decoration: none;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
 `;
 
 const Header = styled.div`
