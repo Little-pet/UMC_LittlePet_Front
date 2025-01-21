@@ -1,0 +1,336 @@
+import styled from 'styled-components';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import arrowIcon from '#/assets/arrow.svg';
+import AnimalItem from '#/components/Community/Add/animalItem';
+import TagButton from '#/components/Community/Add/tagButton';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+import DOMPurify from 'dompurify';
+
+// 최대 업로드 개수 & 파일 크기
+const MAX_IMAGES = 5;
+const MAX_SIZE = 20 * 1024 * 1024; // 20MB
+const VALID_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
+
+const AddPage: React.FC = () => {
+  const [view, setView] = useState<boolean>(false);
+  const [tagSelected, setTagSelected] = useState<string>('');
+  const [categoryText, setCategoryText] = useState<string>('');
+  const [postImgs, setPostImgs] = useState([]); // 서버에 전송할 파일 자체
+  const [title, setTitle] = useState<string>('');
+  const [textCount, setTextCount] = useState<number>(0);
+  const [imgCount, setImgCount] = useState<number>(0);
+  const [content, setContent] = useState<string>('');
+  const [valid, setValid] = useState<boolean>(false);
+  const imgRef = useRef<HTMLInputElement>(null);
+  const isTitleValid = title.trim().length >= 1 && title.length <= 30;
+  // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
+  // 사용자 접속시 그 악성코드가 실행되는 것을 XSS, 보안을 위해 sanitize 추가
+  const sanitizedContent = DOMPurify.sanitize(content);
+  const animals = ['햄스터', '토끼', '고슴도치'];
+  const tags = [
+    {
+      type: 'qna',
+      title: 'Q&A',
+    },
+    {
+      type: 'daily',
+      title: '일상',
+    },
+    {
+      type: 'intro',
+      title: '소개',
+    },
+  ];
+  // 태그 클릭
+  const handleTagClick = (type: string) => {
+    setTagSelected(type);
+  };
+  // 종 카테고리 선택
+  const handleCategoryClick = (name: string) => {
+    setCategoryText(name);
+    setView(false);
+  };
+  const handleEditorChange = (value: string) => {
+    setContent(value); // 상태 업데이트
+  };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (categoryText === '') {
+      alert('종 카테고리를 선택해주세요!');
+      return;
+    }
+    if (tagSelected === '') {
+      alert('글 카테고리를 선택해주세요!');
+      return;
+    }
+    if (!isTitleValid) {
+      alert('제목을 입력해주세요!');
+      return;
+    }
+    /* if (!isContentValid) {
+      alert('내용을 입력해주세요!');
+      return;
+    } */
+  };
+  useEffect(() => {
+    // 글자 수 계산 (HTML 태그 제거 후)
+    const plainText = content.replace(/<[^>]*>/g, '').trim();
+    const textCount = plainText.length; // 글자 수 계산
+
+    // 이미지 개수 계산 (img 태그 매칭)
+    const imgTags = content.match(/<img [^>]*src=["'][^"']*["'][^>]*>/g) || [];
+    const imgCount = imgTags.length; // 이미지 개수 계산
+
+    // 상태 업데이트
+    setTextCount(textCount);
+    setImgCount(imgCount);
+
+    if (isTitleValid && categoryText !== '' && tagSelected !== '') {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  }, [title, content, categoryText, tagSelected]);
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [
+          ['image'],
+          [{ size: ['small', false, 'large', 'huge'] }],
+          ['bold', 'underline'],
+        ],
+        handlers: {
+          bold: () => {},
+          underline: () => {},
+          size: () => {},
+        },
+      },
+    };
+  }, []);
+  return (
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <DropdownContainer
+          onClick={() => {
+            setView(!view);
+          }}
+        >
+          {categoryText === '' ? (
+            <DropdownText>종 카테고리</DropdownText>
+          ) : (
+            <AnimalItem name={categoryText} />
+          )}
+
+          <img src={arrowIcon} />
+        </DropdownContainer>
+        {view && (
+          <DropdownMenu>
+            {animals.map((animal, index) => (
+              <AnimalItem
+                key={index}
+                name={animal}
+                onClick={() => handleCategoryClick(animal)}
+              />
+            ))}
+          </DropdownMenu>
+        )}
+        <TagButtonContainer>
+          {tags.map((tag, index) => (
+            <TagButton
+              key={index}
+              label={tag.title}
+              onClick={() => handleTagClick(tag.type)}
+              isSelected={tagSelected === tag.type}
+            />
+          ))}
+        </TagButtonContainer>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <Title
+            placeholder='제목을 입력하세요'
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
+          />
+          <Divider />
+
+          <StyledQuill
+            theme='snow'
+            modules={modules}
+            placeholder='내용을 입력하세요'
+            onChange={handleEditorChange}
+            value={content}
+          />
+          {/*  <div
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }} // 안전하게 렌더링
+          /> */}
+        </div>
+        {valid === true ? (
+          <SubmitButton type='submit'>
+            <ButtonText>등록하기</ButtonText>
+          </SubmitButton>
+        ) : (
+          <SubmitButton
+            style={{ backgroundColor: '#E6E6E6' }}
+            type='submit'
+            value='제출'
+          >
+            <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
+          </SubmitButton>
+        )}
+      </Form>
+    </Container>
+  );
+};
+export default AddPage;
+const Container = styled.div`
+  margin-left: 200px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 393px;
+  height: 669px;
+  border: 1px solid black;
+  position: relative;
+`;
+const DropdownContainer = styled.div`
+  width: 126px;
+  height: 35px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 15px;
+  box-sizing: border-box;
+  cursor: pointer;
+`;
+
+const DropdownText = styled.div`
+  font-family: 'Pretendard-Medium';
+  font-size: 14px;
+  color: #737373;
+`;
+const TagButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const Form = styled.form`
+  height: 100%;
+  padding: 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const Title = styled.input`
+  height: 22px;
+  font-size: 24px;
+  font-family: 'Pretendard-SemiBold';
+  border: none;
+  outline: none;
+  ::placeholder {
+    color: #737373;
+  }
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #e6e6e6;
+  margin: 1px 0;
+`;
+
+const SubmitButton = styled.button`
+  height: 48px;
+  border-radius: 5px;
+  background-color: #6ea8fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 25px;
+  width: 343px;
+  cursor: pointer;
+  border: none;
+`;
+
+const ButtonText = styled.div`
+  font-size: 16px;
+  font-family: 'Pretendard-SemiBold';
+  color: #ffffff;
+`;
+const DropdownMenu = styled.ul`
+  position: absolute;
+  top: 45px;
+  left: 25px;
+  width: 126px;
+  height: 126px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  padding: 15px 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+const StyledQuill = styled(ReactQuill)`
+  .ql-container {
+    padding: 10px;
+    height: 360px;
+  }
+  .ql-editor {
+    border: none;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    line-height: 22px;
+    padding: 0 !important;
+    height: 340px;
+    overflow-y: auto; /* 세로 스크롤 */
+    /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+    -ms-overflow-style: none;
+
+    /* 파이어폭스에서 스크롤바 숨기기 */
+    scrollbar-width: none;
+  }
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #737373;
+  }
+
+  .ql-toolbar .ql-bold {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-bold:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-size {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-size:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-underline {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-underline:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+`;

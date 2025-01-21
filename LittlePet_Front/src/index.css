@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  margin: 0;
+
 @font-face {
   font-family: 'Pretendard';
   src: url('/src/fonts/static/alternative/Pretendard-Regular.ttf') format('truetype');
   font-style: normal;
+
 }
