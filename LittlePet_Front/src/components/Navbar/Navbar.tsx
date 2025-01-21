@@ -1,0 +1,82 @@
+import React, { FC, useState } from 'react';
+import styled from 'styled-components';
+
+interface NavbarItem {
+  id: number;
+  title: string;
+  link: string;
+}
+
+interface NavbarProps {
+  menuItems: NavbarItem[]; // 메뉴 항목 배열
+}
+
+const Navbar: FC<NavbarProps> = ({ menuItems }) => {
+  const [active, setActive] = useState<number>(menuItems[0].id); // 초기 활성화 상태
+
+  const handleMenuClick = (id: number) => {
+    setActive(id); // 활성화 상태 업데이트
+  };
+
+  return (
+    <Nav>
+      <NavContainer>
+        <ItemContainer>
+          {menuItems.map((item) => (
+            <MenuItem key={item.id} onClick={() => handleMenuClick(item.id)}>
+              <MenuLink href={item.link}>{item.title}</MenuLink>
+              {active === item.id && <ActiveItem />}
+            </MenuItem>
+          ))}
+        </ItemContainer>
+      </NavContainer>
+    </Nav>
+  );
+};
+
+export default Navbar;
+
+const Nav = styled.nav`
+  border-bottom: 0.5px solid #d9d9d9;
+`;
+
+const NavContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  padding-left: 25px;
+  padding-right: 25px;
+`;
+
+const ItemContainer = styled.div`
+  display: flex;
+  gap: 40px;
+`;
+
+const MenuItem = styled.li`
+  position: relative;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  height: 45px;
+  cursor: pointer;
+  list-style: none;
+`;
+
+const MenuLink = styled.a`
+  display: inline-block;
+  color: #262627;
+  text-decoration: none;
+`;
+
+const ActiveItem = styled.li`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #6ea8fe;
+  color: #6ea8fe;
+  list-style: none;
+`;

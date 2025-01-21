@@ -29,8 +29,9 @@
       "#/*": ["src/*"], // alias 설정
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@mockData/*": ["src/mockData/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "postcss.config.js"]
 }
