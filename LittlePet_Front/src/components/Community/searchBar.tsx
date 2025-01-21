@@ -2,6 +2,21 @@ import styled from 'styled-components';
 import searchIcon from '#/assets/돋보기.svg';
 import React from 'react';
 
+interface SearchBarProps {
+  placeholder: string;
+}
+// 카테고리에 있는 검색 버튼
+const SearchBar: React.FC<SearchBarProps> = ({ placeholder }) => {
+  return (
+    <SearchContainer>
+      <SearchIcon src={searchIcon} alt='Search Icon' />
+      <SearchInput type='text' placeholder={placeholder} />
+    </SearchContainer>
+  );
+};
+
+export default SearchBar;
+
 const SearchContainer = styled.div`
   border: 2px solid #6ea8fe;
   width: 343px;
@@ -28,18 +43,3 @@ const SearchInput = styled.input`
   font-family: 'Pretendard-SemiBold';
   color: #737373;
 `;
-
-interface SearchBarProps {
-  placeholder: string;
-}
-// 카테고리에 있는 검색 버튼
-const SearchBar: React.FC<SearchBarProps> = ({ placeholder }) => {
-  return (
-    <SearchContainer>
-      <SearchIcon src={searchIcon} alt='Search Icon' />
-      <SearchInput type='text' placeholder={placeholder} />
-    </SearchContainer>
-  );
-};
-
-export default SearchBar;

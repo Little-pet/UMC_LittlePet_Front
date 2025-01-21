@@ -3,20 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import addIcon from '#/assets/add.svg';
 
-const AddButtonWrapper = styled.button`
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: #6ea8fe;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  cursor: pointer;
-  border: none;
-`;
 // 커뮤니티 글 등록 버튼
 const AddButton: React.FC = () => {
   const navigate = useNavigate();
@@ -33,3 +19,17 @@ const AddButton: React.FC = () => {
 };
 
 export default AddButton;
+const AddButtonWrapper = styled.button`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #6ea8fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
+  border: none;
+`;

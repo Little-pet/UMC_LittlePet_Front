@@ -6,6 +6,66 @@ import animalIcon from '#/assets/동물 아이콘.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
 import BadgeComponent from '#/components/Community/badge';
+
+interface Badge {
+  type: 'challenge' | 'popular'; // Badge type 제한
+}
+
+interface ChallengeCardProps {
+  name: string; // 유저 이름
+  postId: number; // 게시물 ID
+  animal: string; // 동물 이름
+  gender: 'male' | 'female'; // 성별
+  badges: Badge[]; // Badge 배열
+  descriptionTitle: string; // 설명 제목
+  descriptionText: string; // 설명 내용
+}
+const ChallengeCard: React.FC<ChallengeCardProps> = ({
+  name,
+  postId,
+  animal,
+  gender,
+  badges,
+  descriptionTitle,
+  descriptionText,
+}) => {
+  return (
+    <CardContainer to={`/community/${postId}`}>
+      <ContentWrapper>
+        <ProfileWrapper>
+          <img src={profileIcon} style={{ width: '20px', height: '20px' }} />
+          <div>
+            <UserInfoWrapper>
+              <UserName>{name}</UserName>
+              <AnimalWrapper>
+                <img
+                  src={animalIcon}
+                  style={{ width: '16px', height: '16px' }}
+                />
+                <AnimalText>{animal}</AnimalText>
+                {gender == 'female' ? (
+                  <img src={femaleIcon} style={{ width: '6px' }} />
+                ) : (
+                  <img src={maleIcon} style={{ width: '8px' }} />
+                )}
+              </AnimalWrapper>
+            </UserInfoWrapper>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {badges.map((badge, index) => (
+                <BadgeComponent key={index} type={badge.type} />
+              ))}
+            </div>
+          </div>
+        </ProfileWrapper>
+        <DescriptionWrapper>
+          <DescriptionTitle>{descriptionTitle}</DescriptionTitle>
+          <DescriptionText>{descriptionText}</DescriptionText>
+        </DescriptionWrapper>
+      </ContentWrapper>
+    </CardContainer>
+  );
+};
+export default ChallengeCard;
 const CardContainer = styled(Link)`
   width: 200px;
   height: 240px;
@@ -72,62 +132,3 @@ const DescriptionText = styled.div`
   line-height: 21px;
   color: #ffffff;
 `;
-interface Badge {
-  type: 'challenge' | 'popular'; // Badge type 제한
-}
-
-interface ChallengeCardProps {
-  name: string; // 유저 이름
-  postId: number; // 게시물 ID
-  animal: string; // 동물 이름
-  gender: 'male' | 'female'; // 성별
-  badges: Badge[]; // Badge 배열
-  descriptionTitle: string; // 설명 제목
-  descriptionText: string; // 설명 내용
-}
-const ChallengeCard: React.FC<ChallengeCardProps> = ({
-  name,
-  postId,
-  animal,
-  gender,
-  badges,
-  descriptionTitle,
-  descriptionText,
-}) => {
-  return (
-    <CardContainer to={`/community/${postId}`}>
-      <ContentWrapper>
-        <ProfileWrapper>
-          <img src={profileIcon} style={{ width: '20px', height: '20px' }} />
-          <div>
-            <UserInfoWrapper>
-              <UserName>{name}</UserName>
-              <AnimalWrapper>
-                <img
-                  src={animalIcon}
-                  style={{ width: '16px', height: '16px' }}
-                />
-                <AnimalText>{animal}</AnimalText>
-                {gender == 'female' ? (
-                  <img src={femaleIcon} style={{ width: '6px' }} />
-                ) : (
-                  <img src={maleIcon} style={{ width: '8px' }} />
-                )}
-              </AnimalWrapper>
-            </UserInfoWrapper>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              {badges.map((badge, index) => (
-                <BadgeComponent key={index} type={badge.type} />
-              ))}
-            </div>
-          </div>
-        </ProfileWrapper>
-        <DescriptionWrapper>
-          <DescriptionTitle>{descriptionTitle}</DescriptionTitle>
-          <DescriptionText>{descriptionText}</DescriptionText>
-        </DescriptionWrapper>
-      </ContentWrapper>
-    </CardContainer>
-  );
-};
-export default ChallengeCard;

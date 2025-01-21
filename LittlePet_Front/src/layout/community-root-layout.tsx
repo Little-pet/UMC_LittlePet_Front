@@ -2,35 +2,6 @@ import { Outlet, Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  margin-left: 200px;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 393px;
-  height: 669px;
-  border: 1px solid black;
-  position: relative;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  height: 42px;
-  padding: 0 25px;
-  border-bottom: 0.5px solid #d9d9d9;
-  box-sizing: border-box;
-`;
-
-const MenuItem = styled(Link)<{ isActive: boolean }>`
-  font-family: Pretendard-Medium;
-  line-height: 42px;
-  font-size: 14px;
-  text-decoration: none;
-  color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
-`;
-
 interface Category {
   type: string;
   title: string;
@@ -90,3 +61,32 @@ const CommunityRootLayout: React.FC = () => {
 };
 
 export default CommunityRootLayout;
+
+const Container = styled.div`
+  margin-left: 200px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 393px;
+  height: 669px;
+  border: 1px solid black;
+  position: relative;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 42px;
+  padding: 0 25px;
+  border-bottom: 0.5px solid #d9d9d9;
+  box-sizing: border-box;
+`;
+
+const MenuItem = styled(Link)<{ isActive: boolean }>`
+  font-family: Pretendard-Medium;
+  line-height: 42px;
+  font-size: 14px;
+  text-decoration: none;
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+`;

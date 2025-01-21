@@ -4,6 +4,49 @@ import commentIcon from '#/assets/댓글.svg';
 import heartIcon from '#/assets/좋아요.svg';
 import { Link } from 'react-router-dom';
 
+interface ChallengeItemProps {
+  postId: number; // 게시물 ID
+  title: string; // 게시물 제목
+  name: string; // 작성자 이름
+  views: number; // 조회수
+  likes: number; // 좋아요 수
+  comments: number; // 댓글 수
+}
+const ChallengeItem: React.FC<ChallengeItemProps> = ({
+  postId,
+  title,
+  name,
+  views,
+  likes,
+  comments,
+}) => {
+  return (
+    <CardWrapper to={`/community/${postId}`}>
+      <CardBackground />
+      <CardContent>
+        <CardTitle>{title}</CardTitle>
+        <MetaData>
+          <MetaText>{name}</MetaText>
+          <MetaItem>
+            <img src={viewIcon} alt='views' />
+            <MetaText>{views}</MetaText>
+          </MetaItem>
+          <MetaItem>
+            <img src={heartIcon} alt='likes' style={{ height: '7px' }} />
+            <MetaText>{likes}</MetaText>
+          </MetaItem>
+          <MetaItem>
+            <img src={commentIcon} alt='comments' style={{ height: '8px' }} />
+            <MetaText>{comments}</MetaText>
+          </MetaItem>
+        </MetaData>
+      </CardContent>
+    </CardWrapper>
+  );
+};
+
+export default ChallengeItem;
+
 // 최상위 카드
 const CardWrapper = styled(Link)`
   width: 165px;
@@ -56,45 +99,3 @@ const MetaText = styled.div`
   font-family: 'Pretendard-Medium';
   color: #737373;
 `;
-interface ChallengeItemProps {
-  postId: string; // 게시물 ID
-  title: string; // 게시물 제목
-  name: string; // 작성자 이름
-  views: number; // 조회수
-  likes: number; // 좋아요 수
-  comments: number; // 댓글 수
-}
-const ChallengeItem: React.FC<ChallengeItemProps> = ({
-  postId,
-  title,
-  name,
-  views,
-  likes,
-  comments,
-}) => {
-  return (
-    <CardWrapper to={`/community/${postId}`}>
-      <CardBackground />
-      <CardContent>
-        <CardTitle>{title}</CardTitle>
-        <MetaData>
-          <MetaText>{name}</MetaText>
-          <MetaItem>
-            <img src={viewIcon} alt='views' />
-            <MetaText>{views}</MetaText>
-          </MetaItem>
-          <MetaItem>
-            <img src={heartIcon} alt='likes' style={{ height: '7px' }} />
-            <MetaText>{likes}</MetaText>
-          </MetaItem>
-          <MetaItem>
-            <img src={commentIcon} alt='comments' style={{ height: '8px' }} />
-            <MetaText>{comments}</MetaText>
-          </MetaItem>
-        </MetaData>
-      </CardContent>
-    </CardWrapper>
-  );
-};
-
-export default ChallengeItem;

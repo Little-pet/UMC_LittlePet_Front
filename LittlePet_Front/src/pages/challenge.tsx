@@ -3,84 +3,7 @@ import ChallengeItem from '#/components/Community/challengeItem';
 import styled from 'styled-components';
 import AddButton from '#/components/Community/addButton';
 import React, { useState } from 'react';
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-  overflow-y: auto; /* 세로 스크롤 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
 
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const HeaderWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0 25px;
-`;
-
-const Title = styled.div`
-  font-size: 26px;
-  font-family: 'Pretendard-Bold';
-`;
-
-const Subtitle = styled.div`
-  font-size: 20px;
-  font-family: 'Pretendard-SemiBold';
-  line-height: 32px;
-`;
-
-const ChallengeWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-  padding-left: 25px;
-  overflow-x: auto; /* 가로 스크롤 */
-  overflow-y: hidden; /* 세로 스크롤 방지 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none; 
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none; 
-}
-`;
-const Header = styled.ul`
-  display: flex;
-  margin: 0;
-`;
-
-const HeaderFilter = styled.li<{ isActive: boolean }>`
-  width: 65px;
-  display: list-item;
-  font-size: 12px;
-  font-family: 'Pretendard-SemiBold';
-  cursor: pointer;
-  color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
-`;
-const ItemList = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0 25px;
-  flex-wrap: wrap;
-`;
 const ChanllengePage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
   const handleClick = (filter: 'popular' | 'new') => {
@@ -186,3 +109,82 @@ const ChanllengePage: React.FC = () => {
   );
 };
 export default ChanllengePage;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 25px;
+`;
+
+const Title = styled.div`
+  font-size: 26px;
+  font-family: 'Pretendard-Bold';
+`;
+
+const Subtitle = styled.div`
+  font-size: 20px;
+  font-family: 'Pretendard-SemiBold';
+  line-height: 32px;
+`;
+
+const ChallengeWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  padding-left: 25px;
+  overflow-x: auto; /* 가로 스크롤 */
+  overflow-y: hidden; /* 세로 스크롤 방지 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none; 
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none; 
+}
+`;
+const Header = styled.ul`
+  display: flex;
+  margin: 0;
+`;
+
+const HeaderFilter = styled.li<{ isActive: boolean }>`
+  width: 65px;
+  display: list-item;
+  font-size: 12px;
+  font-family: 'Pretendard-SemiBold';
+  cursor: pointer;
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
+`;
+const ItemList = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 25px;
+  flex-wrap: wrap;
+`;

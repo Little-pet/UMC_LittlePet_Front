@@ -4,6 +4,49 @@ import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
 
+interface ReplyProps {
+  userName: string; // 유저 이름
+  animal: string; // 동물 이름
+  gender: 'male' | 'female'; // 성별 ('male' 또는 'female')
+  content: string; // 댓글 내용
+  date: string; // 날짜 (YYYY-MM-DD)
+  time: string; // 시간 (HH:mm)
+}
+const Reply: React.FC<ReplyProps> = ({
+  userName,
+  animal,
+  gender,
+  content,
+  date,
+  time,
+}) => (
+  <CommentContainer>
+    <Header>
+      <img src={replyArrowIcon} />
+      <UserName>{userName}</UserName>
+      <UserInfo>
+        <IconGroup>
+          <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
+          <IconText>{animal}</IconText>
+        </IconGroup>
+        {gender == 'female' ? (
+          <img src={femaleIcon} style={{ width: '8px' }} />
+        ) : (
+          <img src={maleIcon} style={{ width: '10px' }} />
+        )}
+      </UserInfo>
+    </Header>
+    <Content>{content}</Content>
+    <Footer>
+      <TimeStamp>
+        {date}&nbsp;&nbsp;{time}
+      </TimeStamp>
+      <ReplyButton>답글 쓰기</ReplyButton>
+    </Footer>
+  </CommentContainer>
+);
+
+export default Reply;
 const CommentContainer = styled.div`
   border-bottom: 1px solid #e6e6e6;
   padding: 10px 25px;
@@ -74,46 +117,3 @@ const ReplyButton = styled.div`
   cursor: pointer;
   background-color: #ffffff;
 `;
-interface ReplyProps {
-  userName: string; // 유저 이름
-  animal: string; // 동물 이름
-  gender: 'male' | 'female'; // 성별 ('male' 또는 'female')
-  content: string; // 댓글 내용
-  date: string; // 날짜 (YYYY-MM-DD)
-  time: string; // 시간 (HH:mm)
-}
-const Reply: React.FC<ReplyProps> = ({
-  userName,
-  animal,
-  gender,
-  content,
-  date,
-  time,
-}) => (
-  <CommentContainer>
-    <Header>
-      <img src={replyArrowIcon} />
-      <UserName>{userName}</UserName>
-      <UserInfo>
-        <IconGroup>
-          <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
-          <IconText>{animal}</IconText>
-        </IconGroup>
-        {gender == 'female' ? (
-          <img src={femaleIcon} style={{ width: '8px' }} />
-        ) : (
-          <img src={maleIcon} style={{ width: '10px' }} />
-        )}
-      </UserInfo>
-    </Header>
-    <Content>{content}</Content>
-    <Footer>
-      <TimeStamp>
-        {date}&nbsp;&nbsp;{time}
-      </TimeStamp>
-      <ReplyButton>답글 쓰기</ReplyButton>
-    </Footer>
-  </CommentContainer>
-);
-
-export default Reply;

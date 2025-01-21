@@ -1,6 +1,25 @@
 import styled from 'styled-components';
+import React from 'react';
 
-const Badge = styled.div`
+interface BadgeComponentProps {
+  type: 'challenge' | 'popular'; // type은 'challenge' 또는 'popular' 중 하나
+}
+// Styled-components의 props 타입 정의
+interface BadgeProps {
+  type: 'challenge' | 'popular';
+}
+// 커뮤니티 업적 뱃지
+const BadgeComponent: React.FC<BadgeComponentProps> = ({ type }) => {
+  return (
+    <Badge type={type}>
+      <BadgeText type={type}>
+        {type === 'challenge' ? '챌린지왕' : '인기스타'}
+      </BadgeText>
+    </Badge>
+  );
+};
+export default BadgeComponent;
+const Badge = styled.div<BadgeProps>`
   width: 44px;
   height: 15px;
   display: flex;
@@ -14,22 +33,8 @@ const Badge = styled.div`
     props.type === 'challenge' ? '#FEF9C3' : '#FEDCDC'};
 `;
 
-const BadgeText = styled.p`
+const BadgeText = styled.p<BadgeProps>`
   color: ${(props) => (props.type === 'challenge' ? '#854D0E' : '#9E2D2D')};
   font-size: 8px;
   font-family: 'Pretendard-SemiBold';
 `;
-interface BadgeComponentProps {
-  type: 'challenge' | 'popular'; // type은 'challenge' 또는 'popular' 중 하나
-}
-// 커뮤니티 업적 뱃지
-const BadgeComponent: React.FC<BadgeComponentProps> = ({ type }) => {
-  return (
-    <Badge type={type}>
-      <BadgeText type={type}>
-        {type === 'challenge' ? '챌린지왕' : '인기스타'}
-      </BadgeText>
-    </Badge>
-  );
-};
-export default BadgeComponent;

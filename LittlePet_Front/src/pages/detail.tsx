@@ -5,52 +5,7 @@ import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto; /* 세로 스크롤 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
 
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none;
-`;
-const CommentList = styled.div``;
-
-const CommentHeader = styled.div`
-  height: 44px;
-  border-top: 3px solid #e9e9e9;
-  border-bottom: 3px solid #e9e9e9;
-  box-sizing: border-box;
-  display: flex;
-  padding: 8px 25px;
-  align-items: center;
-`;
-
-const Title = styled.div`
-  font-size: 14px;
-  font-family: 'Pretendard-SemiBold';
-`;
-
-const Count = styled.div`
-  font-size: 14px;
-  font-family: 'Pretendard-SemiBold';
-  color: #6ea8fe;
-`;
-interface CommentData {
-  userName: string;
-  animal: string;
-  gender: 'male' | 'female';
-  content: string;
-  date: string;
-  time: string;
-  isReply?: boolean; // 댓글인지 대댓글(Reply)인지 여부
-}
 // CommentList의 높이를 어떻게 고정시킬껀지는 생각해봐야겠다..
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -128,3 +83,41 @@ const DetailPage: React.FC = () => {
   );
 };
 export default DetailPage;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
+`;
+const CommentList = styled.div``;
+
+const CommentHeader = styled.div`
+  height: 44px;
+  border-top: 3px solid #e9e9e9;
+  border-bottom: 3px solid #e9e9e9;
+  box-sizing: border-box;
+  display: flex;
+  padding: 8px 25px;
+  align-items: center;
+`;
+
+const Title = styled.div`
+  font-size: 14px;
+  font-family: 'Pretendard-SemiBold';
+`;
+
+const Count = styled.div`
+  font-size: 14px;
+  font-family: 'Pretendard-SemiBold';
+  color: #6ea8fe;
+`;

@@ -1,7 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import styled from 'styled-components';
 import animalIcon from '#/assets/동물 아이콘.svg';
 import femaleIcon from '#/assets/성별여자.svg';
+
+// 실제 댓글 작성 컴포넌트
+const CommentWriteBox: React.FC = () => {
+  const [commentText, setCommentText] = useState<string>('');
+  const [commentCount, setCommentCount] = useState<number>(0);
+  const isTextValid =
+    commentText.trim().length >= 1 && commentText.length <= 500;
+  useEffect(() => {
+    setCommentCount(commentText.length);
+  }, [commentText]);
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isTextValid) {
+      alert('댓글을 입력해주세요!');
+      return;
+    }
+  };
+  return (
+    <CommentForm onSubmit={handleSubmit}>
+      <HeaderWrapper>
+        <Header>
+          <UserName>감초</UserName>
+          <UserInfo>
+            <IconGroup>
+              <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
+              <IconText>햄스터</IconText>
+            </IconGroup>
+            <img src={femaleIcon} style={{ width: '8px' }} />
+          </UserInfo>
+        </Header>
+        <InputSection>
+          <CommentInput
+            placeholder='댓글을 남겨 이야기를 나눠보세요'
+            onChange={(e) => setCommentText(e.target.value)}
+            value={commentText}
+          />
+          <CountRow>
+            <CurrentCount>{commentCount}&nbsp;</CurrentCount>
+            <MaxCount>/ 500</MaxCount>
+          </CountRow>
+        </InputSection>
+      </HeaderWrapper>
+      <ButtonWrapper>
+        <RegisterButton type='submit' value='제출'>
+          등록하기
+        </RegisterButton>
+      </ButtonWrapper>
+    </CommentForm>
+  );
+};
+
+export default CommentWriteBox;
 
 // 상단 영역 스타일
 const CommentForm = styled.form`
@@ -111,54 +163,3 @@ const RegisterButton = styled.button`
   box-sizing: border-box;
   cursor: pointer; /* 클릭 가능 마우스 포인터 */
 `;
-// 실제 댓글 작성 컴포넌트
-const CommentWriteBox: React.FC = () => {
-  const [commentText, setCommentText] = useState<string>('');
-  const [commentCount, setCommentCount] = useState<number>(0);
-  const isTextValid =
-    commentText.trim().length >= 1 && commentText.length <= 500;
-  useEffect(() => {
-    setCommentCount(commentText.length);
-  }, [commentText]);
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isTextValid) {
-      alert('댓글을 입력해주세요!');
-      return;
-    }
-  };
-  return (
-    <CommentForm onSubmit={handleSubmit}>
-      <HeaderWrapper>
-        <Header>
-          <UserName>감초</UserName>
-          <UserInfo>
-            <IconGroup>
-              <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
-              <IconText>햄스터</IconText>
-            </IconGroup>
-            <img src={femaleIcon} style={{ width: '8px' }} />
-          </UserInfo>
-        </Header>
-        <InputSection>
-          <CommentInput
-            placeholder='댓글을 남겨 이야기를 나눠보세요'
-            onChange={(e) => setCommentText(e.target.value)}
-            value={commentText}
-          />
-          <CountRow>
-            <CurrentCount>{commentCount}&nbsp;</CurrentCount>
-            <MaxCount>/ 500</MaxCount>
-          </CountRow>
-        </InputSection>
-      </HeaderWrapper>
-      <ButtonWrapper>
-        <RegisterButton type='submit' value='제출'>
-          등록하기
-        </RegisterButton>
-      </ButtonWrapper>
-    </CommentForm>
-  );
-};
-
-export default CommentWriteBox;

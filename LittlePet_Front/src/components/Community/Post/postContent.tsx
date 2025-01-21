@@ -7,76 +7,10 @@ import vectorIcon from '#/assets/Vector.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
 
-const ContentBox = styled.div`
-  padding: 0 25px;
-  margin: 20px 0;
-  margin-top: 30px;
-`;
-const PostContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-const Title = styled.div`
-  font-size: 20px;
-  font-family: 'Pretendard-SemiBold';
-  line-height: 22px;
-`;
-const InfoWrapper = styled.div`
-  display: flex;
-  gap: 15px;
-  align-items: center;
-`;
-const InfoSection = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-const TimeText = styled.div`
-  font-size: 12px;
-  font-family: Pretendard-Medium;
-  color: #737373;
-`;
-const Footer = styled.div`
-  height: 22px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-const FooterContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const FooterItem = styled.div`
-  font-size: 12px;
-  font-family: 'Pretendard-Medium';
-  margin-right: 12px;
-  color: ##737373;
-`;
-const VectorIcon = styled.img`
-  width: 1px;
-  height: 10px;
-`;
-const AnimalInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-`;
-const Text = styled.div`
-  font-size: 14px;
-  font-family: Pretendard-SemiBold;
-`;
-const DescriptionText = styled.div`
-  margin-top: 10px;
-  font-size: 12px;
-  font-family: Pretendard-Medium;
-  color: #262627cc;
-  line-height: 18px;
-`;
 interface PostContentProps {
   title: string;
   author: string;
-  badgeType: string;
+  badgeType: 'challenge' | 'popular';
   animal: string;
   gender: string;
   date: string;
@@ -147,3 +81,69 @@ const PostContent: React.FC<PostContentProps> = ({
 };
 
 export default PostContent;
+const ContentBox = styled.div`
+  padding: 0 25px;
+  margin: 20px 0;
+  margin-top: 30px;
+`;
+const PostContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+const Title = styled.div`
+  font-size: 20px;
+  font-family: 'Pretendard-SemiBold';
+  line-height: 22px;
+`;
+const InfoWrapper = styled.div`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+const InfoSection = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+const TimeText = styled.div`
+  font-size: 12px;
+  font-family: Pretendard-Medium;
+  color: #737373;
+`;
+const Footer = styled.div`
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+const FooterContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const FooterItem = styled.div`
+  font-size: 12px;
+  font-family: 'Pretendard-Medium';
+  margin-right: 12px;
+  color: ##737373;
+`;
+const VectorIcon = styled.img`
+  width: 1px;
+  height: 10px;
+`;
+const AnimalInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 3px;
+`;
+const Text = styled.div`
+  font-size: 14px;
+  font-family: Pretendard-SemiBold;
+`;
+const DescriptionText = styled.div`
+  margin-top: 10px;
+  font-size: 12px;
+  font-family: Pretendard-Medium;
+  color: #262627cc;
+  line-height: 18px;
+`;
