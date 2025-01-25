@@ -30,7 +30,10 @@
       "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"],
       "@assets/*": ["src/assets/*"],
-      "@mockData/*": ["src/mockData/*"]
+      "@mockData/*": ["src/mockData/*"],
+      "@context/*": ["src/context/*"],
+      "@pages/*": ["src/pages/*"],
+      "@layout/*": ["src/layout/*"]
     }
   },
   "include": ["src", "postcss.config.js"]

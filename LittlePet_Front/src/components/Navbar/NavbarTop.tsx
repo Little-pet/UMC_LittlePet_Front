@@ -7,10 +7,15 @@ import close from '#/assets/close.svg';
 import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
+import { useLocation } from 'react-router-dom';
 
 const NavbarTop: FC = () => {
   const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
-
+  const location = useLocation();
+  const isMyPage = location.pathname === '/mypage';
+  const isEditProfile = location.pathname === '/edit-profile';
+  const isRegisterPet = location.pathname === '/pet-register';
+  const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
   return (
     <>
       <Nav>
@@ -44,11 +49,17 @@ const NavbarTop: FC = () => {
         </NavContainer>
       </Nav>
       {/* Mobile Sidebar section */}
-      <ResponsiveMenu open={open} /> {/* open prop 전달 */}
+      <ResponsiveMenu open={open} />
+
       {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-      {!open && ( // open 상태가 false일 때만 렌더링
-        <Navbar menuItems={NavbarMainMenu} />
-      )}
+      {!open &&
+        !isMyPage &&
+        !isEditProfile &&
+        !isEditPetProfile &&
+        !isRegisterPet && (
+          // open 상태가 false, 마이페이지가 아닐 때만 렌더링
+          <Navbar menuItems={NavbarMainMenu} />
+        )}
     </>
   );
 };

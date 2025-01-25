@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 body {
   margin: 0;
 }
@@ -10,4 +6,10 @@ body {
   src: url('/src/fonts/static/alternative/Pretendard-Regular.ttf')
     format('truetype');
   font-style: normal;
+}
+
+/* styles.css */
+html,
+body {
+  position: static !important;
 }
