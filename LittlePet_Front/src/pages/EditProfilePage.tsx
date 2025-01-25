@@ -51,11 +51,20 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
-  //전화번호 수정 핸들러
+    // 전화번호 입력 핸들러 (자동 '-' 추가)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
-    setPhone(numericValue);
+    let numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+
+    // 010-1234-5678 형식 적용
+    if (numericValue.length <= 3) {
+      setPhone(numericValue);
+    } else if (numericValue.length <= 7) {
+      setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3)}`);
+    } else {
+      setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3, 7)}-${numericValue.slice(7, 11)}`);
+    }
   };
+
 
   <Input type='text' value={phone} onChange={handlePhoneChange} />;
 
