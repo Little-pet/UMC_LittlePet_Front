@@ -7,19 +7,25 @@ const PetProfiles: React.FC = () => {
   const { pets } = usePets();
   const navigate = useNavigate();
 
+  const handlePetClick = (petId: number) => {
+    navigate(`/edit-pet/${petId}`);
+  };
+
   return (
     <Container>
       {pets.map((pet) => (
-        <ProfileCard key={pet.id}>
+        <ProfileCard key={pet.id} onClick={() => handlePetClick(pet.id)}>
           <ProfileImage src={pet.profileImage} alt={pet.name} />
           <ProfileName>{pet.name}</ProfileName>
         </ProfileCard>
       ))}
       <PetItem>
-        <AddButton src={AddButtonIcon} onClick={() => navigate('/pet-register')} />
+        <AddButton
+          src={AddButtonIcon}
+          onClick={() => navigate('/pet-register')}
+        />
         <ProfileName>등록하기</ProfileName>
       </PetItem>
- 
     </Container>
   );
 };
@@ -59,7 +65,4 @@ const PetItem = styled.div`
   height: 83px;
 `;
 
-const AddButton = styled.img`
-`
-
-
+const AddButton = styled.img``;

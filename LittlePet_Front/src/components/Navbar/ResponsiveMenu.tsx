@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,21 +11,23 @@ interface ResponsiveMenuProps {
 const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    navigate('/login');
-  };
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : 'auto';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [open]);
 
-  const handleOnBoarding = () => {
-    navigate('/onboarding');
-  };
+  const handleLoginClick = () => navigate('/login');
+  const handleOnBoarding = () => navigate('/onboarding');
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <MotionMenu
-          initial={{ opacity: 0, x: 100 }}
+          initial={{ opacity: 0, x: '100%' }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 100 }}
+          exit={{ opacity: 0, x: '100%' }}
         >
           <MenuContainer>
             <MenuButton onClick={handleLoginClick}>
@@ -35,20 +38,22 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
           </MenuContainer>
         </MotionMenu>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.getElementById('portal-root') as HTMLElement
   );
 };
 
 export default ResponsiveMenu;
 
-// Styled Components
 const MotionMenu = styled(motion.div)`
   position: fixed;
+  top: 50px;
   right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff; /* 배경색 추가 */
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
   color: black;
+  z-index: 9999;
 `;
 
 const MenuContainer = styled.div`

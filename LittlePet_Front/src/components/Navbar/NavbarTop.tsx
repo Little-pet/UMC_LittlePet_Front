@@ -14,7 +14,8 @@ const NavbarTop: FC = () => {
   const location = useLocation();
   const isMyPage = location.pathname === '/mypage';
   const isEditProfile = location.pathname === '/edit-profile';
-  const isEditPetProfile = location.pathname === '/pet-register';
+  const isRegisterPet = location.pathname === '/pet-register';
+  const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
   return (
     <>
       <Nav>
@@ -51,10 +52,14 @@ const NavbarTop: FC = () => {
       <ResponsiveMenu open={open} />
 
       {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-      {!open && !isMyPage && !isEditProfile && !isEditPetProfile &&(
-        // open 상태가 false, 마이페이지가 아닐 때만 렌더링
-        <Navbar menuItems={NavbarMainMenu} />
-      )}
+      {!open &&
+        !isMyPage &&
+        !isEditProfile &&
+        !isEditPetProfile &&
+        !isRegisterPet && (
+          // open 상태가 false, 마이페이지가 아닐 때만 렌더링
+          <Navbar menuItems={NavbarMainMenu} />
+        )}
     </>
   );
 };

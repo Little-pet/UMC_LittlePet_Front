@@ -1,32 +1,45 @@
 import React from 'react';
 import styled from 'styled-components';
-import ChallengerBadge from '@assets/ChallengerBadge.svg';
-import PopularBadge from '@assets/PopularBadge.svg';
+import ChallengerBadge from '@assets/챌린저.svg';
+import LikeBadge from '@assets/소셜응원왕.svg';
+import MasterWriterBadge from '@assets/글쓰기마스터.svg';
+import CommentBadge from '@assets/소통천재.svg';
 
 interface UserActivity {
   likes: number;
   posts: number;
   comments: number;
+  scrape: number;
 }
 
-const badgeCriteria: { 
-  [key: string]: { 
-    condition: (user: UserActivity) => boolean; 
-    label: string; 
+const badgeCriteria: {
+  [key: string]: {
+    condition: (user: UserActivity) => boolean;
+    label: string;
     icon: string;
-  } 
+  };
 } = {
-  popularChallenger: {
-    condition: (user) => user.likes >= 100,
-    label: '챌린저',
-    icon: ChallengerBadge,
+  LikeKing: {
+    condition: (user) => user.likes >= 50,
+    label: '소셜응원왕',
+    icon: LikeBadge,
   },
   masterWriter: {
     condition: (user) => user.posts >= 15,
-    label: '인기스타',
-    icon: PopularBadge,
+    label: '글쓰기마스터',
+    icon: MasterWriterBadge,
   },
-  /* 배지 기준에 따라 수정, 추가 해야됨 */
+  CommentGenius: {
+    condition: (user) => user.comments >= 30,
+    label: '소통천재',
+    icon: CommentBadge,
+  },
+  Challenger: {
+    condition: (user) => user.posts >= 15,
+    label: '챌린저',
+    icon: ChallengerBadge,
+  },
+  /* 챌린저 배지 기준 수정 */
 };
 
 interface BadgeProps {
@@ -61,7 +74,7 @@ const BadgeContainer = styled.div`
   align-items: center;
   height: 50px;
   width: 343px;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   padding: 12px 18px;
   gap: 12px;
   box-sizing: border-box;

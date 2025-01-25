@@ -1,88 +1,148 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '#/context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 
 const EditProfilePage: React.FC = () => {
-  const { user, setUser } = useUser();
-  const [name, setName] = useState(user.name);
-  const [phone, setPhone] = useState(user.phone);
-  const [bio, setBio] = useState('토끼와 햄스터를 키우고 있습니다! 잘 부탁드립니다~');
-  const [profileImage, setProfileImage] = useState<string | File>(user.profileImg);
-
+  const { user, updateUser } = useUser();
   const navigate = useNavigate();
 
-  // 파일 선택 핸들러
+  // 사용자 상태 관리
+  const [name, setName] = useState(user.name);
+  const [phone, setPhone] = useState(user.phone);
+  const [bio, setBio] = useState(user.bio);
+  const [profileImage, setProfileImage] = useState<string | File>(
+    user.profileImg
+  );
+  const [isModified, setIsModified] = useState(false);
+
+  // 초기 사용자 정보 설정
+  useEffect(() => {
+    setName(user.name);
+    setPhone(user.phone);
+    setBio(user.bio);
+    setProfileImage(user.profileImg);
+  }, [user]);
+
+  // 변경 사항 감지
+  useEffect(() => {
+    setIsModified(
+      name.trim() !== user.name.trim() ||
+        phone.trim() !== user.phone.trim() ||
+        bio.trim() !== user.bio.trim() ||
+        (profileImage instanceof File
+          ? URL.createObjectURL(profileImage) !== user.profileImg
+          : profileImage !== user.profileImg)
+    );
+  }, [name, phone, bio, profileImage, user]);
+
+  // 입력값 핸들링 함수
+  const handleInputChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setter(e.target.value);
+
+  // 이미지 업로드 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
+      const file = e.target.files[0];
+      setProfileImage(file);
     }
   };
 
+  //전화번호 수정 핸들러
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+    setPhone(numericValue);
+  };
+
+  <Input type='text' value={phone} onChange={handlePhoneChange} />;
+
+  // 저장 버튼 클릭 시 사용자 정보 업데이트
   const handleSave = () => {
-    const newUser = {
+    const updatedUser = {
       name,
       phone,
-      profileImage: profileImage instanceof File ? URL.createObjectURL(profileImage) : profileImage,
+      profileImg:
+        profileImage instanceof File
+          ? URL.createObjectURL(profileImage)
+          : profileImage,
+      bio,
     };
 
-    setUser(newUser);
-    navigate('/mypage'); // 마이페이지로 이동
+    updateUser(updatedUser);
+    navigate('/mypage');
   };
 
   return (
     <Container>
       <Title>프로필 수정</Title>
-      
+
       <ProfileWrapper>
-        <ProfileImgContainer onClick={() => document.getElementById('fileInput')?.click()}>
-          <HiddenInput type="file" accept="image/*" onChange={handleImageUpload} id="fileInput" />
-          <ProfileImg 
-            src={profileImage instanceof File ? URL.createObjectURL(profileImage) : profileImage}
-          
+        <ProfileImgContainer
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          <HiddenInput
+            type='file'
+            accept='image/*'
+            onChange={handleImageUpload}
+            id='fileInput'
+          />
+          <ProfileImg
+            src={
+              profileImage instanceof File
+                ? URL.createObjectURL(profileImage)
+                : profileImage
+            }
           />
         </ProfileImgContainer>
-        <EditIcon src={EditIconImg} alt="편집" />
+        <EditIcon src={EditIconImg} alt='편집' />
       </ProfileWrapper>
 
       <Form>
-        
-        <InputContainer>
+        <NameInputContainer>
           <Label>닉네임</Label>
           <NickNameBox>
-            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+            <NameInput
+              type='text'
+              value={name}
+              onChange={handleInputChange(setName)}
+            />
             <CheckButton>중복확인</CheckButton>
           </NickNameBox>
-          
-        </InputContainer>
+        </NameInputContainer>
 
-   
         <InputContainer>
           <Label>전화번호</Label>
-          <Input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <Input type='text' value={phone} onChange={handlePhoneChange} />
         </InputContainer>
-        
+
         <BioContainer>
           <InputContainer>
             <Label>자기소개</Label>
-            <Input type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
-            
+            <Input
+              type='text'
+              value={bio}
+              onChange={handleInputChange(setBio)}
+            />
           </InputContainer>
           <CharacterCount>
             {bio.length}/<MaxCount>50</MaxCount>
           </CharacterCount>
         </BioContainer>
-        
       </Form>
 
-      <SaveButton onClick={handleSave}>수정하기</SaveButton>
+      <SaveButton onClick={handleSave} disabled={!isModified}>
+        수정하기
+      </SaveButton>
     </Container>
   );
 };
 
 export default EditProfilePage;
 
+// 스타일링
 
 const Container = styled.div`
   display: flex;
@@ -92,7 +152,6 @@ const Container = styled.div`
   padding: 20px;
   font-family: 'Pretendard';
   margin-top: -45px;
-
 `;
 
 const Title = styled.h1`
@@ -130,7 +189,6 @@ const EditIcon = styled.img`
   right: 0;
   border-radius: 50%;
   padding: 5px;
- 
 `;
 
 const HiddenInput = styled.input`
@@ -140,10 +198,9 @@ const HiddenInput = styled.input`
 const Form = styled.div`
   width: 100%;
   max-width: 343px;
-  display:flex;
-  flex-direction:column;
-  gap:40px;
-
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 `;
 
 const Label = styled.label`
@@ -151,88 +208,97 @@ const Label = styled.label`
   font-weight: 600;
   margin: 0;
   display: block;
-  color:#737373;
+  color: #737373;
+`;
+
+const NameInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  height: 65px;
+  width: 343px;
+  border-bottom: 1px solid #e6e6e6;
 `;
 
 const InputContainer = styled.div`
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 9px;
-  height:60px;
-  width:343px;
+  height: 60px;
+  width: 343px;
   border-bottom: 1px solid #e6e6e6;
-  
+`;
+
+const NameInput = styled.input`
+  display: flex;
+  border: none;
+  font-size: 14px;
+  font-family: 'Pretendard';
+  height: 34px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
 `;
 
 const Input = styled.input`
-  display:flex;
+  display: flex;
   border: none;
   font-size: 14px;
-  font-family:'Pretendard';
-  height:29px;
-  width:100%;
-  justify-content:space-between;
-  flex:1;
+  font-family: 'Pretendard';
+  height: 29px;
+  width: 100%;
   box-sizing: border-box;
-  padding:0;
-  
+  padding: 0;
 `;
 
 const NickNameBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%; 
-  
+  width: 100%;
 `;
-const CheckButton = styled.button`
 
+const CheckButton = styled.button`
   padding: 5px 9px;
   background-color: #ffffff;
-  color:#6EA8FE;
+  color: #6ea8fe;
   font-size: 12px;
-  border: 1px solid #6EA8FE;
+  border: 1px solid #6ea8fe;
   border-radius: 5px;
   cursor: pointer;
-  height:27px;
-  width:67px;
-  align-items:center;
-  font-family:'Pretendard';
-
- 
+  height: 27px;
+  width: 75px;
+  font-family: 'Pretendard';
 `;
-
 
 const CharacterCount = styled.div`
   text-align: right;
   font-size: 12px;
-  color: #262627
-  ;
-  height:22px;
-  margin-top:10px;
+  color: #262627;
+  height: 22px;
+  margin-top: 10px;
 `;
 
 const MaxCount = styled.p`
-  color:#737373;
-  display:inline;`
+  color: #737373;
+  display: inline;
+`;
 
-const BioContainer = styled.div`
- `
+const BioContainer = styled.div``;
 
 const SaveButton = styled.button`
   width: 100%;
   max-width: 343px;
-  height:48px;
+  height: 48px;
   padding: 14px;
   font-size: 16px;
   font-weight: 600;
-  font-family:'Pretendard';
-  background-color:#6EA8FE;
+  font-family: 'Pretendard';
+  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#6EA8FE')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   text-align: center;
-  position: absolute; /* 화면의 하단 기준 위치 */
-  bottom: 60px; /* 화면 하단에서 60px 위로 이동 *
+  margin-top: 89px;
 `;

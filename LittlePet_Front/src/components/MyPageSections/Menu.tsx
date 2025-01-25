@@ -21,18 +21,20 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text }) => {
 };
 
 const SettingsPage: React.FC = () => {
-
   return (
     <Container>
       <Section>
         <SectionTitle>도움말</SectionTitle>
-        <MenuItem icon={<img src={Notice} alt="공지사항" />} text="공지사항"  />
+        <MenuItem icon={<img src={Notice} alt='공지사항' />} text='공지사항' />
       </Section>
 
       <Section>
         <SectionTitle>계정 설정</SectionTitle>
-        <MenuItem icon={<img src={Logout} alt="로그아웃" />} text="로그아웃"/>
-        <MenuItem icon={<img src={CancelAccount} alt="회원탈퇴" />} text="회원탈퇴"/>
+        <MenuItem icon={<img src={Logout} alt='로그아웃' />} text='로그아웃' />
+        <MenuItem
+          icon={<img src={CancelAccount} alt='회원탈퇴' />}
+          text='회원탈퇴'
+        />
       </Section>
     </Container>
   );
@@ -46,35 +48,32 @@ const Container = styled.div`
   max-width: 400px;
   margin: 0 auto;
   font-family: 'Pretendard';
-
 `;
 
 const Section = styled.div`
   margin-bottom: 32px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 `;
 
 const SectionTitle = styled.div`
   font-size: 14px;
-  color:#737373;
+  color: #737373;
   font-weight: 600;
-  height:32px;
-  border-bottom:1px solid #E6E6E6;
-  padding-top:5px;
+  height: 32px;
+  border-bottom: 1px solid #e6e6e6;
+  padding-top: 5px;
 `;
-
 
 const ItemContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  height:22px;
+  height: 22px;
 `;
 
 const ItemText = styled.div`
   margin-left: 10px;
   font-size: 16px;
-
 `;

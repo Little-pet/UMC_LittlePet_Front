@@ -9,7 +9,8 @@ import HomePage from '#/pages/HomePage';
 import MyPage from '#/pages/MyPage';
 import SplashScreen from '#/pages/SplashScreen';
 import EditProfilePage from './pages/EditProfilePage';
-import PetRegistration from './components/MyPageSections/PetRegistration';
+import PetRegistration from '#/pages/PetRegistrationPage';
+import EditPetPage from '#/pages/EditPetPage';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: 'mypage', element: <MyPage /> },
       { path: 'edit-profile', element: <EditProfilePage /> },
       { path: 'pet-register', element: <PetRegistration /> },
+      { path: 'edit-pet/:petId', element: <EditPetPage /> },
     ],
   },
 ]);
@@ -51,8 +53,6 @@ const App: React.FC = () => {
       <PetProvider>
         <RouterProvider router={router} />
       </PetProvider>
-        
-      
     </UserProvider>
   );
 };

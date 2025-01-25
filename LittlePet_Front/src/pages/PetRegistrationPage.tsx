@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { useUser } from '#/context/UserContext';
+import { usePets } from '#/context/PetContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
+import DatePicker from '#/components/DatePicker';
+import CategoryDropdown from '@components/CategoryDropdown';
+import TagButton from '@components/Community/AddPage/tagButton';
 
-const EditProfilePage: React.FC = () => {
-  const { user, setUser } = useUser();
-  const [name, setName] = useState(user.name);
-  const [phone, setPhone] = useState(user.phone);
-  const [bio, setBio] = useState('토끼와 햄스터를 키우고 있습니다! 잘 부탁드립니다~');
-  const [profileImage, setProfileImage] = useState<string | File>(user.profileImg);
-
+const PetRegistrationPage: React.FC = () => {
+  const { pets, addPet } = usePets();
   const navigate = useNavigate();
+  const [tagSelected, setTagSelected] = useState<string>('');
+  // 반려동물 정보 상태 관리
+  const [profileImage, setProfileImage] = useState<string | File>('');
+  const [name, setName] = useState<string>('');
+  const [categoryText, setCategoryText] = useState<string>('');
 
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,55 +23,111 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
-    const newUser = {
-      name,
-      phone,
-      profileImage: profileImage instanceof File ? URL.createObjectURL(profileImage) : profileImage,
-    };
+  const tags = [
+    {
+      gender: 'female',
+      title: '암컷',
+      icon: '♀',
+    },
+    {
+      gender: 'male',
+      title: '수컷',
+      icon: '♂',
+    },
+    {
+      gender: 'else',
+      title: '기타',
+      icon: null,
+    },
+  ];
+  // 태그 클릭
+  const handleTagClick = (type: string) => {
+    setTagSelected(type);
+  };
 
-    setUser(newUser);
-    navigate('/mypage'); // 마이페이지로 이동
+  const handleSave = () => {
+    const newPet = {
+      id: pets.length + 1, // id 자동 생성
+      name: name, // 상태에서 가져온 이름
+      profileImage:
+        profileImage instanceof File
+          ? URL.createObjectURL(profileImage)
+          : profileImage,
+      category: categoryText,
+      gender: tagSelected,
+    };
+    addPet(newPet); // 컨텍스트에 새로운 반려동물 추가
+    navigate('/mypage');
   };
 
   return (
     <Container>
       <Title>반려동물 프로필 등록</Title>
-      
+
       <ProfileWrapper>
-        <ProfileImgContainer onClick={() => document.getElementById('fileInput')?.click()}>
-          <HiddenInput type="file" accept="image/*" onChange={handleImageUpload} id="fileInput" />
-          <ProfileImg 
-            src={profileImage instanceof File ? URL.createObjectURL(profileImage) : profileImage}
-          
+        <ProfileImgContainer
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          <HiddenInput
+            type='file'
+            accept='image/*'
+            onChange={handleImageUpload}
+            id='fileInput'
+          />
+          <ProfileImg
+            src={
+              profileImage instanceof File
+                ? URL.createObjectURL(profileImage)
+                : profileImage
+            }
           />
         </ProfileImgContainer>
-        <EditIcon src={EditIconImg} alt="편집" />
+        <EditIcon src={EditIconImg} alt='편집' />
       </ProfileWrapper>
 
       <Form>
-        
-        <InputContainer>
+        <NameInputContainer>
           <Label>이름</Label>
-          <Input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        </InputContainer>
+          <Input type='text' onChange={(e) => setName(e.target.value)} />
+        </NameInputContainer>
 
-   
-        <InputContainer>
+        <BDInputContainer>
           <Label>생년월일</Label>
-          <Input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </InputContainer>
-        
-     
+          <DatePicker />
+        </BDInputContainer>
+
+        <SelectContainer>
+          <CategoryDropdown
+            selectedCategory={categoryText}
+            onCategorySelect={(category) => setCategoryText(category)}
+          />
+          <TagButtonContainer>
+            {tags.map((tag, index) => (
+              <TagButton
+                key={index}
+                label={tag.title}
+                icon={tag.icon}
+                type={tag.gender}
+                onClick={() => handleTagClick(tag.gender)}
+                isSelected={tagSelected === tag.gender}
+              />
+            ))}
+          </TagButtonContainer>
+        </SelectContainer>
       </Form>
 
-      <SaveButton onClick={handleSave}>등록하기</SaveButton>
+      <SaveButton
+        disabled={!name.trim() || !categoryText.trim() || !tagSelected}
+        type='submit'
+        onClick={handleSave}
+      >
+        등록하기
+      </SaveButton>
     </Container>
   );
 };
 
-export default EditProfilePage;
-
+export default PetRegistrationPage;
 
 const Container = styled.div`
   display: flex;
@@ -89,7 +148,6 @@ const ProfileWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
 `;
 
 const ProfileImgContainer = styled.div`
@@ -115,7 +173,6 @@ const EditIcon = styled.img`
   right: 0;
   border-radius: 50%;
   padding: 5px;
- 
 `;
 
 const HiddenInput = styled.input`
@@ -125,10 +182,9 @@ const HiddenInput = styled.input`
 const Form = styled.div`
   width: 100%;
   max-width: 343px;
-  display:flex;
-  flex-direction:column;
-  gap:40px;
-
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 `;
 
 const Label = styled.label`
@@ -136,47 +192,68 @@ const Label = styled.label`
   font-weight: 600;
   margin: 0;
   display: block;
-  color:#737373;
+  color: #737373;
 `;
 
-const InputContainer = styled.div`
+const NameInputContainer = styled.div`
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 9px;
-  height:60px;
-  width:343px;
+  height: 60px;
+  width: 343px;
   border-bottom: 1px solid #e6e6e6;
-  
+`;
+
+const BDInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  height: 79px;
+  width: 343px;
+  border-bottom: 1px solid #e6e6e6;
 `;
 
 const Input = styled.input`
-  display:flex;
+  display: flex;
   border: none;
   font-size: 14px;
-  font-family:'Pretendard';
-  height:29px;
-  width:100%;
-  justify-content:space-between;
-  flex:1;
+  font-family: 'Pretendard';
+  height: 29px;
+  width: 100%;
+  justify-content: space-between;
+  flex: 1;
   box-sizing: border-box;
-  padding:0;
-  
+  padding: 0;
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  width: 343px;
+  height: 35px;
+  justify-content: space-between;
+`;
+
+const TagButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 178px;
+  height: 35px;
 `;
 
 const SaveButton = styled.button`
   width: 100%;
   max-width: 343px;
-  height:48px;
+  height: 48px;
   padding: 14px;
   font-size: 16px;
   font-weight: 600;
-  font-family:'Pretendard';
-  background-color:#6EA8FE;
+  font-family: 'Pretendard';
+  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#6EA8FE')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   text-align: center;
-  position: absolute; /* 화면의 하단 기준 위치 */
-  bottom: 60px; /* 화면 하단에서 60px 위로 이동 *
+  const SaveButton = styled.button;
+  margin-top: 149px;
 `;
