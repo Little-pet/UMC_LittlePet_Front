@@ -66,6 +66,7 @@ const StyledDatePicker = styled(DatePicker)`
   padding: 10px 15px; /* 좌측 여백 유지 */
   border: none;
   outline: none;
+  color: #737373;
 
   /* 기본 캘린더 아이콘 숨기기 */
   &::-webkit-calendar-picker-indicator {

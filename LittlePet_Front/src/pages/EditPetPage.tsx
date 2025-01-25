@@ -16,7 +16,7 @@ interface Pet {
   birthDate: string;
 }
 
-const PetRegistrationPage: React.FC = () => {
+const EditPetPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const { pets, deletePet, updatePet } = usePets();
   const navigate = useNavigate();
@@ -153,17 +153,15 @@ const PetRegistrationPage: React.FC = () => {
         </SelectContainer>
       </Form>
 
-      <ButtonContainer>
-        <SaveButton onClick={handleSave} disabled={!isModified}>
-          수정하기
-        </SaveButton>
-        <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
-      </ButtonContainer>
+      <SaveButton onClick={handleSave} disabled={!isModified}>
+        수정하기
+      </SaveButton>
+      <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
     </Container>
   );
 };
 
-export default PetRegistrationPage;
+export default EditPetPage;
 
 const Container = styled.div`
   display: flex;
