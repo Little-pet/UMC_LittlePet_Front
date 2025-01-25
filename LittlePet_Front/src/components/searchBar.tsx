@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import searchIcon from '../assets/Vector.svg';
+import searchIcon from '../assets/돋보기.svg';
 
 const SearchContainer = styled.div`
   border: 2px solid #6ea8fe;
