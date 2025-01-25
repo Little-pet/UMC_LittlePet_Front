@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
+import Banner from '@assets/이벤트-광고 배너.svg';
 
 const Carousel: React.FC = () => {
-  return <CarouselWrapper>{/* Carousel 내용 */}</CarouselWrapper>;
+  return <CarouselWrapper src={Banner} alt='광고배너' />;
 };
 
 export default Carousel;
 
-const CarouselWrapper = styled.div`
+const CarouselWrapper = styled.img`
   margin: 0 auto;
   padding: 0;
-  background-color: #d9d9d9;
-  height: 136.5px;
+  height: auto;
   width: 100%;
 `;

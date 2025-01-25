@@ -7,16 +7,15 @@ import QuizSection from '@components/HomePageSections/QuizSection';
 import PopularSection from '@components/HomePageSections/PopularSection';
 
 const HomePage: React.FC = () => {
- 
   return (
     <Container>
       <Carousel />
       <ContentContainer>
         <SearchBar text='찾으시는 커뮤니티 글이 있으신가요?' />
         <ChallengeSection />
-        <QuizSection/>
-        <PopularSection />
+        <QuizSection />
       </ContentContainer>
+      <PopularSection />
     </Container>
   );
 };

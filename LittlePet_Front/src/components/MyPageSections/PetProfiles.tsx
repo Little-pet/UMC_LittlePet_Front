@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePets } from '@context/PetContext';
+import { usePets } from '#/context/PetContext';
 import styled from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
 const PetProfiles: React.FC = () => {
