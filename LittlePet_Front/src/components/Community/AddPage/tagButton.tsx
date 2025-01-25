@@ -3,10 +3,10 @@ import React from 'react';
 
 interface TagButtonProps {
   label: string;
-  icon: string | null;
+  icon?: string | null;
   onClick: () => void;
   isSelected: boolean;
-  type: string;
+  type?: string;
 }
 // 카테고리에 글 등록하기 페이지에 있는 카테고리 버튼 컴포넌트(Q&A, 일상, 소개)
 const TagButton: React.FC<TagButtonProps> = ({
@@ -52,5 +52,4 @@ const SpanIcon = styled.span<{ gender: string }>`
       : gender === 'male'
         ? '#6EA8FE'
         : '#737373'};
-    
 `;

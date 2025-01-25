@@ -84,4 +84,5 @@ const HomeButton = styled.button`
   border-bottom: 1px solid;
   font-family: 'Pretendard';
   font-size: 16px;
+  cursor: pointer;
 `;

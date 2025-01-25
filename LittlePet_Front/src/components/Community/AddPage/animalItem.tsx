@@ -22,9 +22,7 @@ const AnimalWrapper = styled.div`
 const AnimalText = styled.div`
   font-size: 14px;
   color: #262627;
-  font-family: 'Pretendard';
-  font-family: 600;
-  text-align: center;
+  font-family: 'Pretendard-SemiBold';
 `;
 
 const AnimalIcon = styled.img`
