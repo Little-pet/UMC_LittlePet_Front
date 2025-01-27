@@ -20,7 +20,11 @@ import SplashScreen from '#/pages/SplashScreen';
 import EditProfilePage from '#/pages/EditProfilePage';
 import PetRegistration from '#/pages/PetRegistrationPage';
 import EditPetPage from '#/pages/EditPetPage';
-
+import HealthRootLayout from '#/layout/HealthRootLayout';
+import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
+import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
+import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
+import CalendarPage from '#/pages/Health/Record/CalenderPage';
 // 라우터 설정
 const router = createBrowserRouter([
   {
@@ -44,11 +48,19 @@ const router = createBrowserRouter([
           { path: 'daily', element: <DailyPage /> },
           { path: ':postId', element: <DetailPage /> },
           { path: 'challenge', element: <ChallengePage /> },
+          { path: 'add', element: <AddPage /> },
         ],
       },
       {
-        path: '/community/add',
-        element: <AddPage />,
+        path: 'health',
+        element: <HealthRootLayout />,
+        children: [
+          { index: true, element: <HealthProfilePage /> }, // 기본 경로 설정
+          { path: 'health', element: <HealthProfilePage /> },
+          { path: 'record/detail/:petId', element: <PastRecordPage /> },
+          { path: 'record/add/:petId', element: <AddHealthRecordPage /> },
+          { path: 'record/calendar/:petId', element: <CalendarPage /> },
+        ],
       },
     ],
   },

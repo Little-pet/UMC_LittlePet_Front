@@ -16,7 +16,7 @@ const PetRegistrationPage: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
   const [birthDate, sestBirthDate] = useState<string>('');
-  
+
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,6 +56,7 @@ const PetRegistrationPage: React.FC = () => {
           : profileImage,
       category: categoryText,
       gender: tagSelected,
+      birthDate: birthDate,
     };
     addPet(newPet); // 컨텍스트에 새로운 반려동물 추가
     navigate('/mypage');
@@ -95,8 +96,9 @@ const PetRegistrationPage: React.FC = () => {
         <BDInputContainer>
           <Label>생년월일</Label>
           <DatePicker
-           selectedDate={birthDate} 
-           onDateChange={(date) =>sestBirthDate(date)}/>
+            selectedDate={birthDate}
+            onDateChange={(date) => sestBirthDate(date)}
+          />
         </BDInputContainer>
 
         <SelectContainer>

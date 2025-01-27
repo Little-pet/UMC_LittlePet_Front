@@ -48,7 +48,7 @@ const NavbarContainer = styled.div`
 `;
 
 const MainContent = styled.main`
-  flex: 1; 
+  flex: 1;
   display: flex;
   width: 100%;
   padding: 0;

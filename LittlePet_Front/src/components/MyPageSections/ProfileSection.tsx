@@ -48,6 +48,7 @@ const ProfileContainer = styled.div`
   display: flex;
   gap: 15px;
   position: relative;
+  overflow: hidden;
 `;
 const ProfileImg = styled.img`
   height: 50px;
@@ -74,8 +75,10 @@ const AnimalIcon = styled.img`
 `;
 const PetList = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  overflow-x: auto; /* 내용이 많을 경우 스크롤 */
+  max-width: 100%;
 `;
 
 const PetItem = styled.div`
@@ -85,6 +88,7 @@ const PetItem = styled.div`
   font-weight: 600;
   font-size: 14px;
   align-items: center;
+  white-space: nowrap;
 `;
 
 const GenderIcon = styled.span<{ gender: 'female' | 'male' }>`
