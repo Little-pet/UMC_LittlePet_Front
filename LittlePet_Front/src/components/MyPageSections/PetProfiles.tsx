@@ -36,12 +36,24 @@ const Container = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
+  overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
+  max-width: 100%; /* 부모 요소에 맞추기 */
+  white-space: nowrap;
+
+  /* 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ProfileCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  white-space: nowrap;
 `;
 
 const ProfileImage = styled.img`

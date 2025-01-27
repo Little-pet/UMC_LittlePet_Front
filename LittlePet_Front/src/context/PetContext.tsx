@@ -23,8 +23,11 @@ export const PetProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [pets, setPets] = useState<Pet[]>([]);
 
-  //새 반려동물 추가가
+  //새 반려동물 추가
   const addPet = (pet: Pet) => {
+    if (!pet.birthDate) {
+      console.warn('birthDate가 없는 데이터가 추가되고 있습니다!', pet);
+    }
     setPets([...pets, pet]);
   };
 

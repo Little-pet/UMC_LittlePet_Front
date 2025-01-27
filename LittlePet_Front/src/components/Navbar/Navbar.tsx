@@ -54,6 +54,7 @@ const NavContainer = styled.div`
   height: 45px;
   padding-left: 25px;
   padding-right: 25px;
+  background-color: #ffffff;
 `;
 
 const ItemContainer = styled.div`
