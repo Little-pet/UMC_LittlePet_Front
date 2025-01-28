@@ -22,8 +22,8 @@ const HamsterDetailPage: React.FC = () => {
       </TitleContainer>
 
       <Content>
-        <Section ref={featureRef}>
-          <SectionTitle>특징</SectionTitle>
+        <Section>
+          <SectionTitle ref={featureRef}>특징</SectionTitle>
           <hr />
           <p>
             햄스터는 외모가 귀여울 뿐만 아니라, 성격도 매우 호기심 많고 활발한
@@ -47,8 +47,8 @@ const HamsterDetailPage: React.FC = () => {
           </p>
         </Section>
 
-        <Section ref={foodRef}>
-          <SectionTitle>먹이</SectionTitle>
+        <Section>
+          <SectionTitle ref={foodRef}>먹이</SectionTitle>
           <hr />
           <p>
             가장 기본이 되는 먹이는 햄스터 전용 사료입니다. 일반적으로
@@ -68,8 +68,8 @@ const HamsterDetailPage: React.FC = () => {
           </p>
         </Section>
 
-        <Section ref={environmentRef}>
-          <SectionTitle>환경</SectionTitle>
+        <Section>
+          <SectionTitle ref={environmentRef}>환경</SectionTitle>
           <hr />
           <p>
             햄스터는 작은 공간에서도 잘 지내지만, 활동량이 많아 스트레스를 받지
@@ -84,8 +84,8 @@ const HamsterDetailPage: React.FC = () => {
           </p>
         </Section>
 
-        <Section ref={playRef}>
-          <SectionTitle>놀이방법</SectionTitle>
+        <Section>
+          <SectionTitle ref={playRef}>놀이방법</SectionTitle>
           <hr />
           <p>
             햄스터는 매우 활발하고 호기심 많은 동물이기 때문에 다양한 놀이와
@@ -182,4 +182,5 @@ const SectionTitle = styled.h2`
   font-weight: 600;
   font-size: 16px;
   margin: 0;
+  scroll-margin-top: 150px;
 `;
