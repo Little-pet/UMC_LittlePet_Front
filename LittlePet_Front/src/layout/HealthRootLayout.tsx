@@ -1,4 +1,4 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -21,7 +21,9 @@ const HealthRootLayout: React.FC = () => {
       path: '/health/hospital',
     },
   ];
+
   const [selected, setSelected] = useState<string>('record');
+
   const handleClick = (type: string) => {
     setSelected(type);
   };
@@ -54,6 +56,19 @@ export default HealthRootLayout;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+
+  position: relative;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
   align-items: center; /* 중앙 정렬 */
   overflow: hidden;
   height: 100%;

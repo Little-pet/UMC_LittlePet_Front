@@ -4,10 +4,11 @@ import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
+import banner from '#/assets/일상 배너.svg';
+import styled from 'styled-components';
 import {
   Container,
   ContentWrapper,
-  HeaderWrapper,
   Header,
   HeaderFilter,
   ItemList,
@@ -19,6 +20,7 @@ const DailyPage: React.FC = () => {
   };
   return (
     <Container>
+      <Banner src={banner} />
       <SearchBar placeholder='일상에서 검색' />
       <ContentWrapper>
         <div
@@ -71,3 +73,9 @@ const DailyPage: React.FC = () => {
   );
 };
 export default DailyPage;
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;

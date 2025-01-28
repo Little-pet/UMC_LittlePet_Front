@@ -288,13 +288,13 @@ const DropdownMenu = styled.ul`
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 5px;
-  padding: 15px 25px;
+  padding: 18px 25px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
 `;
 const StyledQuill = styled(ReactQuill)`
   .ql-container {
