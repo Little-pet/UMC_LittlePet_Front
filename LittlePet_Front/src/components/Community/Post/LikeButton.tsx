@@ -38,7 +38,6 @@ const LikeButtonWrapper = styled.div`
   padding: 0 14px;
   box-sizing: border-box;
   justify-content: space-between;
-  margin-top: 13px;
   box-shadow: 0px 2px 5px #00000040;
   cursor: pointer;
 `;

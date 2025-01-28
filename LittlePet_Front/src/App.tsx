@@ -13,6 +13,16 @@ import LoginPage from '#/pages/LoginPage'; // LoginPage 컴포넌트
 import RootLayout from '#/layout/RootLayout';
 import OnBoardingPage from '#/pages/OnBoardingPage';
 import HomePage from './pages/HomePage';
+import HealthNotePage from './pages/HealthNotePage';
+import HospitalPage from './pages/Hospital/HospitalPage';
+import HealthRootLayout from './layout/HealthRootLayout';
+import MapPage from './pages/Hospital/Map';
+import CarePage from './pages/CarePage';
+import HospitalDetailPage from './pages/Hospital/HospitalDetailPage';
+import InfoPage from './pages/Hospital/InfoPage';
+import ReviewPage from './pages/Hospital/ReviewPage';
+import LocationPage from './pages/Hospital/LocationPage';
+import AddReviewPage from './pages/Hospital/AddReviewPage';
 
 const router = createBrowserRouter([
   {
@@ -35,8 +45,39 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: 'health',
+        element: <HealthRootLayout />,
+        children: [
+          { index: true, element: <HealthNotePage /> }, // 기본 경로 설정
+          { path: 'note', element: <HealthNotePage /> },
+          { path: 'hospital', element: <HospitalPage /> },
+          {
+            path: 'hospital/:hospitalId',
+            element: <HospitalDetailPage />,
+            children: [
+              { index: true, element: <InfoPage /> },
+              { path: 'info', element: <InfoPage /> },
+              { path: 'review', element: <ReviewPage /> },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/health/hospital/:hospitalId/location',
+        element: <LocationPage />,
+      },
+      { path: '/health/hospital/:hospitalId/add', element: <AddReviewPage /> },
+      {
+        path: '/health/hospital/map',
+        element: <MapPage />,
+      },
+      {
         path: '/community/add',
         element: <AddPage />,
+      },
+      {
+        path: '/care',
+        element: <CarePage />,
       },
     ],
   },

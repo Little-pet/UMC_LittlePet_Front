@@ -61,6 +61,17 @@ const Container = styled.div`
   flex-direction: column;
   height: 669px;
   position: relative;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
 `;
 
 const Header = styled.div`

@@ -1,4 +1,3 @@
-import React from 'react';
 import BadgeComponent from '#/components/Community/Badge'; // 실제 컴포넌트 경로로 수정
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
@@ -6,6 +5,8 @@ import animalIcon from '#/assets/동물 아이콘.svg';
 import vectorIcon from '#/assets/Vector.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
+import React, { useState, useEffect } from 'react';
+import DeleteModal from './DeleteModal';
 
 interface PostContentProps {
   title: string;
@@ -31,6 +32,7 @@ const PostContent: React.FC<PostContentProps> = ({
   description,
   likeCount,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <ContentBox>
       <PostContentWrapper>
@@ -75,7 +77,21 @@ const PostContent: React.FC<PostContentProps> = ({
 
         <DescriptionText>{description}</DescriptionText>
       </PostContentWrapper>
-      <LikeButton count={likeCount} />
+      <Container>
+        <LikeButton count={likeCount} />
+        <ActionGroup>
+          <ActionText isClickable>수정</ActionText>
+          <Divider>|</Divider>
+          <ActionText isClickable onClick={() => setIsModalOpen(!isModalOpen)}>
+            삭제
+          </ActionText>
+        </ActionGroup>
+      </Container>
+      {isModalOpen && (
+        <Overlay>
+          <DeleteModal onClose={() => setIsModalOpen(false)} />
+        </Overlay>
+      )}
     </ContentBox>
   );
 };
@@ -150,4 +166,38 @@ const DescriptionText = styled.div`
   font-family: Pretendard-Medium;
   color: #262627cc;
   line-height: 18px;
+`;
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 13px;
+`;
+
+const ActionGroup = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const ActionText = styled.div`
+  font-size: 12px;
+  color: #737373;
+  font-family: 'Pretendard-Medium';
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
+`;
+
+const Divider = styled(ActionText)`
+  cursor: default;
+`;
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 `;

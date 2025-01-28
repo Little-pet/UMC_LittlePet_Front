@@ -45,6 +45,7 @@ export const ItemList = styled.div`
   display: flex;
   height: 452px;
   flex-direction: column;
+
   gap: 28px;
   overflow-y: auto; /* 세로 스크롤 */
   ::-webkit-scrollbar {

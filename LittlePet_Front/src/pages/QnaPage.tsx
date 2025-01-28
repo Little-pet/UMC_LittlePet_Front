@@ -3,6 +3,8 @@ import Item from '#/components/Community/Item';
 import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
+import banner from '#/assets/큐앤에이 배너.svg';
+import styled from 'styled-components';
 import React, { useState } from 'react';
 import {
   Container,
@@ -18,6 +20,7 @@ const QnaPage: React.FC = () => {
   };
   return (
     <Container>
+      <Banner src={banner} />
       <SearchBar placeholder='Q&A에서 검색' />
       <ContentWrapper>
         <div
@@ -88,3 +91,9 @@ const QnaPage: React.FC = () => {
   );
 };
 export default QnaPage;
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;

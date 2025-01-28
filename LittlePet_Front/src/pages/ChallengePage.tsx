@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import banner from '#/assets/챌린지 배너.svg';
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const ChallengePage: React.FC = () => {
   };
   return (
     <Container>
+      <Banner src={banner} />
       <ContentWrapper style={{ marginTop: '30px' }}>
         <HeaderWrapper>
           <Title>금주의 챌린저 👑</Title>
@@ -128,17 +130,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 36px;
-  overflow-y: auto; /* 세로 스크롤 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none;
 `;
 
 const ContentWrapper = styled.div`
@@ -246,5 +237,11 @@ const ItemList = styled.div`
   flex-wrap: wrap;
   @media only screen and (min-width: 700px) {
     padding: 0 96px;
+  }
+`;
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
   }
 `;
