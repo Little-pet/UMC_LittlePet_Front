@@ -4,21 +4,21 @@ import SelectableButton from '#/components/Health/RecordHealthButton/SelectableB
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
 import styled from 'styled-components';
-import feces1 from '@assets/적당히 무르기.svg';
-import feces2 from '@assets/딱딱한 똥.svg';
-import feces3 from '@assets/설사.svg';
-import feces4 from '@assets/혈변.svg';
-import feces5 from '@assets/대변 안 봄.svg';
-import symptom1 from '@assets/식욕 부진.svg';
-import symptom2 from '@assets/기력 저하.svg';
-import symptom3 from '@assets/구토.svg';
-import symptom4 from '@assets/기침.svg';
-import symptom5 from '@assets/이상 행동.svg';
-import symptom6 from '@assets/털 빠짐.svg';
-import symptom7 from '@assets/체온 감소.svg';
-import symptom8 from '@assets/체온 상승.svg';
-import symptom9 from '@assets/분비물.svg';
-import symptom10 from '@assets/기타.svg';
+import feces1 from '@assets/fecesStatus/적당한 무르기.svg';
+import feces2 from '@assets/fecesStatus/딱딱한 똥.svg';
+import feces3 from '@assets/fecesStatus/설사.svg';
+import feces4 from '@assets/fecesStatus/혈변.svg';
+import feces5 from '@assets/fecesStatus/대변 안 봄.svg';
+import symptom1 from '@assets/symptoms/식욕 감소.svg';
+import symptom2 from '@assets/symptoms/기력 저하.svg';
+import symptom3 from '@assets/symptoms/구토.svg';
+import symptom4 from '@assets/symptoms/기침.svg';
+import symptom5 from '@assets/symptoms/이상 행동.svg';
+import symptom6 from '@assets/symptoms/털 빠짐.svg';
+import symptom7 from '@assets/symptoms/체온 감소.svg';
+import symptom8 from '@assets/symptoms/체온 상승.svg';
+import symptom9 from '@assets/symptoms/분비물.svg';
+import symptom10 from '@assets/symptoms/기타.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();

@@ -2,11 +2,21 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
 import AnimalItem from '@components/Community/AddPage/animalItem';
+import hamsterIcon from '@assets/animaldropdown/hamster.svg';
+import rabbitIcon from '@assets/animaldropdown/rabbit.svg';
+import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';
 
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
 }
+
+//  동물별 아이콘을 매칭하는 객체 생성
+const animalIcons: { [key: string]: string } = {
+  햄스터: hamsterIcon,
+  토끼: rabbitIcon,
+  고슴도치: hedgehogIcon,
+};
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   selectedCategory,
@@ -25,7 +35,10 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     <DropdownWrapper>
       <DropdownContainer onClick={() => setIsOpen(!isOpen)}>
         {selectedCategory ? (
-          <AnimalItem name={selectedCategory} />
+          <AnimalItem
+            name={selectedCategory}
+            icon={animalIcons[selectedCategory]}
+          />
         ) : (
           <DropdownText>종 카테고리</DropdownText>
         )}
@@ -38,6 +51,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
             <AnimalItem
               key={index}
               name={animal}
+              icon={animalIcons[animal]}
               onClick={() => handleCategoryClick(animal)}
             />
           ))}
