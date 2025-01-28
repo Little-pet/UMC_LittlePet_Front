@@ -36,7 +36,7 @@ export const NavbarMainMenu: NavbarItem[] = [
   {
     id: 3,
     title: '관리방법',
-    link: '/care',
+    link: '/caremethod',
   },
   {
     id: 4,

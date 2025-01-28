@@ -22,13 +22,9 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({
     <ButtonGroup>
       {options.map((option) => (
         <Item key={option.id} onClick={() => onSelect(name, option.id)}>
-          {option.icon && (
-            <Icon
-              src={option.icon}
-              alt={option.label}
-              isSelected={selectedOption === option.id}
-            />
-          )}
+          <IconWrapper isSelected={selectedOption === option.id}>
+            <Icon src={option.icon} alt={option.label} />
+          </IconWrapper>
 
           <Label isSelected={selectedOption === option.id}>
             {option.label}
@@ -56,12 +52,20 @@ export const Item = styled.div`
   cursor: pointer;
 `;
 
-const Icon = styled.img<{ isSelected: boolean }>`
+const IconWrapper = styled.div<{ isSelected: boolean }>`
   width: 50px;
   height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: ${({ isSelected }) =>
     isSelected ? '2px solid #6EA8FE' : '2px solid #e6e6e6'};
   border-radius: 10px;
+`;
+
+const Icon = styled.img`
+  width: 26px;
+  height: 26px;
 `;
 
 const Label = styled.span<{ isSelected: boolean }>`

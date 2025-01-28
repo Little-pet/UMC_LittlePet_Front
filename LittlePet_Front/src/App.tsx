@@ -25,6 +25,12 @@ import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
 import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
 import CalendarPage from '#/pages/Health/Record/CalenderPage';
+import CareMethodPage from '#/pages/CareMethod/CareMethod';
+import HamsterDetailPage from '#/pages/CareMethod/HamsterDetailPage';
+import RabbitDetailPage from '#/pages/CareMethod/RabbitDetailPage';
+import HedgehogDetailPage from '#/pages/CareMethod/HedgehogDetailPage';
+import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
+
 // 라우터 설정
 const router = createBrowserRouter([
   {
@@ -39,6 +45,8 @@ const router = createBrowserRouter([
       { path: 'edit-profile', element: <EditProfilePage /> },
       { path: 'pet-register', element: <PetRegistration /> },
       { path: 'edit-pet/:petId', element: <EditPetPage /> },
+      { path: 'caremethod', element: <CareMethodPage /> },
+
       {
         path: 'community',
         element: <CommunityRootLayout />,
@@ -60,6 +68,15 @@ const router = createBrowserRouter([
           { path: 'record/detail/:petId', element: <PastRecordPage /> },
           { path: 'record/add/:petId', element: <AddHealthRecordPage /> },
           { path: 'record/calendar/:petId', element: <CalendarPage /> },
+        ],
+      },
+      {
+        path: 'caremethod',
+        element: <CareDetailRootLayout />,
+        children: [
+          { path: 'detail/hamster', element: <HamsterDetailPage /> },
+          { path: 'detail/rabbit', element: <RabbitDetailPage /> },
+          { path: 'detail/hedgehog', element: <HedgehogDetailPage /> },
         ],
       },
     ],

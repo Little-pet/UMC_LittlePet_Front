@@ -68,6 +68,7 @@ const Header = styled.div`
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
+  position: sticky;
 `;
 const ItemContainer = styled.div`
   display: flex;

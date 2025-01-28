@@ -7,11 +7,10 @@ import addIcon from '#/assets/add.svg';
 const MobileAddButton: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = () => {
-    navigate(
-      `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`
-    );
+  const handleNavigate = (): void => {
+    navigate('/community/add');
   };
+
   return (
     <AddButtonWrapper onClick={handleNavigate}>
       <img src={addIcon} />
