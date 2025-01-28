@@ -1,0 +1,55 @@
+import React from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import addIcon from '#/assets/add.svg';
+
+interface MobileAddButtonProps {
+  selectedDate: dayjs.Dayjs;
+}
+
+// 건강 기록 버튼
+const MobileAddButton: React.FC<MobileAddButtonProps> = ({ selectedDate }) => {
+  const navigate = useNavigate();
+  const { petId } = useParams<{ petId: string }>();
+  const [searchParams] = useSearchParams();
+  const date =
+    searchParams.get('date') || new Date().toISOString().split('T')[0];
+
+  const handleNavigate = (): void => {
+    if (petId) {
+      navigate(
+        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`
+      );
+    } else {
+      console.error('petId를 찾을 수 없습니다.');
+    }
+  };
+
+  return (
+    <AddButtonWrapper onClick={handleNavigate}>
+      <img src={addIcon} />
+    </AddButtonWrapper>
+  );
+};
+
+export default MobileAddButton;
+
+const AddButtonWrapper = styled.button`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #6ea8fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 50px; /* 맨 아래에서 50px 위로 조정 */
+  right: 20px;
+  cursor: pointer;
+  border: none;
+
+  /* 화면 크기에 따른 조정 */
+  @media (min-width: 800px) {
+    display: none;
+  }
+`;

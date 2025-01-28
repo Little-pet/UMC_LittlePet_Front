@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import animalIcon from '#/assets/동물 아이콘.svg';
+
 import React from 'react';
 
 // 카테고리에 글 등록하기 페이지에서 종 카테고리 드롭다운을 누르면 나오는 팝업
-const AnimalItem: React.FC<AnimalItemProps> = ({ name, onClick }) => {
+const AnimalItem: React.FC<AnimalItemProps> = ({ name, icon, onClick }) => {
   return (
     <AnimalWrapper onClick={onClick}>
-      <AnimalIcon src={animalIcon} alt={`${name} Icon`} />
+      <AnimalIcon src={icon} alt={`${name} Icon`} />
       <AnimalText>{name}</AnimalText>
     </AnimalWrapper>
   );
@@ -31,5 +31,6 @@ const AnimalIcon = styled.img`
 `;
 interface AnimalItemProps {
   name: string;
+  icon: string;
   onClick?: () => void;
 }

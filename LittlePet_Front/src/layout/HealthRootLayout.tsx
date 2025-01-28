@@ -11,9 +11,9 @@ interface Category {
 const HealthRootLayout: React.FC = () => {
   const categories: Category[] = [
     {
-      type: 'note',
+      type: 'record',
       title: '건강기록',
-      path: '/health/note',
+      path: '/health/record',
     },
     {
       type: 'hospital',
@@ -21,8 +21,9 @@ const HealthRootLayout: React.FC = () => {
       path: '/health/hospital',
     },
   ];
-  const location = useLocation();
-  const [selected, setSelected] = useState<string>('note');
+
+  const [selected, setSelected] = useState<string>('record');
+
   const handleClick = (type: string) => {
     setSelected(type);
   };
@@ -55,7 +56,7 @@ export default HealthRootLayout;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 669px;
+
   position: relative;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
@@ -68,6 +69,10 @@ const Container = styled.div`
 
   /* 파이어폭스에서 스크롤바 숨기기 */
   scrollbar-width: none;
+  align-items: center; /* 중앙 정렬 */
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
 `;
 
 const Header = styled.div`
@@ -78,6 +83,7 @@ const Header = styled.div`
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
+  position: sticky;
 `;
 const ItemContainer = styled.div`
   display: flex;

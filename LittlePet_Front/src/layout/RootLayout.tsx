@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 import NavbarTop from '#/components/Navbar/NavbarTop';
 
 const RootLayout: FC = () => {
@@ -10,23 +11,48 @@ const RootLayout: FC = () => {
   const isOnBoardingPage = location.pathname === '/onboarding';
 
   return (
-    <div className='flex flex-col h-screen'>
+    <RootContainer>
       {/* Navbar */}
       {!isLoginPage && !isOnBoardingPage && (
-        <div className='overflow-x-hidden'>
+        <NavbarContainer>
           <NavbarTop />
-        </div>
+        </NavbarContainer>
       )}
 
       {/* Main content */}
-      <div className='flex flex-1'>
-        {/* Outlet for nested routes */}
-        <main className='flex-1 bg-gray-50'>
-          <Outlet />
-        </main>
-      </div>
-    </div>
+      <MainContent>
+        <Outlet />
+      </MainContent>
+    </RootContainer>
   );
 };
 
 export default RootLayout;
+
+// Styled Components
+const RootContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: flex-start; /* 수직 방향 정렬 */
+`;
+
+const NavbarContainer = styled.div`
+  overflow-x: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #fff;
+`;
+
+const MainContent = styled.main`
+  flex: 1;
+  display: flex;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  margin-top: 95px;
+  justify-content: center;
+`;
