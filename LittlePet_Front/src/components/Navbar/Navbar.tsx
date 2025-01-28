@@ -45,6 +45,9 @@ export default Navbar;
 
 const Nav = styled.nav`
   border-bottom: 0.5px solid #d9d9d9;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
 const NavContainer = styled.div`

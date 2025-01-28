@@ -151,6 +151,7 @@ export default MapPage;
 const Container = styled.div`
   position: relative;
   overflowy: hidden;
+  width: 100%;
   height: 656px;
   display: flex;
   flex-direction: column;

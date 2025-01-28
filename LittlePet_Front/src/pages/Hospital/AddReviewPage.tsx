@@ -117,6 +117,7 @@ const AddReviewPage = () => {
 };
 export default AddReviewPage;
 const Container = styled.div`
+  width: 100%;
   padding: 0 25px;
   @media only screen and (min-width: 800px) {
     padding: 0 96px;
@@ -137,6 +138,10 @@ const ReviewTextArea = styled.textarea`
     color: #737373;
     font-size: 16px;
     font-family: Pretendard-SemiBold;
+  }
+  &:focus {
+    outline: none; /* 포커스 상태에서 기본 outline 제거 */
+    border: none; /* 포커스 상태에서 추가 border 제거 */
   }
 `;
 const DropdownContainer = styled.div`

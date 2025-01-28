@@ -56,7 +56,6 @@ export default HealthRootLayout;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-
   position: relative;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
@@ -69,8 +68,6 @@ const Container = styled.div`
 
   /* 파이어폭스에서 스크롤바 숨기기 */
   scrollbar-width: none;
-  align-items: center; /* 중앙 정렬 */
-  overflow: hidden;
   height: 100%;
   width: 100%;
 `;
@@ -79,11 +76,11 @@ const Header = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  width: 100%;
   height: 42px;
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
-  position: sticky;
 `;
 const ItemContainer = styled.div`
   display: flex;

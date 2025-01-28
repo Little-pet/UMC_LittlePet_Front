@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import logo from '#/assets/logo.svg';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarTop from '#/components/Navbar/NavbarTop';
@@ -35,16 +36,14 @@ const RootContainer = styled.div`
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  align-items: center; /* 수평 중앙 정렬 */
-  justify-content: flex-start; /* 수직 방향 정렬 */
 `;
 
 const NavbarContainer = styled.div`
-  overflow-x: hidden;
   position: fixed;
   top: 0;
   width: 100%;
   background-color: #fff;
+  z-index: 10;
 `;
 
 const MainContent = styled.main`
@@ -54,5 +53,7 @@ const MainContent = styled.main`
   padding: 0;
   box-sizing: border-box;
   margin-top: 95px;
-  justify-content: center;
+  @media (min-width: 768px) {
+    margin-top: 71px;
+  }
 `;

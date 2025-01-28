@@ -59,7 +59,8 @@ export default CommunityRootLayout;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 669px;
+  height: 100%;
+  width: 100%;
   position: relative;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */

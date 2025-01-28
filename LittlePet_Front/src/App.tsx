@@ -14,9 +14,7 @@ import ChallengePage from '#/pages/ChallengePage';
 import LoginPage from '#/pages/LoginPage';
 import RootLayout from '#/layout/RootLayout';
 import OnBoardingPage from '#/pages/OnBoardingPage';
-import HealthNotePage from './pages/HealthNotePage';
 import HospitalPage from './pages/Hospital/HospitalPage';
-import HealthRootLayout from './layout/HealthRootLayout';
 import MapPage from './pages/Hospital/Map';
 import CarePage from './pages/CarePage';
 import HospitalDetailPage from './pages/Hospital/HospitalDetailPage';
@@ -74,18 +72,10 @@ const router = createBrowserRouter([
         element: <HealthRootLayout />,
         children: [
           { index: true, element: <HealthProfilePage /> }, // 기본 경로 설정
-          { path: 'health', element: <HealthProfilePage /> },
+          { path: 'record', element: <HealthProfilePage /> },
           { path: 'record/detail/:petId', element: <PastRecordPage /> },
           { path: 'record/add/:petId', element: <AddHealthRecordPage /> },
           { path: 'record/calendar/:petId', element: <CalendarPage /> },
-        ],
-      },
-      {
-        path: 'health',
-        element: <HealthRootLayout />,
-        children: [
-          { index: true, element: <HealthNotePage /> }, // 기본 경로 설정
-          { path: 'note', element: <HealthNotePage /> },
           { path: 'hospital', element: <HospitalPage /> },
           {
             path: 'hospital/:hospitalId',
@@ -98,6 +88,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+
       {
         path: '/health/hospital/:hospitalId/location',
         element: <LocationPage />,
@@ -110,7 +101,8 @@ const router = createBrowserRouter([
       {
         path: '/community/add',
         element: <AddPage />,
-        {
+      },
+      {
         path: 'caremethod',
         element: <CareDetailRootLayout />,
         children: [
@@ -118,7 +110,6 @@ const router = createBrowserRouter([
           { path: 'detail/rabbit', element: <RabbitDetailPage /> },
           { path: 'detail/hedgehog', element: <HedgehogDetailPage /> },
         ],
-
       },
       {
         path: '/care',

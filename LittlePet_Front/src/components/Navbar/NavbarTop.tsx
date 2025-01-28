@@ -1,40 +1,59 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { NavbarTopMenu, NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
+import logoBlack from '#/assets/logo.svg';
 import hamburger from '#/assets/hamburger.svg';
 import close from '#/assets/close.svg';
 import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
+import littlePet from '#/assets/리틀펫.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const NavbarTop: FC = () => {
   const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
+  const [active, setActive] = useState<number>(NavbarMainMenu[0].id); // 초기 활성화 상태
   const location = useLocation();
   const navigate = useNavigate();
   const isMyPage = location.pathname === '/mypage';
   const isEditProfile = location.pathname === '/edit-profile';
   const isRegisterPet = location.pathname === '/pet-register';
   const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
+  const handleMenuClick = (id: number) => {
+    setActive(id); // 활성화 상태 업데이트
+  };
   return (
     <>
       <Nav>
-        <NavContainer>
+        {/*  <NavContainer> */}
+        <div
+          onClick={() => navigate('/')}
+          style={{ display: 'flex', alignItems: 'center' }}
+        >
           {/* logo section */}
-          <Logo src={logo} alt='로고' onClick={() => navigate('/')}></Logo>
+          <Logo src={logo} alt='로고' />
+          <LogoBlack src={logoBlack} alt='로고' />
+          <Img src={littlePet} />
+        </div>
 
+        <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
           {/* menu section */}
           <Menu>
             <MenuContainer>
-              {NavbarTopMenu.map((item) => (
+              {NavbarMainMenu.map((item) => (
                 <MenuItem key={item.id}>
-                  <MenuLink href={item.link}>{item.title}</MenuLink>
+                  <MenuLink
+                    href={item.link}
+                    onClick={() => handleMenuClick(item.id)} // 페이지 이동 및 활성화 처리
+                    isActive={active === item.id}
+                  >
+                    {item.title}
+                  </MenuLink>
                 </MenuItem>
               ))}
             </MenuContainer>
           </Menu>
-
           {/* Icons section */}
           <IconContainer>
             {!open && <NotificationIcon src={notifications} alt='알림' />}
@@ -47,7 +66,8 @@ const NavbarTop: FC = () => {
               alt={open ? '닫기' : '햄버거'}
             />
           </HamburgerIcon>
-        </NavContainer>
+        </div>
+        {/*  </NavContainer> */}
       </Nav>
       {/* Mobile Sidebar section */}
       <ResponsiveMenu open={open} />
@@ -66,31 +86,43 @@ const NavbarTop: FC = () => {
 };
 
 export default NavbarTop;
-
+const Img = styled.img`
+  width: 40px;
+  margin-left: 8px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 const Nav = styled.nav`
   border-bottom: 0.5px solid #d9d9d9;
   margin: 0;
-`;
-
-const NavContainer = styled.div`
-  display: flex;
-  align-items: center;
-  height: 50px;
+  width: 100%;
   padding: 10px 25px;
   box-sizing: border-box;
-  margin: 0;
-  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Logo = styled.img`
   width: 31px;
   height: auto;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
-
+const LogoBlack = styled.img`
+  width: 31px;
+  height: auto;
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 const Menu = styled.div`
   display: none;
+  height: 50px;
   @media (min-width: 768px) {
-    display: block; /* md 이상에서는 block */
+    display: flex;
   }
 `;
 
@@ -98,24 +130,26 @@ const MenuContainer = styled.ul`
   display: flex;
   align-items: center;
   gap: 24px;
+  margin: 0;
 `;
 
 const MenuItem = styled.li`
   list-style: none;
 `;
 
-const MenuLink = styled.a`
+const MenuLink = styled.a<{ isActive: boolean }>`
   display: inline-block;
   padding: 4px 12px;
   cursor: pointer;
   font-family: 'Pretendard-Medium';
   text-decoration: none;
-  color: #262627;
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
 `;
 
 const IconContainer = styled.div`
-  margin-left: auto;
-  margin-right: 24px;
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
 const NotificationIcon = styled.img`

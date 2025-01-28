@@ -229,6 +229,14 @@ const Input = styled.input`
   flex: 1;
   box-sizing: border-box;
   padding: 0;
+  &::placeholder {
+    font-size: 14px;
+    font-family: Pretendard-Medium;
+  }
+  &:focus {
+    outline: none; /* 포커스 상태에서 기본 outline 제거 */
+    border: none; /* 포커스 상태에서 추가 border 제거 */
+  }
 `;
 
 const SelectContainer = styled.div`
