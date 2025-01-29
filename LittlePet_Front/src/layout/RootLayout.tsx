@@ -38,8 +38,6 @@ const RootContainer = styled.div`
 `;
 
 const NavbarContainer = styled.div`
-  position: fixed;
-  top: 0;
   width: 100%;
   background-color: #fff;
   z-index: 10;
@@ -48,11 +46,19 @@ const NavbarContainer = styled.div`
 const MainContent = styled.main`
   flex: 1;
   display: flex;
+  justify-content: center;
   width: 100%;
   padding: 0;
   box-sizing: border-box;
-  margin-top: 95px;
-  @media (min-width: 768px) {
-    margin-top: 71px;
+  overflow-y: auto; /* 세로 스크롤 */
+  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+  ::-webkit-scrollbar {
+    display: none;
   }
+
+  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+  -ms-overflow-style: none;
+
+  /* 파이어폭스에서 스크롤바 숨기기 */
+  scrollbar-width: none;
 `;

@@ -108,7 +108,8 @@ const EditButton = styled.button`
   border: 1px solid #e6e6e6;
   width: 46px;
   height: 28px;
+  display: flex;
+  justify-content: center;
   background-color: #fff;
   align-items: center;
-  margin-left: auto;
 `;

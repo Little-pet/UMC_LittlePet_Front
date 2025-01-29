@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import { useNavigate } from 'react-router-dom';
 const ChallengeSection: React.FC = () => {
+  const navigate = useNavigate();
+  const handleNavigate = (): void => {
+    navigate('/community/add');
+  };
   return (
     <ChallengeContainer>
       <ChallengeTitle>금주의 챌린저👑</ChallengeTitle>
       <ChallengeSubTitle>
-        “우리 동물들... 연예인 닮은 모먼트를 <br />
-        찍어 공유하자!”
+        “우리 동물들... 연예인 닮은 모먼트를 찍어 공유하자!”
       </ChallengeSubTitle>
       <ChallengeBanner>
         <BannerText>
@@ -17,7 +20,7 @@ const ChallengeSection: React.FC = () => {
           </BannerDescription>
         </BannerText>
         {/* 버튼챌린지 페이지로 이동하는 링크 추가가 */}
-        <BannerButton>챌린지 참여하기</BannerButton>
+        <BannerButton onClick={handleNavigate}>챌린지 참여하기</BannerButton>
       </ChallengeBanner>
     </ChallengeContainer>
   );
@@ -26,11 +29,17 @@ const ChallengeSection: React.FC = () => {
 export default ChallengeSection;
 
 const ChallengeContainer = styled.div`
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-top: 30px;
+  padding-left: 25px;
+  padding-right: 25px;
+  @media (min-width: 768px) {
+    padding: 0 96px;
+  }
 `;
 
 const ChallengeTitle = styled.h1`
@@ -55,14 +64,13 @@ const ChallengeBanner = styled.div`
   box-sizing: border-box;
   background: #6ea8fe1a;
   border-radius: 10px;
-  width: 343px;
   height: 117px;
   padding: 16px;
   gap: 10px;
+  position: relative;
 `;
 
 const BannerText = styled.div`
-  width: 236px;
   height: 41px;
   padding-top: 8px;
   padding-left: 8px;
@@ -87,8 +95,7 @@ const BannerButton = styled.button`
   background: #6ea8fe;
   border-radius: 50px;
   width: 115px;
-  height: 30px;
-  padding: 0;
+  padding: 10px 18px;
   gap: 10px;
   color: #ffffff;
   font-weight: 500;
@@ -96,6 +103,12 @@ const BannerButton = styled.button`
   font-family: 'Pretendard';
   border: none;
   box-shadow: 0px 4px 5px #00000026;
-  margin-left: 197px;
-  margin-top: 8px;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+  @media (min-width: 800px) {
+    width: 255px;
+    padding: 11px 80px;
+    font-size: 15px;
+  }
 `;

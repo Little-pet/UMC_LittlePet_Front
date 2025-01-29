@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
-import TagButton from '@components/Community/AddPage/tagButton';
+import TagButton from '#/components/Community/AddPage/TagButton';
 
 interface Pet {
   id: number;

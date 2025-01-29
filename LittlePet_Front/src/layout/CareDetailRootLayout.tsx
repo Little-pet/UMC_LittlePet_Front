@@ -74,7 +74,7 @@ const Container = styled.div``;
 
 const StickyNav = styled.div`
   position: sticky;
-  top: 95px;
+  top: 0px;
   background-color: white;
   width: 100%;
   height: 45px;
@@ -96,6 +96,5 @@ const NavButton = styled.button<{ isActive: boolean }>`
   cursor: pointer;
   font-family: 'Pretendard';
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#737373')};
-  border-bottom: ${({ isActive }) => (isActive ? '2px solid #6EA8FE' : 'none')};
   padding: 0;
 `;

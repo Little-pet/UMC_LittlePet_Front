@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import arrowIcon from '#/assets/arrow.svg';
-import AnimalItem from '#/components/Community/AddPage/animalItem';
-import TagButton from '#/components/Community/AddPage/tagButton';
+import TagButton from '#/components/Community/AddPage/TagButton';
+import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import DOMPurify from 'dompurify';
@@ -13,7 +12,6 @@ const MAX_SIZE = 20 * 1024 * 1024; // 20MB
 const VALID_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
 
 const AddPage: React.FC = () => {
-  const [view, setView] = useState<boolean>(false);
   const [tagSelected, setTagSelected] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
   const [postImgs, setPostImgs] = useState([]); // 서버에 전송할 파일 자체
@@ -28,7 +26,7 @@ const AddPage: React.FC = () => {
   // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
   // 사용자 접속시 그 악성코드가 실행되는 것을 XSS, 보안을 위해 sanitize 추가
   const sanitizedContent = DOMPurify.sanitize(content);
-  const animals = ['햄스터', '토끼', '고슴도치'];
+
   const tags = [
     {
       type: 'qna',
@@ -46,11 +44,6 @@ const AddPage: React.FC = () => {
   // 태그 클릭
   const handleTagClick = (type: string) => {
     setTagSelected(type);
-  };
-  // 종 카테고리 선택
-  const handleCategoryClick = (name: string) => {
-    setCategoryText(name);
-    setView(false);
   };
   const handleEditorChange = (value: string) => {
     setContent(value); // 상태 업데이트
@@ -117,30 +110,11 @@ const AddPage: React.FC = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        <DropdownContainer
-          onClick={() => {
-            setView(!view);
-          }}
-        >
-          {categoryText === '' ? (
-            <DropdownText>종 카테고리</DropdownText>
-          ) : (
-            <AnimalItem name={categoryText} />
-          )}
+        <CategoryDropdown
+          selectedCategory={categoryText}
+          onCategorySelect={(category) => setCategoryText(category)}
+        />
 
-          <img src={arrowIcon} />
-        </DropdownContainer>
-        {view && (
-          <DropdownMenu>
-            {animals.map((animal, index) => (
-              <AnimalItem
-                key={index}
-                name={animal}
-                onClick={() => handleCategoryClick(animal)}
-              />
-            ))}
-          </DropdownMenu>
-        )}
         <TagButtonContainer>
           {tags.map((tag, index) => (
             <TagButton
@@ -194,30 +168,13 @@ const AddPage: React.FC = () => {
 };
 export default AddPage;
 const Container = styled.div`
-  margin-top: 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   height: 656px;
   position: relative;
 `;
-const DropdownContainer = styled.div`
-  width: 126px;
-  height: 35px;
-  border: 1px solid #e6e6e6;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 15px;
-  box-sizing: border-box;
-  cursor: pointer;
-`;
 
-const DropdownText = styled.div`
-  font-family: 'Pretendard-Medium';
-  font-size: 14px;
-  color: #737373;
-`;
 const TagButtonContainer = styled.div`
   display: flex;
   gap: 12px;
@@ -253,7 +210,7 @@ const Divider = styled.hr`
 `;
 const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 `;
 const SubmitButton = styled.button`
   height: 48px;
@@ -265,7 +222,7 @@ const SubmitButton = styled.button`
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 25px;
+  bottom: 20px;
   cursor: pointer;
   border: none;
   @media only screen and (min-width: 800px) {
@@ -279,23 +236,7 @@ const ButtonText = styled.div`
   font-family: 'Pretendard-SemiBold';
   color: #ffffff;
 `;
-const DropdownMenu = styled.ul`
-  position: absolute;
-  top: 45px;
-  left: 25px;
-  width: 126px;
-  height: 126px;
-  background: #ffffff;
-  border: 1px solid #e6e6e6;
-  border-radius: 5px;
-  padding: 18px 25px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
+
 const StyledQuill = styled(ReactQuill)`
   .ql-container {
     padding: 10px;

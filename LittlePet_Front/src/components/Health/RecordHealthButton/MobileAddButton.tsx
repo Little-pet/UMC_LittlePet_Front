@@ -42,8 +42,8 @@ const AddButtonWrapper = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 50px; /* 맨 아래에서 50px 위로 조정 */
+  position: fixed;
+  bottom: 20px;
   right: 20px;
   cursor: pointer;
   border: none;

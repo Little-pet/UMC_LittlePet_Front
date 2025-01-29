@@ -211,7 +211,9 @@ const PetImg = styled.img`
 const Container = styled.div`
   width: 100%; /* 전체 화면 너비 적용 */
   padding: 16px 25px; /* 좌우 패딩 조정 */
-  margin: 0 auto; /* 중앙 정렬 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   box-sizing: border-box; /* 패딩 포함한 전체 크기 유지 */
 `;
 

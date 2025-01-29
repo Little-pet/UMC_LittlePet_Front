@@ -28,7 +28,7 @@ const Navbar: FC<NavbarProps> = ({ menuItems }) => {
             <MenuItem key={item.id}>
               <MenuLink
                 onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
-                className={active === item.id ? 'active' : ''}
+                isActive={active === item.id}
               >
                 {item.title}
               </MenuLink>
@@ -75,9 +75,9 @@ const MenuItem = styled.li`
   list-style: none;
 `;
 
-const MenuLink = styled.a`
+const MenuLink = styled.a<{ isActive: boolean }>`
   display: inline-block;
-  color: #262627;
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
   text-decoration: none;
 `;
 

@@ -49,7 +49,9 @@ const CommunityRootLayout: React.FC = () => {
       </Header>
 
       {/* 자식 라우트가 이 위치에서 렌더링 */}
-      <Outlet />
+      <MainContent>
+        <Outlet />
+      </MainContent>
     </Container>
   );
 };
@@ -61,7 +63,6 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  position: relative;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
   ::-webkit-scrollbar {
@@ -94,4 +95,10 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   font-size: 14px;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+`;
+const MainContent = styled.main`
+  height: 100vh-137px;
+  position: relative;
+  @media (min-width: 768px) {
+  }
 `;

@@ -179,6 +179,9 @@ const Container = styled.div`
   width: 100%;
   margin: 0 auto;
   position: relative;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
 `;
 
 const Title = styled.h1`

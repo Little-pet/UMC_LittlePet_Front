@@ -79,7 +79,7 @@ const QuizSection: React.FC = () => {
 export default QuizSection;
 
 const QuizContainer = styled.div<{ isSelected?: boolean }>`
-  width: 343px;
+  box-sizing: border-box;
   height: ${({ isSelected }) => (isSelected ? '357px' : '309px')};
   box-sizing: border-box;
   border-radius: 10px;
@@ -89,6 +89,12 @@ const QuizContainer = styled.div<{ isSelected?: boolean }>`
   gap: 10px;
   margin-top: 24px;
   box-shadow: 0px 4px 10px #0000001a;
+  margin-left: 25px;
+  margin-right: 25px;
+  @media (min-width: 768px) {
+    margin: 0 96px;
+    margin-top: 24px;
+  }
 `;
 
 const QuizQuesetion = styled.div`

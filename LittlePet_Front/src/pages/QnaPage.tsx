@@ -1,4 +1,4 @@
-import SearchBar from '#/components/Community/SearchBar';
+import SearchBar from '#/components/SearchBar';
 import Item from '#/components/Community/Item';
 import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
@@ -21,7 +21,9 @@ const QnaPage: React.FC = () => {
   return (
     <Container>
       <Banner src={banner} />
-      <SearchBar placeholder='Q&A에서 검색' />
+      <SearchBarContainer>
+        <SearchBar placeholder='Q&A에서 검색' />
+      </SearchBarContainer>
       <ContentWrapper>
         <div
           style={{
@@ -96,4 +98,9 @@ const Banner = styled.img`
   @media (max-width: 800px) {
     display: none;
   }
+`;
+const SearchBarContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;

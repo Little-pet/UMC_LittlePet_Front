@@ -27,7 +27,7 @@ const AddButtonWrapper = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   cursor: pointer;

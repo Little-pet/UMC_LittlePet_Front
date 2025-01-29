@@ -11,7 +11,9 @@ const HomePage: React.FC = () => {
     <Container>
       <Carousel />
       <ContentContainer>
-        <SearchBar text='찾으시는 커뮤니티 글이 있으신가요?' />
+        <SearchBarContainer>
+          <SearchBar placeholder='찾으시는 커뮤니티 글이 있으신가요?' />
+        </SearchBarContainer>
         <ChallengeSection />
         <QuizSection />
       </ContentContainer>
@@ -24,11 +26,17 @@ export default HomePage;
 
 const Container = styled.div`
   width: 100%;
-  margin-top: 24px;
 `;
 
 const ContentContainer = styled.div`
   box-sizing: border-box;
-  padding-left: 25px;
-  padding-right: 25px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const SearchBarContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;

@@ -142,6 +142,7 @@ const BannerContainer = styled.div`
   margin: 0 96px;
   padding: 50px;
   display: flex;
+  border-radius: 10px;
   flex-direction: column;
   @media (max-width: 800px) {
     display: none;

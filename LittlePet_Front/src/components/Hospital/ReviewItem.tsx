@@ -84,9 +84,6 @@ const ImgWrapper = styled.div`
 
   /* 파이어폭스에서 스크롤바 숨기기 */
   scrollbar-width: none;
-  @media only screen and (min-width: 800px) {
-    padding-left: 96px;
-  }
 `;
 const Container = styled.div`
   padding: 25px 0;

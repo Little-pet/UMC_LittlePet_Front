@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
-import TagButton from '@components/Community/AddPage/tagButton';
+import TagButton from '#/components/Community/AddPage/TagButton';
 
 const PetRegistrationPage: React.FC = () => {
   const { pets, addPet } = usePets();
@@ -141,7 +141,6 @@ const Container = styled.div`
   gap: 24px;
   padding: 20px;
   font-family: 'Pretendard';
-  margin-top: -45px;
 `;
 
 const Title = styled.h1`

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
-import AnimalItem from '@components/Community/AddPage/animalItem';
+import AnimalItem from '#/components/Community/AddPage/AnimalItem';
 import hamsterIcon from '@assets/animaldropdown/hamster.svg';
 import rabbitIcon from '@assets/animaldropdown/rabbit.svg';
 import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';
@@ -43,20 +43,19 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           <DropdownText>종 카테고리</DropdownText>
         )}
         <ArrowIcon src={arrowIcon} alt='arrow' isOpen={isOpen} />
+        {isOpen && (
+          <DropdownMenu>
+            {animals.map((animal, index) => (
+              <AnimalItem
+                key={index}
+                name={animal}
+                icon={animalIcons[animal]}
+                onClick={() => handleCategoryClick(animal)}
+              />
+            ))}
+          </DropdownMenu>
+        )}
       </DropdownContainer>
-
-      {isOpen && (
-        <DropdownMenu>
-          {animals.map((animal, index) => (
-            <AnimalItem
-              key={index}
-              name={animal}
-              icon={animalIcons[animal]}
-              onClick={() => handleCategoryClick(animal)}
-            />
-          ))}
-        </DropdownMenu>
-      )}
     </DropdownWrapper>
   );
 };
@@ -68,6 +67,7 @@ const DropdownWrapper = styled.div``;
 
 const DropdownContainer = styled.div`
   display: inline-flex;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   padding: 6px 15px;
@@ -88,13 +88,14 @@ const DropdownText = styled.div`
 `;
 
 const DropdownMenu = styled.ul`
-  top: 45px;
+  position: absolute;
+  top: 25px;
   left: 0;
   width: auto;
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 5px;
-  padding: 15px 25px;
+  padding: 15px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   box-sizing: border-box;

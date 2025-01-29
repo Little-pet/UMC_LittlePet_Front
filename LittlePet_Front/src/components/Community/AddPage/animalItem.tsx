@@ -26,8 +26,7 @@ const AnimalText = styled.div`
 `;
 
 const AnimalIcon = styled.img`
-  width: 17px;
-  height: 17px;
+  width: 24px;
 `;
 interface AnimalItemProps {
   name: string;

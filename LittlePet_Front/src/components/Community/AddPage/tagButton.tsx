@@ -25,9 +25,9 @@ const TagButton: React.FC<TagButtonProps> = ({
 );
 export default TagButton;
 const CategoryButtonWrapper = styled.div<{ isSelected: boolean }>`
-  width: 100%;
+  padding: 5px 25px;
   height: 35px;
-  border: 1px solid ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#E6E6E6')};
+  border: 1px solid ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -39,7 +39,7 @@ const CategoryButtonWrapper = styled.div<{ isSelected: boolean }>`
 const CategoryButtonText = styled.div<{ isSelected: boolean }>`
   font-size: 14px;
   font-family: 'Pretendard';
-  color: #737373;
+  color: ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
 `;
 
 const SpanIcon = styled.span<{ gender: string }>`

@@ -46,7 +46,9 @@ const HealthRootLayout: React.FC = () => {
       </Header>
 
       {/* 자식 라우트가 이 위치에서 렌더링 */}
-      <Outlet />
+      <MainContent>
+        <Outlet />
+      </MainContent>
     </Container>
   );
 };
@@ -57,17 +59,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow-y: auto; /* 세로 스크롤 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none;
   height: 100%;
   width: 100%;
 `;
@@ -92,4 +83,8 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   font-size: 14px;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+`;
+const MainContent = styled.main`
+  @media (min-width: 768px) {
+  }
 `;

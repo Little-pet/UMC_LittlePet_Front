@@ -56,7 +56,7 @@ const StatsContainer = styled.div`
   align-items: center;
   border: 1px solid#E6E6E6;
   border-radius: 5px;
-  padding: 15px 25px;
+  padding: 15px 6px;
   width: 343px;
   gap: 10px;
   height: 81px;
@@ -70,7 +70,7 @@ const ItemContainer = styled.div`
   width: auto;
   text-align: center;
   position: relative; /* 가상 요소의 위치 조정을 위해 필요 */
-  padding-right: 15px;
+  padding: 0 15px;
 
   &:not(:last-child)::after {
     content: '';

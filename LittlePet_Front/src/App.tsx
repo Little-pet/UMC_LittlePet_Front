@@ -14,14 +14,14 @@ import ChallengePage from '#/pages/ChallengePage';
 import LoginPage from '#/pages/LoginPage';
 import RootLayout from '#/layout/RootLayout';
 import OnBoardingPage from '#/pages/OnBoardingPage';
-import HospitalPage from './pages/Hospital/HospitalPage';
-import MapPage from './pages/Hospital/Map';
+import HospitalPage from './pages/Health/Hospital/HospitalPage';
+import MapPage from './pages/Health/Hospital/Map';
 import CarePage from './pages/CarePage';
-import HospitalDetailPage from './pages/Hospital/HospitalDetailPage';
-import InfoPage from './pages/Hospital/InfoPage';
-import ReviewPage from './pages/Hospital/ReviewPage';
-import LocationPage from './pages/Hospital/LocationPage';
-import AddReviewPage from './pages/Hospital/AddReviewPage';
+import HospitalDetailPage from './pages/Health/Hospital/HospitalDetailPage';
+import InfoPage from './pages/Health/Hospital/InfoPage';
+import ReviewPage from './pages/Health/Hospital/ReviewPage';
+import LocationPage from './pages/Health/Hospital/LocationPage';
+import AddReviewPage from './pages/Health/Hospital/AddReviewPage';
 import HomePage from '#/pages/HomePage';
 import MyPage from '#/pages/MyPage';
 import SplashScreen from '#/pages/SplashScreen';
@@ -64,9 +64,9 @@ const router = createBrowserRouter([
           { path: 'daily', element: <DailyPage /> },
           { path: ':postId', element: <DetailPage /> },
           { path: 'challenge', element: <ChallengePage /> },
-          { path: 'add', element: <AddPage /> },
         ],
       },
+      { path: 'community/add', element: <AddPage /> },
       {
         path: 'health',
         element: <HealthRootLayout />,

@@ -20,8 +20,9 @@ const NavbarTop: FC = () => {
   const isEditProfile = location.pathname === '/edit-profile';
   const isRegisterPet = location.pathname === '/pet-register';
   const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
-  const handleMenuClick = (id: number) => {
+  const handleMenuClick = (id: number, link: string) => {
     setActive(id); // 활성화 상태 업데이트
+    navigate(link);
   };
   return (
     <>
@@ -40,19 +41,20 @@ const NavbarTop: FC = () => {
         <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
           {/* menu section */}
           <Menu>
-            <MenuContainer>
-              {NavbarMainMenu.map((item) => (
-                <MenuItem key={item.id}>
-                  <MenuLink
-                    href={item.link}
-                    onClick={() => handleMenuClick(item.id)} // 페이지 이동 및 활성화 처리
-                    isActive={active === item.id}
-                  >
-                    {item.title}
-                  </MenuLink>
-                </MenuItem>
-              ))}
-            </MenuContainer>
+            {!open && (
+              <MenuContainer>
+                {NavbarMainMenu.map((item) => (
+                  <MenuItem key={item.id}>
+                    <MenuLink
+                      onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
+                      isActive={active === item.id}
+                    >
+                      {item.title}
+                    </MenuLink>
+                  </MenuItem>
+                ))}
+              </MenuContainer>
+            )}
           </Menu>
           {/* Icons section */}
           <IconContainer>
@@ -97,6 +99,7 @@ const Nav = styled.nav`
   border-bottom: 0.5px solid #d9d9d9;
   margin: 0;
   width: 100%;
+  height: 50px;
   padding: 10px 25px;
   box-sizing: border-box;
   display: flex;
