@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import logo from '#/assets/logo.svg';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarTop from '#/components/Navbar/NavbarTop';
