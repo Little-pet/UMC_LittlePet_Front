@@ -1,21 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import {
-  mainCategories,
-  subCategories,
-  animals,
-} from '#/mockData/animalCareData';
-
+import axios from 'axios';
 const CareMethodPage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] =
-    useState<keyof typeof subCategories>('전체');
+  const [mainCategories, setMainCategories] = useState<string[]>([]);
+  const [subCategories, setSubCategories] = useState<{
+    [key: string]: number[];
+  }>({});
+  const [animals, setAnimals] = useState<
+    { id: number; name: string; image: string; link: string }[]
+  >([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const navigate = useNavigate();
 
+  // 백엔드 API 호출해서 데이터 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(
+          'http://54.180.205.177:8080/animal-categories'
+        );
+        const categoryData = response.data.result; // "result" 배열 가져오기
+
+        // 대분류 카테고리 설정 (예: ['전체', '설치류', '파충류', '조류', '기타'])
+        const fetchedCategories = categoryData.map(
+          (category: any) => category.categoryName
+        );
+        setMainCategories(['전체', ...fetchedCategories]);
+
+        // 소분류 및 동물 리스트 변환
+        const subCategoryMap: { [key: string]: number[] } = { 전체: [] };
+        const animalList: {
+          id: number;
+          name: string;
+          image: string;
+          link: string;
+        }[] = [];
+
+        categoryData.forEach((category: any) => {
+          subCategoryMap[category.categoryName] = category.petCategoryList.map(
+            (pet: any) => pet.id
+          );
+
+          category.petCategoryList.forEach((pet: any) => {
+            animalList.push({
+              id: pet.id,
+              name: pet.species,
+              image: pet.imageUrl,
+              link: '', // 백엔드에서 링크 지원하면 여기에 추가
+            });
+          });
+        });
+
+        // "전체" 카테고리는 모든 동물 포함
+        subCategoryMap['전체'] = animalList.map((a) => a.id);
+
+        // 상태 업데이트
+        setSubCategories(subCategoryMap);
+        setAnimals(animalList);
+      } catch (error) {
+        console.error('카테고리 데이터를 불러오는 데 실패했습니다.', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   // 특정 소동물 클릭 시 이동하는 함수
   const handleAnimalClick = (link: string) => {
     if (link) {
-      navigate(link); // 🟢 해당 링크로 이동
+      navigate(link); // 해당 링크로 이동
     }
   };
 
@@ -27,9 +80,7 @@ const CareMethodPage: React.FC = () => {
           {mainCategories.map((category) => (
             <CategoryButton
               key={category}
-              onClick={() =>
-                setSelectedCategory(category as keyof typeof subCategories)
-              }
+              onClick={() => setSelectedCategory(category)}
               isSelected={selectedCategory === category}
             >
               {category}
@@ -41,7 +92,7 @@ const CareMethodPage: React.FC = () => {
       {/* Content */}
       <Content>
         <CategoryGrid>
-          {subCategories[selectedCategory].map((id) => {
+          {subCategories[selectedCategory]?.map((id) => {
             const item = animals.find((animal) => animal.id === id);
 
             return (

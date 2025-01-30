@@ -8,6 +8,11 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LoginPage: React.FC = () => {
+  console.log(
+    '✅ NAVER Redirect URL:',
+    import.meta.env.VITE_NAVER_REDIRECT_URI
+  );
+
   // 카카오 로그인 요청 핸들러
   const handleKakaoLogin = () => {
     // 백엔드의 카카오 로그인 엔드포인트로 리다이렉트
@@ -16,12 +21,16 @@ const LoginPage: React.FC = () => {
   // 네이버 로그인 요청 핸들러
   const handleNaverLogin = () => {
     // 백엔드의 네이버 로그인 엔드포인트로 리다이렉트
-    //window.location.href =
+
+    window.location.href =
+      'http://54.180.205.177:8080/oauth2/authorization/naver';
   };
   // 구글 로그인 요청 핸들러
   const handleGoogleLogin = () => {
     // 백엔드의 구글 로그인 엔드포인트로 리다이렉트
-    // window.location.href =
+    const GOOGLE_REDIRECT_URI: string =
+      import.meta.env.VITE_GOOGLE_REDIRECT_URI || '';
+    window.location.href = GOOGLE_REDIRECT_URI;
   };
 
   //뒤로가기 핸들러

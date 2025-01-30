@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface Pet {
   id: number;
@@ -11,9 +12,10 @@ interface Pet {
 
 interface PetContextType {
   pets: Pet[];
-  addPet: (pet: Pet) => void;
-  updatePet: (updatedPet: Pet) => void;
-  deletePet: (id: number) => void;
+  addPet: (userId: number, pet: Pet) => Promise<void>;
+  updatePet: (userId: number, pet: Pet) => Promise<void>;
+  deletePet: (userId: number, id: number) => Promise<void>;
+  fetchPets: (userId: number) => Promise<void>;
 }
 
 const PetContext = createContext<PetContextType | undefined>(undefined);

@@ -34,9 +34,7 @@ import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
 import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
 import CalendarPage from '#/pages/Health/Record/CalenderPage';
 import CareMethodPage from '#/pages/CareMethod/CareMethod';
-import HamsterDetailPage from '#/pages/CareMethod/HamsterDetailPage';
-import RabbitDetailPage from '#/pages/CareMethod/RabbitDetailPage';
-import HedgehogDetailPage from '#/pages/CareMethod/HedgehogDetailPage';
+import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
 
 // 라우터 설정
@@ -103,12 +101,12 @@ const router = createBrowserRouter([
         element: <AddPage />,
       },
       {
+        //추후 백에서 db로 주는 link에 맞춰서 수정 예정
         path: 'caremethod',
         element: <CareDetailRootLayout />,
         children: [
-          { path: 'detail/hamster', element: <HamsterDetailPage /> },
-          { path: 'detail/rabbit', element: <RabbitDetailPage /> },
-          { path: 'detail/hedgehog', element: <HedgehogDetailPage /> },
+          { path="detail/:speciesId" element={<PetDetailPage />} },
+          
         ],
       },
       {
