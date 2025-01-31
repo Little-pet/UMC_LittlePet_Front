@@ -11,8 +11,8 @@ export const ContentWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  margin-top: 30px;
+  gap: 15px;
+  margin-top: 20px;
 `;
 export const HeaderWrapper = styled.ul`
   display: flex;
@@ -43,9 +43,7 @@ export const HeaderFilter = styled.li<{ isActive: boolean }>`
 
 export const ItemList = styled.div`
   display: flex;
-  height: 452px;
   flex-direction: column;
-
   gap: 28px;
   overflow-y: auto; /* 세로 스크롤 */
   ::-webkit-scrollbar {

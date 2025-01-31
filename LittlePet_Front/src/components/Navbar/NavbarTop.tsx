@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
@@ -12,8 +12,7 @@ import littlePet from '#/assets/리틀펫.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const NavbarTop: FC = () => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [active, setActive] = useState<number>(NavbarMainMenu[0].id);
+  const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,9 +20,7 @@ const NavbarTop: FC = () => {
   const isEditProfile = location.pathname === '/edit-profile';
   const isRegisterPet = location.pathname === '/pet-register';
   const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
-
-  const handleMenuClick = (id: number, link: string) => {
-    setActive(id);
+  const handleMenuClick = (link: string) => {
     navigate(link);
   };
 
@@ -31,7 +28,7 @@ const NavbarTop: FC = () => {
     <>
       <Nav>
         <div
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           style={{ display: 'flex', alignItems: 'center' }}
         >
           <Logo src={logo} alt='로고' />
@@ -42,18 +39,24 @@ const NavbarTop: FC = () => {
         <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
           {/*  PC에서는 네비게이션 메뉴 항상 표시 */}
           <Menu>
-            <MenuContainer>
-              {NavbarMainMenu.map((item) => (
-                <MenuItem key={item.id}>
-                  <MenuLink
-                    onClick={() => handleMenuClick(item.id, item.link)}
-                    isActive={active === item.id}
-                  >
-                    {item.title}
-                  </MenuLink>
-                </MenuItem>
-              ))}
-            </MenuContainer>
+            {!open && (
+              <MenuContainer>
+                {NavbarMainMenu.map((item) => (
+                  <MenuItem key={item.id}>
+                    <MenuLink
+                      onClick={() => handleMenuClick(item.link)} // 페이지 이동 및 활성화 처리
+                      isActive={
+                        location.pathname === '/'
+                          ? item.link === '/home'
+                          : location.pathname.startsWith(item.link)
+                      }
+                    >
+                      {item.title}
+                    </MenuLink>
+                  </MenuItem>
+                ))}
+              </MenuContainer>
+            )}
           </Menu>
 
           {/* 햄버거 아이콘: 모바일에서는 `X`로 변경되지만, PC에서는 그대로 유지 */}

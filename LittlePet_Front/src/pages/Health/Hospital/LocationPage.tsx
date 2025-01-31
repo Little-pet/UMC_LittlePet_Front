@@ -27,7 +27,7 @@ const LocationPage = () => {
         }}
         style={{
           width: '100%',
-          height: '527px',
+          height: '100%',
         }}
         level={3} // 지도의 확대 레벨
         onCreate={setMap}

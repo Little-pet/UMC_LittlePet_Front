@@ -93,7 +93,6 @@ const Container = styled.div`
 `;
 
 const QuizContainer = styled.div<{ isSelected?: boolean }>`
-  box-sizing: border-box;
   height: ${({ isSelected }) => (isSelected ? '357px' : '309px')};
   border-radius: 10px;
   padding: 24px;
