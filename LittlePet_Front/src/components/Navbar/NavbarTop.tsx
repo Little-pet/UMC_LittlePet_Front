@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { NavbarTopMenu, NavbarMainMenu } from '#/mockData/data';
+import { NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
 import logoBlack from '#/assets/logo.svg';
 import hamburger from '#/assets/hamburger.svg';
@@ -15,6 +15,7 @@ const NavbarTop: FC = () => {
   const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
   const location = useLocation();
   const navigate = useNavigate();
+
   const isMyPage = location.pathname === '/mypage';
   const isEditProfile = location.pathname === '/edit-profile';
   const isRegisterPet = location.pathname === '/pet-register';
@@ -26,19 +27,17 @@ const NavbarTop: FC = () => {
   return (
     <>
       <Nav>
-        {/*  <NavContainer> */}
         <div
           onClick={() => navigate('/home')}
           style={{ display: 'flex', alignItems: 'center' }}
         >
-          {/* logo section */}
           <Logo src={logo} alt='로고' />
           <LogoBlack src={logoBlack} alt='로고' />
           <Img src={littlePet} />
         </div>
 
         <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
-          {/* menu section */}
+          {/*  PC에서는 네비게이션 메뉴 항상 표시 */}
           <Menu>
             {!open && (
               <MenuContainer>
@@ -59,45 +58,40 @@ const NavbarTop: FC = () => {
               </MenuContainer>
             )}
           </Menu>
-          {/* Icons section */}
-          <IconContainer>
-            {!open && <NotificationIcon src={notifications} alt='알림' />}
-          </IconContainer>
 
-          {/* Mobile hamburger Menu section */}
+          {/* 햄버거 아이콘: 모바일에서는 `X`로 변경되지만, PC에서는 그대로 유지 */}
           <HamburgerIcon onClick={() => setOpen(!open)}>
             <img
-              src={open ? close : hamburger}
+              src={window.innerWidth < 768 && open ? close : hamburger}
               alt={open ? '닫기' : '햄버거'}
             />
           </HamburgerIcon>
         </div>
-        {/*  </NavContainer> */}
       </Nav>
-      {/* Mobile Sidebar section */}
-      <ResponsiveMenu open={open} />
 
-      {/* 홈, 커뮤니티, 관리방법, 건강  Navbar */}
-      {!open &&
-        !isMyPage &&
-        !isEditProfile &&
-        !isEditPetProfile &&
-        !isRegisterPet && (
-          // open 상태가 false, 마이페이지가 아닐 때만 렌더링
+      {/* 모바일에서는 open 상태일 때 네비게이션 숨김, PC에서는 항상 보이게 */}
+      {!isMyPage && !isEditProfile && !isEditPetProfile && !isRegisterPet && (
+        <DesktopNavbarWrapper open={open}>
           <Navbar menuItems={NavbarMainMenu} />
-        )}
+        </DesktopNavbarWrapper>
+      )}
+
+      {/* 📌 모바일에서만 사이드바 메뉴 표시 */}
+      <ResponsiveMenu open={open} />
     </>
   );
 };
 
 export default NavbarTop;
+
 const Img = styled.img`
-  width: 40px;
-  margin-left: 8px;
+  width: 60px;
+  margin-left: 12px;
   @media (max-width: 768px) {
     display: none;
   }
 `;
+
 const Nav = styled.nav`
   border-bottom: 0.5px solid #d9d9d9;
   margin: 0;
@@ -108,6 +102,9 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (min-width: 768px) {
+    height: 104px;
+  }
 `;
 
 const Logo = styled.img`
@@ -117,13 +114,15 @@ const Logo = styled.img`
     display: none;
   }
 `;
+
 const LogoBlack = styled.img`
-  width: 31px;
+  width: 48px;
   height: auto;
   @media (max-width: 768px) {
     display: none;
   }
 `;
+
 const Menu = styled.div`
   display: none;
   height: 50px;
@@ -141,6 +140,9 @@ const MenuContainer = styled.ul`
 
 const MenuItem = styled.li`
   list-style: none;
+  @media (min-width: 768px) {
+    font-size: 22px;
+  }
 `;
 
 const MenuLink = styled.a<{ isActive: boolean }>`
@@ -152,15 +154,11 @@ const MenuLink = styled.a<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
 `;
 
-const IconContainer = styled.div`
-  @media (min-width: 768px) {
-    display: none;
+/*  PC에서는 항상 보이고, 모바일에서는 open 상태일 때 숨김 */
+const DesktopNavbarWrapper = styled.div<{ open: boolean }>`
+  @media (max-width: 768px) {
+    display: ${({ open }) => (open ? 'none' : 'block')};
   }
-`;
-
-const NotificationIcon = styled.img`
-  width: 24px;
-  height: 24px;
 `;
 
 const HamburgerIcon = styled.div`
