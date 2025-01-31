@@ -53,7 +53,18 @@ const MotionMenu = styled(motion.div)`
   height: 100vh;
   background-color: #fff;
   color: black;
-  z-index: 9999;
+
+  @media (min-width: 768px) {
+    /* 태블릿 및 PC 화면에서는 작은 팝업으로 변경 */
+    width: 272px;
+    height: auto;
+    box-shadow: 0px 2px 5px 0px #00000026;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    right: 20px;
+    top: 92px;
+    z-index: 9999;
+  }
 `;
 
 const MenuContainer = styled.div`
@@ -83,4 +94,7 @@ const MenuItem = styled.li`
   font-weight: 500;
   cursor: pointer;
   list-style: none;
+  &hover: {
+    color: #6ea8fe;
+  }
 `;
