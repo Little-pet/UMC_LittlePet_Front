@@ -27,7 +27,11 @@ const Navbar: FC<NavbarProps> = ({ menuItems }) => {
             <MenuItem key={item.id}>
               <MenuLink
                 onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
-                isActive={location.pathname.startsWith(item.link)}
+                isActive={
+                  location.pathname === '/'
+                    ? item.link === '/home'
+                    : location.pathname.startsWith(item.link)
+                }
               >
                 {item.title}
               </MenuLink>
