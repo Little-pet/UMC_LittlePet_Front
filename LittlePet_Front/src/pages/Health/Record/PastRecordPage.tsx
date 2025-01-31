@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import { usePets } from '#/context/PetContext';
@@ -18,10 +18,11 @@ const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
 
 const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
-  const { pets } = usePets();
+  const location = useLocation();
   const navigate = useNavigate();
-  const selectedPet = pets.find((pet) => pet.id.toString() === petId);
 
+  //이름 불러오기
+  const petName = location.state?.petName || '알 수 없음';
   // 기본값을 오늘로 설정
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -29,6 +30,7 @@ const PastRecordPage: React.FC = () => {
 
   // 선택된 날짜를 기준으로 범위 내 날짜 가져오기
   const weekDates = getSurroundingDates(selectedDate, dateRange);
+  const [loading, setLoading] = useState(false);
 
   // 선택한 날짜를 중앙에 위치시키는 함수
   const scrollToCenter = () => {
@@ -53,40 +55,50 @@ const PastRecordPage: React.FC = () => {
   }, [selectedDate]);
 
   // 건강 기록 데이터 (예시)
-  const [recordData, setRecordData] = useState({
-    weight: '',
-    foodIntake: '',
-    bowel: '',
-    symptoms: '',
-    healthStatus: '',
-    diagnosis: '',
-    treatment: '',
-  });
+  const [recordData, setRecordData] = useState<{
+    recordDate: string;
+    weight: number;
+    mealAmount: string;
+    fecesStatus: string;
+    fecesColorStatus: string;
+    healthStatus: string;
+    atypicalSymptom: string[];
+    diagnosisName: string;
+    prescription: string;
+  } | null>(null);
 
   useEffect(() => {
-    // 여기에서 API 요청을 통해 해당 날짜의 기록을 가져옴 (가정)
-    // 실제 API 호출로 변경 가능
     const fetchHealthData = async () => {
-      // 예시 데이터: 실제 API 호출로 대체
-      const data = {
-        weight: '20g',
-        foodIntake: '정상',
-        bowel: '적당한 무르기 · 갈색',
-        symptoms: '기침',
-        healthStatus: '양호',
-        diagnosis: '일반 감기',
-        treatment: '약 처방, 3일 뒤 재방문',
-      };
+      if (!petId) {
+        return;
+      }
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/pets/${petId}/health-records?localDate=${selectedDate.format(
+            'YYYY-MM-DD'
+          )}`,
+          { withCredentials: true }
+        );
 
-      setRecordData(data);
+        if (response.data.isSuccess && response.data.result) {
+          setRecordData(response.data.result); // 응답 그대로 저장
+        } else {
+          setRecordData(null);
+        }
+      } catch (error) {
+        console.error('건강 기록 불러오기 실패:', error);
+        setRecordData(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchHealthData();
-  }, [selectedDate]);
+  }, [selectedDate, petId]);
 
   return (
     <Container>
-      <Title>{selectedPet?.name}의 건강 기록</Title>
+      <Title>{petName}의 건강 기록</Title>
       <Line />
 
       <SelectedDateContainer>
@@ -96,7 +108,7 @@ const PastRecordPage: React.FC = () => {
             navigate(`/health/record/calendar/${petId}`, {
               state: {
                 selectedDate: dayjs().format('YYYY-MM-DD'),
-                petName: selectedPet?.name,
+                petName: petName,
               },
             })
           }
@@ -126,7 +138,7 @@ const PastRecordPage: React.FC = () => {
         <RecordItem>
           <Label>체중</Label>
           <Value>
-            20g
+            {recordData?.weight || ''}
             <WeightChange>
               지난 기록 대비 <span> 유지</span>
             </WeightChange>
@@ -134,33 +146,35 @@ const PastRecordPage: React.FC = () => {
         </RecordItem>
         <RecordItem>
           <Label>식사량</Label>
-          <MealValue>{recordData.foodIntake || '-'}</MealValue>
+          <MealValue>{recordData?.mealAmount || ''}</MealValue>
         </RecordItem>
         <RecordItem>
           <Label>대변 상태</Label>
           <Value>
-            {recordData.bowel || '-'}
+            {recordData?.fecesStatus && recordData?.fecesColorStatus
+              ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
+              : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
             <FecesBadge src={normal} alt={'정상'} />
           </Value>
         </RecordItem>
         <RecordItem>
           <Label>특이 증상</Label>
-          <Value>{recordData.symptoms || '-'}</Value>
+          <Value>{recordData?.atypicalSymptom || '-'}</Value>
         </RecordItem>
         <RecordItem>
           <Label>건강 상태</Label>
-          <Value>{recordData.healthStatus || '-'}</Value>
+          <Value>{recordData?.healthStatus || ''}</Value>
         </RecordItem>
         <RecordItem>
           <Label>진료 내역</Label>
           <HospitalRecordValue>
             <RecordRow>
               <ListTitle>진단명</ListTitle>
-              <RecordText>{recordData.diagnosis || '-'}</RecordText>
+              <RecordText>{recordData?.diagnosisName || ''}</RecordText>
             </RecordRow>
             <RecordRow>
               <ListTitle>검사 및 처방 내역</ListTitle>
-              <RecordText>{recordData.treatment || '-'}</RecordText>
+              <RecordText>{recordData?.prescription || ''}</RecordText>
             </RecordRow>
           </HospitalRecordValue>
         </RecordItem>

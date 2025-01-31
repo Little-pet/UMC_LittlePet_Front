@@ -97,13 +97,16 @@ const HealthProfile: React.FC = () => {
     setSelectedPet(pet);
   };
 
-  const handlePetDetailClick = (petId: number) => {
-    navigate(`/health/record/detail/${petId}`);
+  const handlePetDetailClick = (pet: any) => {
+    console.log('선택한 반려동물:', pet);
+    navigate(`/health/record/detail/${pet.petId}`, {
+      state: { petName: pet.name },
+    });
   };
 
-  if (loading) {
+  /*if (loading) {
     return <Loading>로딩 중...</Loading>;
-  }
+  }*/
 
   return (
     <>
