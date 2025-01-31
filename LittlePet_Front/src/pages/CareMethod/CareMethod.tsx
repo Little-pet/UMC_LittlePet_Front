@@ -48,7 +48,7 @@ const CareMethodPage: React.FC = () => {
               id: pet.id,
               name: pet.species,
               image: pet.imageUrl,
-              link: '', // 백엔드에서 링크 지원하면 여기에 추가
+              link: `/caremethod/pet-detail/${pet.id}`, // 백엔드에서 링크 지원하면 여기에 추가
             });
           });
         });
@@ -66,10 +66,12 @@ const CareMethodPage: React.FC = () => {
 
     fetchCategories();
   }, []);
-  // 특정 소동물 클릭 시 이동하는 함수
-  const handleAnimalClick = (link: string) => {
-    if (link) {
-      navigate(link); // 해당 링크로 이동
+
+  const allowedSpecies = ['햄스터', '고슴도치', '토끼'];
+  const handleAnimalClick = (link: string, species: string) => {
+    if (allowedSpecies.includes(species)) {
+      console.log(`Navigating to: ${link}`); // 이동하는 URL 확인
+      navigate(link);
     }
   };
 
@@ -102,7 +104,10 @@ const CareMethodPage: React.FC = () => {
                   key={item.id}
                   src={item.image}
                   alt={item.name}
-                  onClick={() => handleAnimalClick(item.link)}
+                  onClick={() =>
+                    allowedSpecies.includes(item.name) &&
+                    handleAnimalClick(item.link, item.name)
+                  }
                 />
               )
             );

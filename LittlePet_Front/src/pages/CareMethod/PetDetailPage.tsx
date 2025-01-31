@@ -4,7 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 const PetDetailPage: React.FC = () => {
-  const { speciesId } = useParams<{ speciesId: string }>(); // ✅ URL에서 speciesId 가져오기
+  const { speciesId } = useParams<{ speciesId: string }>(); //  URL에서 speciesId 가져오기
   const [petDetail, setPetDetail] = useState<{
     id: number;
     species: string;
@@ -25,7 +25,7 @@ const PetDetailPage: React.FC = () => {
         const response = await axios.get(
           `https://umclittlepet.shop/animal-categories/species`,
           {
-            params: { 'species-id': speciesId }, // ✅ Query Parameter로 전달
+            params: { 'species-id': speciesId }, // Query Parameter로 전달
           }
         );
         setPetDetail(response.data.result);

@@ -104,7 +104,9 @@ const router = createBrowserRouter([
         //추후 백에서 db로 주는 link에 맞춰서 수정 예정
         path: 'caremethod',
         element: <CareDetailRootLayout />,
-        children: [{ path: 'detail/:speciesId', element: <PetDetailPage /> }],
+        children: [
+          { path: 'pet-detail/:speciesId', element: <PetDetailPage /> },
+        ],
       },
       {
         path: '/care',
