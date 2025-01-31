@@ -1,4 +1,3 @@
-import { usePets } from '#/context/PetContext';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -11,33 +10,33 @@ import bad from '@assets/악화.svg';
 import axios from 'axios';
 
 const HealthProfile: React.FC = () => {
-  const { pets } = usePets();
   const navigate = useNavigate();
-  const token = localStorage.getItem('token'); //로그인 후 jwt토큰
-
-  // 선택된 반려동물 ID 상태 관리 (초기값은 첫 번째 반려동물)
-  const [selectedPetId, setSelectedPetId] = useState<number>(
-    pets.length > 0 ? pets[0].id : 0
-  );
+  const userId = 4; //로그인 구현 후 수정예정. 일단 4로 고정
+  /* api수정 후 birthDate, gender 추가 예정  */
+  const [userPets, setUserPets] = useState<
+    { petId: number; name: string; profilePhoto: string; petCategory: string }[]
+  >([]);
+  const [selectedPet, setSelectedPet] = useState<{
+    petId: number;
+    name: string;
+    profilePhoto: string;
+    petCategory: string;
+  } | null>(null);
 
   //  건강 기록 상태 추가
-  const [selectedPet, setSelectedPet] = useState<{
-    petName: string;
-    profilePhoto: string;
-    birthDay: string;
-    recentUpdate: string;
-    latestRecord: {
-      recordDate: string;
-      weight: number;
-      mealAmount: string;
-      fecesStatus: string;
-      fecesColorStatus: string;
-      healthStatus: string;
-      atypicalSymptom: string[];
-      diagnosisName: string;
-      prescription: string;
-    };
+  const [healthRecord, setHealthRecord] = useState<{
+    recordDate: string;
+    weight: number;
+    mealAmount: string;
+    fecesStatus: string;
+    fecesColorStatus: string;
+    healthStatus: string;
+    atypicalSymptom: string[];
+    diagnosisName: string;
+    prescription: string;
   } | null>(null);
+
+  const [loading, setLoading] = useState(true);
 
   //healthStatus에 따른 뱃지 이미지
 
@@ -47,101 +46,117 @@ const HealthProfile: React.FC = () => {
     악화: bad,
   };
 
-  const healthStatus = selectedPet?.latestRecord.healthStatus || '정보 없음';
+  const healthStatus = healthRecord?.healthStatus || '정보 없음';
   const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
 
-  //  건강 기록 가져오는 API 요청
   useEffect(() => {
-    if (!selectedPetId || !token) {
-      console.log(
-        '선택한 반려동물이 없거나, 토큰이 없습니다!',
-        selectedPetId,
-        token
-      );
-      return; // API 호출 안 함
-    } // 선택한 반려동물이 없거나 로그인하지 않은 경우 API 호출 안 함
+    // 사용자 프로필 조회
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/users/${userId}`,
+          { withCredentials: true }
+        );
 
+        const pets = response.data.result.userPet || [];
+        setUserPets(pets);
+        if (pets.length > 0) {
+          setSelectedPet(pets[0]); // 첫 번째 반려동물 선택
+        }
+      } catch (error) {
+        console.error('사용자 프로필 조회 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedPet) return;
+
+    // 선택한 반려동물의 건강 기록 조회
     const fetchHealthRecord = async () => {
       try {
-        console.log('API 요청을 보냅니다! petId:', selectedPetId);
         const response = await axios.get(
-          `http://54.180.205.177:8080/pets/${selectedPetId}/health-records/latest`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, //  로그인 후 토큰 필요
-            },
-          }
+          `http://54.180.205.177:8080/pets/${selectedPet.petId}/health-records/latest`,
+          { withCredentials: true }
         );
-        console.log('API 응답:', response.data);
-        setSelectedPet(response.data.result); // 최신 건강 기록 저장
+        setHealthRecord(response.data.result.latestRecord);
       } catch (error) {
         console.error('건강 기록 조회 실패:', error);
-        setSelectedPet(null); // 오류 발생 시 건강 기록 초기화
+        setHealthRecord(null);
       }
     };
 
     fetchHealthRecord();
-  }, [selectedPetId, token]); // 선택한 반려동물이 변경될 때마다 API 호출
+  }, [selectedPet]);
 
-  const handlePetClick = (petId: number) => {
-    setSelectedPetId(petId); // 선택한 반려동물 ID 업데이트
+  const handlePetClick = (pet: any) => {
+    setSelectedPet(pet);
   };
 
   const handlePetDetailClick = (petId: number) => {
-    navigate(`/health/record/detail/${petId.toString()}`);
+    navigate(`/health/record/detail/${petId}`);
   };
+
+  if (loading) {
+    return <Loading>로딩 중...</Loading>;
+  }
 
   return (
     <>
       <PageTitle>건강 기록 프로필</PageTitle>
       <Container>
-        {pets.length > 0 ? (
+        {userPets.length > 0 ? (
           <>
             <PetList>
-              {pets.map((pet) => (
+              {userPets.map((pet) => (
                 <PetItem
-                  key={pet.id}
-                  onClick={() => handlePetClick(pet.id)}
-                  isSelected={pet.id === selectedPetId}
+                  key={pet.petId}
+                  onClick={() => handlePetClick(pet)}
+                  isSelected={selectedPet?.petId === pet.petId}
                 >
-                  <PetImg src={pet.profileImage} alt={pet.name} />
+                  <PetImg src={pet.profilePhoto} alt={pet.name} />
                   {pet.name}
                 </PetItem>
               ))}
             </PetList>
 
-            <PetDetails onClick={() => handlePetDetailClick(selectedPetId)}>
+            <PetDetails
+              onClick={() => handlePetDetailClick(selectedPet!.petId)}
+            >
               <PetCard>
                 <PetImgLarge
                   src={selectedPet?.profilePhoto || logo}
-                  alt={selectedPet?.petName || '등록된 반려동물 없음'}
+                  alt={selectedPet?.name || '등록된 반려동물 없음'}
                 />
                 <PetInfo>
                   <PetName>
-                    {selectedPet?.petName || '등록된 반려동물 없음'}
+                    {selectedPet?.name || '등록된 반려동물 없음'}
                   </PetName>
                   <PetDetail>
-                    {/* 추후에 api수정돼면 그때 적용(category,gender) */}
                     <AnimalIcon
                       src={animalIcon}
-                      alt={selectedPet?.category || ''}
+                      alt={selectedPet?.petCategory || ''}
                     />
-                    {selectedPet?.category}
+                    {/* gender,birthDate은 user에서 조회한 api응답에 없으므로 추후 수정 */}
+                    {selectedPet?.petCategory}
                     <GenderIcon gender={selectedPet?.gender}>
                       {selectedPet?.gender === 'female' ? '♀' : '♂'}
                     </GenderIcon>
                     <PetBirthDate>
                       생년월일:{' '}
-                      {selectedPet?.birthDay
-                        ? dayjs(selectedPet?.birthDay).format('YYYY.MM.DD')
+                      {selectedPet?.birthDate
+                        ? dayjs(selectedPet?.birthDate).format('YYYY.MM.DD')
                         : '정보 없음'}
                     </PetBirthDate>
                   </PetDetail>
 
                   {/* 응답 데이터 확인 후 recordDate그대로가 아니라 0일전으로 변경해야될 수도 있음 */}
                   <RecentUpdate>
-                    최근 업데이트:{' '}
-                    {selectedPet?.latestRecord.recordDate || '정보 없음'}
+                    최근 업데이트: {healthRecord?.recordDate || '정보 없음'}
                   </RecentUpdate>
                 </PetInfo>
                 <HealthBadge src={healthBadgeImage} alt={healthStatus} />
@@ -151,7 +166,7 @@ const HealthProfile: React.FC = () => {
                 <RecordItem>
                   <Label>체중</Label>
                   <Value>
-                    {selectedPet?.latestRecord.weight}kg
+                    {healthRecord?.weight}kg
                     <WeightChange>
                       {/* 몸무게 차이 계산 로직 추후 추가 */}
                       지난 기록 대비 <span> 유지</span>
@@ -160,14 +175,13 @@ const HealthProfile: React.FC = () => {
                 </RecordItem>
                 <RecordItem>
                   <Label>식사량</Label>
-                  <MealValue>{selectedPet?.latestRecord.mealAmount}</MealValue>
+                  <MealValue>{healthRecord?.mealAmount}</MealValue>
                 </RecordItem>
 
                 <RecordItem>
                   <Label>특이 증상</Label>
                   <Value>
-                    {selectedPet?.latestRecord.atypicalSymptom.join(', ') ||
-                      '없음'}
+                    {healthRecord?.atypicalSymptom.join(', ') || '없음'}
                   </Value>
                 </RecordItem>
 
@@ -177,13 +191,13 @@ const HealthProfile: React.FC = () => {
                     <RecordRow>
                       <ListTitle>진단명</ListTitle>
                       <RecordText>
-                        {selectedPet?.latestRecord.diagnosisName || '없음'}
+                        {healthRecord?.diagnosisName || '없음'}
                       </RecordText>
                     </RecordRow>
                     <RecordRow>
                       <ListTitle>검사 및 처방 내역</ListTitle>
                       <RecordText>
-                        {selectedPet?.latestRecord.prescription || '없음'}
+                        {healthRecord?.prescription || '없음'}
                       </RecordText>
                     </RecordRow>
                   </HospitalRecordValue>
