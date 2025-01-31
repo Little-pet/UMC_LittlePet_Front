@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavbarTopMenu, NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
@@ -13,23 +13,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const NavbarTop: FC = () => {
   const [open, setOpen] = React.useState<boolean>(false); // 상태 타입 정의
-  const [active, setActive] = useState<number>(NavbarMainMenu[0].id); // 초기 활성화 상태
   const location = useLocation();
   const navigate = useNavigate();
   const isMyPage = location.pathname === '/mypage';
   const isEditProfile = location.pathname === '/edit-profile';
   const isRegisterPet = location.pathname === '/pet-register';
   const isEditPetProfile = location.pathname.startsWith('/edit-pet/');
-  const handleMenuClick = (id: number, link: string) => {
-    setActive(id); // 활성화 상태 업데이트
+  const handleMenuClick = (link: string) => {
     navigate(link);
   };
+
   return (
     <>
       <Nav>
         {/*  <NavContainer> */}
         <div
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
           style={{ display: 'flex', alignItems: 'center' }}
         >
           {/* logo section */}
@@ -46,8 +45,12 @@ const NavbarTop: FC = () => {
                 {NavbarMainMenu.map((item) => (
                   <MenuItem key={item.id}>
                     <MenuLink
-                      onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
-                      isActive={active === item.id}
+                      onClick={() => handleMenuClick(item.link)} // 페이지 이동 및 활성화 처리
+                      isActive={
+                        location.pathname === '/'
+                          ? item.link === '/home'
+                          : location.pathname.startsWith(item.link)
+                      }
                     >
                       {item.title}
                     </MenuLink>

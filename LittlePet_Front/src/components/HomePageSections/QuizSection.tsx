@@ -79,7 +79,6 @@ const QuizSection: React.FC = () => {
 export default QuizSection;
 
 const QuizContainer = styled.div<{ isSelected?: boolean }>`
-  box-sizing: border-box;
   height: ${({ isSelected }) => (isSelected ? '357px' : '309px')};
   box-sizing: border-box;
   border-radius: 10px;

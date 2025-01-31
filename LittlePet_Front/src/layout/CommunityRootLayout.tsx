@@ -1,4 +1,4 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -9,6 +9,7 @@ interface Category {
 }
 // 뒤로가기를 누르면 type이 복원이 안되는 문제 발생..
 const CommunityRootLayout: React.FC = () => {
+  const location = useLocation();
   const categories: Category[] = [
     {
       type: 'qna',
@@ -26,10 +27,33 @@ const CommunityRootLayout: React.FC = () => {
       path: '/community/challenge',
     },
   ];
-  const [selected, setSelected] = useState<string>('qna');
+
+  // ✅ `localStorage`에서 메뉴 상태 복원 (초기값: "qna")
+  const [selected, setSelected] = useState<string>(
+    localStorage.getItem('selectedCategory') || 'qna'
+  );
   const handleClick = (type: string) => {
     setSelected(type);
+    localStorage.setItem('selectedCategory', type);
   };
+  useEffect(() => {
+    if (location.pathname === '/community') {
+      // ✅ `/community` 진입 시 기본값 `qna` 설정
+      setSelected('qna');
+      localStorage.setItem('selectedCategory', 'qna');
+    }
+    console.log(localStorage.getItem('selectedCategory'));
+  }, [location.pathname]);
+
+  const [totalHeight, setTotalHeight] = useState<number>(
+    window.innerWidth < 768
+      ? window.innerHeight - 50 - 45 - 42
+      : window.innerHeight - 50 - 42
+  );
+
+  useEffect(() => {
+    console.log(`📏 계산된 높이: ${totalHeight}px`);
+  }, [window.innerHeight, window.innerWidth]);
 
   return (
     <Container>
@@ -49,7 +73,7 @@ const CommunityRootLayout: React.FC = () => {
       </Header>
 
       {/* 자식 라우트가 이 위치에서 렌더링 */}
-      <MainContent>
+      <MainContent totalHeight={totalHeight}>
         <Outlet />
       </MainContent>
     </Container>
@@ -63,17 +87,6 @@ const Container = styled.div`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow-y: auto; /* 세로 스크롤 */
-  /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-
-  /* 파이어폭스에서 스크롤바 숨기기 */
-  scrollbar-width: none;
 `;
 
 const Header = styled.div`
@@ -96,8 +109,8 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
 `;
-const MainContent = styled.main`
-  height: 100vh-137px;
+const MainContent = styled.main<{ totalHeight: number }>`
+  height: ${({ totalHeight }) => `${totalHeight}px`};
   position: relative;
   @media (min-width: 768px) {
   }

@@ -18,6 +18,7 @@ interface LocationState {
 const MapPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
   const [view, setView] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [timeText, setTimeText] = useState<string>('');
   const { state } = useLocation();
   const [info, setInfo] = useState<Marker | null>(null); // 선택된 마커 정보
@@ -91,6 +92,7 @@ const MapPage: React.FC = () => {
         <DropdownContainer
           onClick={() => {
             setView(!view);
+            setIsDropdownOpen(!isDropdownOpen);
           }}
         >
           {timeText === '' ? (
@@ -98,7 +100,7 @@ const MapPage: React.FC = () => {
           ) : (
             <DropDownText>{timeText}</DropDownText>
           )}
-          <img src={arrowIcon} />
+          <ArrowIcon src={arrowIcon} isDropdownOpen={isDropdownOpen} />
           {view && (
             <DropdownMenu>
               {times.map((time, index) => (
@@ -119,7 +121,7 @@ const MapPage: React.FC = () => {
         }}
         style={{
           width: '100%',
-          height: '527px',
+          height: '100%',
         }}
         level={3} // 지도의 확대 레벨
         onCreate={setMap}
@@ -152,7 +154,6 @@ const Container = styled.div`
   position: relative;
   overflowy: hidden;
   width: 100%;
-  height: 656px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -220,11 +221,16 @@ const DropdownMenu = styled.ul`
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 5px;
-  padding: 15px 25px;
+  padding: 20px 25px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   z-index: 10;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+`;
+const ArrowIcon = styled(({ isDropdownOpen, ...rest }) => <img {...rest} />)`
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ isDropdownOpen }) =>
+    isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;

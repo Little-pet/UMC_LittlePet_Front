@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
-import TagButton from '#/components/Community/AddPage/TagButton';
+import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 
 const PetRegistrationPage: React.FC = () => {
   const { pets, addPet } = usePets();
@@ -108,7 +108,7 @@ const PetRegistrationPage: React.FC = () => {
           />
           <TagButtonContainer>
             {tags.map((tag, index) => (
-              <TagButton
+              <GenderTagButton
                 key={index}
                 label={tag.title}
                 icon={tag.icon}

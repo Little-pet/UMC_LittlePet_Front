@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { Outlet, Link } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';
@@ -14,6 +14,7 @@ interface Category {
 }
 const HospitalDetailPage = () => {
   const { hospitalId } = useParams<{ hospitalId: string }>();
+  const location = useLocation();
   const categories: Category[] = [
     {
       type: 'info',
@@ -31,10 +32,21 @@ const HospitalDetailPage = () => {
       path: `/health/hospital/${hospitalId}/location`,
     },
   ];
-  const [selected, setSelected] = useState<string>('info');
+  const [selected, setSelected] = useState<string>(
+    localStorage.getItem('hospitalCategory') || 'info'
+  );
   const handleClick = (type: string) => {
     setSelected(type);
+    localStorage.setItem('hospitalCategory', type);
   };
+  useEffect(() => {
+    if (location.pathname === `/health/hospital/${hospitalId}`) {
+      // ✅ `/health` 진입 시 기본값 `record` 설정
+      setSelected('info');
+      localStorage.setItem('hospitalCategory', 'info');
+    }
+    console.log(localStorage.getItem('hospitalCategory'));
+  }, [location.pathname]);
   return (
     <div>
       <Img src={hospitalImg} />

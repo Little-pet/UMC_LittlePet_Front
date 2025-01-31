@@ -9,7 +9,7 @@ interface TagButtonProps {
   type?: string;
 }
 // 카테고리에 글 등록하기 페이지에 있는 카테고리 버튼 컴포넌트(Q&A, 일상, 소개)
-const TagButton: React.FC<TagButtonProps> = ({
+const GenderTagButton: React.FC<TagButtonProps> = ({
   label,
   icon,
   onClick,
@@ -17,15 +17,13 @@ const TagButton: React.FC<TagButtonProps> = ({
   type,
 }) => (
   <CategoryButtonWrapper onClick={onClick} isSelected={isSelected}>
-    <CategoryButtonText isSelected={isSelected}>
-      {label}
-      {icon && <SpanIcon gender={type}>{icon}</SpanIcon>}
-    </CategoryButtonText>
+    <CategoryButtonText isSelected={isSelected}>{label}</CategoryButtonText>
+    {icon && <SpanIcon gender={type}>{icon}</SpanIcon>}
   </CategoryButtonWrapper>
 );
-export default TagButton;
+export default GenderTagButton;
 const CategoryButtonWrapper = styled.div<{ isSelected: boolean }>`
-  padding: 5px 25px;
+  width: 178px;
   height: 35px;
   border: 1px solid ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
   border-radius: 5px;
@@ -38,14 +36,15 @@ const CategoryButtonWrapper = styled.div<{ isSelected: boolean }>`
 
 const CategoryButtonText = styled.div<{ isSelected: boolean }>`
   font-size: 14px;
-  font-family: 'Pretendard';
+  font-family: 'Pretendard-Medium';
   display: flex;
-  color: ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
+  color: #737373;
+  margin-right: 1px;
 `;
 
 const SpanIcon = styled.span<{ gender: string }>`
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 22px;
   color: ${({ gender }) =>
     gender === 'female'

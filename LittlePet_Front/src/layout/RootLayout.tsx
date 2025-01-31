@@ -48,6 +48,7 @@ const MainContent = styled.main`
   display: flex;
   justify-content: center;
   width: 100%;
+  height: calc(100vh - 50px - 45px);
   padding: 0;
   box-sizing: border-box;
   overflow-y: auto; /* 세로 스크롤 */

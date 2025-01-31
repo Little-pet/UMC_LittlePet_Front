@@ -12,6 +12,7 @@ const HospitalPage: React.FC = () => {
   const [selectedArea, setSelectedArea] = useState<string | null>('동대문구');
   const [view, setView] = useState<boolean>(false);
   const [timeText, setTimeText] = useState<string>('');
+
   const times = ['영업중', '24시간', '주말'];
   const filters = [
     {
@@ -27,6 +28,10 @@ const HospitalPage: React.FC = () => {
       title: '평점 높은 순',
     },
   ];
+  const [selected, setSelected] = useState<string>('distance');
+  const handleClick = (type: string) => {
+    setSelected(type);
+  };
   const handleAreaSelect = (area: string) => {
     setSelectedArea(area); // 선택된 지역을 상태로 저장
   };
@@ -40,7 +45,7 @@ const HospitalPage: React.FC = () => {
       <TopActions>
         <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
           <AreaText>서울시 {selectedArea}</AreaText>
-          <img src={arrowIcon} />
+          <ArrowIcon src={arrowIcon} />
         </AreaModalButton>
         <MapButton
           to='/health/hospital/map'
@@ -67,7 +72,7 @@ const HospitalPage: React.FC = () => {
           ) : (
             <DropDownText>{timeText}</DropDownText>
           )}
-          <img src={arrowIcon} />
+          <ArrowIcon src={arrowIcon} view={view} />
           {view && (
             <DropdownMenu>
               {times.map((time, index) => (
@@ -81,7 +86,13 @@ const HospitalPage: React.FC = () => {
       </MiddleActions>
       <FilterContainer>
         {filters.map((filter, idx) => (
-          <FilterButton key={idx}>{filter.title}</FilterButton>
+          <FilterButton
+            key={idx}
+            onClick={() => handleClick(filter.type)}
+            isActive={selected === filter.type}
+          >
+            {filter.title}
+          </FilterButton>
         ))}
       </FilterContainer>
       <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
@@ -156,9 +167,6 @@ const FilterContainer = styled.div`
   }
 `;
 
-const HospitalList = styled.div`
-  border-top: 1px solid #e6e6e6;
-`;
 const MapButton = styled(Link)`
   text-decoration: none;
   display: flex;
@@ -236,11 +244,17 @@ const DropdownMenu = styled.ul`
   flex-direction: column;
   justify-content: space-between;
 `;
-const FilterButton = styled.button`
+const FilterButton = styled.button<{ isActive: boolean }>`
   border: none;
   padding: 6px 10px;
   border-radius: 15px;
   font-size: 12px;
+  background-color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#F0F0F0')};
   font-family: Pretendard-Medium;
-  color: #737373;
+  color: ${({ isActive }) => (isActive ? 'white' : 'black')};
+  cursor: pointer;
+`;
+const ArrowIcon = styled(({ view, ...rest }) => <img {...rest} />)`
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ view }) => (view ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
