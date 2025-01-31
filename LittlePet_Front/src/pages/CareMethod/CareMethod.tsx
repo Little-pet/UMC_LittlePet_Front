@@ -18,8 +18,9 @@ const CareMethodPage: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          'http://54.180.205.177:8080/animal-categories'
+          'https://umclittlepet.shop/animal-categories'
         );
+
         const categoryData = response.data.result; // "result" 배열 가져오기
 
         // 대분류 카테고리 설정 (예: ['전체', '설치류', '파충류', '조류', '기타'])
@@ -27,7 +28,7 @@ const CareMethodPage: React.FC = () => {
           (category: any) => category.categoryName
         );
         setMainCategories(['전체', ...fetchedCategories]);
-
+        response.data.result.forEach((category: any) => {});
         // 소분류 및 동물 리스트 변환
         const subCategoryMap: { [key: string]: number[] } = { 전체: [] };
         const animalList: {

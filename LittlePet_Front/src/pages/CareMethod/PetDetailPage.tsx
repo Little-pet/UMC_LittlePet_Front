@@ -23,7 +23,10 @@ const PetDetailPage: React.FC = () => {
     const fetchPetDetail = async () => {
       try {
         const response = await axios.get(
-          `http://54.180.205.177:8080/animal-categories/species/${speciesId}`
+          `https://umclittlepet.shop/animal-categories/species`,
+          {
+            params: { 'species-id': speciesId }, // ✅ Query Parameter로 전달
+          }
         );
         setPetDetail(response.data.result);
       } catch (error) {
