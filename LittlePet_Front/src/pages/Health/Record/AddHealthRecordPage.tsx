@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -22,6 +23,7 @@ import symptom10 from '@assets/symptoms/기타.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const { petId } = useParams();
   //현재 선택된 날짜 (쿼리에서 가져오거나 기본값)
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -36,21 +38,21 @@ const AddHealthRecordPage: React.FC = () => {
 
   //배변 상태
   const fecesTypes = [
-    { id: 1, label: '적당한 무르기', icon: feces1 },
-    { id: 2, label: '딱딱한 똥', icon: feces2 },
-    { id: 3, label: '설사', icon: feces3 },
-    { id: 4, label: '혈변', icon: feces4 },
-    { id: 5, label: '대변 안 봄', icon: feces5 },
+    { id: '1', label: '적당한 무르기', icon: feces1 },
+    { id: '2', label: '딱딱한 똥', icon: feces2 },
+    { id: '3', label: '설사', icon: feces3 },
+    { id: '4', label: '혈변', icon: feces4 },
+    { id: '5', label: '대변 안 봄', icon: feces5 },
   ];
 
   //대변 색
   const fecesColors = [
-    { id: 1, label: '갈색', color: '#94714A' },
-    { id: 2, label: '검은색', color: '#262627' },
-    { id: 3, label: '붉은 색', color: '#C76B6B' },
-    { id: 4, label: '누런 색', color: '#F8E79E' },
-    { id: 5, label: '초록색', color: '#98D298' },
-    { id: 6, label: '회백색', color: '#E6E6E6' },
+    { id: '1', label: '갈색', color: '#94714A' },
+    { id: '2', label: '검은색', color: '#262627' },
+    { id: '3', label: '붉은 색', color: '#C76B6B' },
+    { id: '4', label: '누런 색', color: '#F8E79E' },
+    { id: '5', label: '초록색', color: '#98D298' },
+    { id: '6', label: '회백색', color: '#E6E6E6' },
   ];
 
   //특이 증상
@@ -85,22 +87,14 @@ const AddHealthRecordPage: React.FC = () => {
     weight: '',
     mealAmount: '',
     fecesStatus: '',
-    fecesColor: '',
-    symptoms: '',
+    fecesColorStatus: '',
+    atypicalSymptom: '',
     healthStatus: '',
     hospitalVisit: '',
-    diagnosis: '',
-    treatmentDetails: '',
-    otherSymptoms: '',
+    diagnosisName: '',
+    prescription: '',
+    otherSymptom: '',
   });
-
-  const [selectedFecesType, setSelectedFecesType] = useState<number | null>(
-    null
-  );
-  const [selectedFecesColor, setSelectedFecesColor] = useState<number | null>(
-    null
-  );
-  const [selectedSymptoms, setSelectedSymptoms] = useState<number | null>(null);
 
   // 입력 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,46 +104,70 @@ const AddHealthRecordPage: React.FC = () => {
     }));
   };
 
+  //선택 핸들러
   const handleSelectChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
-  };
-
-  //클릭 핸들러
-  const handleSelect = (name: string, value: number) => {
-    if (name === 'fecesType') setSelectedFecesType(value);
-    if (name === 'fecesColor') setSelectedFecesColor(value);
-    if (name === 'symptoms') setSelectedSymptoms(value);
+    setFormData((prevFormData) => ({
+      ...prevFormData, // 기존 상태 유지
+      [name]: value, // 선택한 값 업데이트
+    }));
   };
 
   // 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 폼 기본 제출 동작 방지
+    e.preventDefault(); // 기본 폼 제출 동작 방지
+
+    // 요청 데이터 확인용 로그
+    console.log('📤 요청 데이터 전처리 전:', formData);
+
+    if (!petId) {
+      alert('잘못된 요청입니다. 반려동물을 선택해주세요.');
+      return;
+    }
 
     if (
       !formData.weight ||
       !formData.mealAmount ||
-      !formData.fecesColor ||
+      !formData.fecesColorStatus ||
       !formData.healthStatus ||
       !formData.fecesStatus ||
       !formData.hospitalVisit ||
-      !formData.diagnosis ||
-      !formData.treatmentDetails
+      !formData.diagnosisName ||
+      !formData.prescription
     ) {
       alert('필수 입력 항목을 확인해주세요!');
       return;
     }
-    /*추후 백엔드와 연동시 수정*/
-    try {
-      const response = await fetch('/api/health-records', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, date }),
-      });
 
-      if (response.ok) {
-        navigate(
-          `/health/record/detail/${searchParams.get('petId')}?date=${date}`
-        );
+    // ✅ `hospitalVisit`을 boolean 값으로 변환하여 서버에서 요구하는 형태로 맞추기
+    const requestData = {
+      recordDate: date,
+      weight: Number(formData.weight), // 숫자로 변환
+      mealAmount: formData.mealAmount,
+      fecesStatus: formData.fecesStatus,
+      fecesColorStatus: formData.fecesColorStatus,
+      atypicalSymptom: formData.atypicalSymptom
+        ? [formData.atypicalSymptom]
+        : [], // 배열 변환
+      healthStatus: formData.healthStatus,
+      hospitalVisit: formData.hospitalVisit === 'o', // ✅ 문자열 "o"이면 true, 아니면 false
+      diagnosisName: formData.diagnosisName || null,
+      prescription: formData.prescription || null,
+      otherSymptom: formData.otherSymptom?.trim() || null,
+    };
+
+    // ✅ 변환된 요청 데이터 확인
+    console.log('📤 변환된 요청 데이터:', requestData);
+
+    try {
+      const response = await axios.post(
+        `https://umclittlepet.shop/pets/${petId}/health-records`,
+        requestData,
+        { withCredentials: true }
+      );
+
+      if (response.data.isSuccess) {
+        alert('건강 기록이 저장되었습니다!');
+        navigate(`/health/record/detail/${petId}?date=${date}`);
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
@@ -162,7 +180,7 @@ const AddHealthRecordPage: React.FC = () => {
   return (
     <Container>
       <Title>건강 기록하기</Title>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <InputGroup>
           <Label>
             체중 <span>*</span>
@@ -196,10 +214,10 @@ const AddHealthRecordPage: React.FC = () => {
             배변 형태 <span>*</span>
           </Label>
           <SelectableButton
-            name='fecesType'
+            name='fecesStatus'
             options={fecesTypes}
-            selectedOption={selectedFecesType}
-            onSelect={handleSelect}
+            selectedOption={formData.fecesStatus}
+            onSelect={handleSelectChange}
           />
         </SelectGroup>
 
@@ -208,28 +226,28 @@ const AddHealthRecordPage: React.FC = () => {
             대변 색 <span>*</span>
           </Label>
           <FecesColorButton
-            name='fecesColor'
+            name='fecesColorStatus'
             options={fecesColors}
-            selectedOption={selectedFecesColor}
-            onSelect={handleSelect}
+            selectedOption={formData.fecesColorStatus}
+            onSelect={handleSelectChange}
           />
         </SelectGroup>
 
         <SelectGroup>
           <Label>특이 증상</Label>
           <SelectableButton
-            name='symptoms'
+            name='atypicalSymptom'
             options={Symptoms}
-            selectedOption={selectedSymptoms}
-            onSelect={handleSelect}
+            selectedOption={formData.atypicalSymptom}
+            onSelect={handleSelectChange}
           />
         </SelectGroup>
 
-        {selectedSymptoms === 10 && (
+        {formData.atypicalSymptom === '기타' && (
           <InputGroup>
             <Input
               name='otherSymptoms'
-              value={formData.otherSymptoms}
+              value={formData.otherSymptom}
               onChange={handleChange}
               placeholder='기타 특이 증상을 적어주세요'
             />
@@ -268,8 +286,8 @@ const AddHealthRecordPage: React.FC = () => {
                 진단명 <span>*</span>
               </Label>
               <Input
-                name='diagnosis'
-                value={formData.diagnosis}
+                name='diagnosisName'
+                value={formData.diagnosisName}
                 onChange={handleChange}
                 placeholder='진단명을 입력하세요'
               />
@@ -280,8 +298,8 @@ const AddHealthRecordPage: React.FC = () => {
                 검사 및 처방 내역 <span>*</span>
               </Label>
               <Input
-                name='treatmentDetails'
-                value={formData.treatmentDetails}
+                name='prescription'
+                value={formData.prescription}
                 onChange={handleChange}
                 placeholder='검사 및 처방 내용을 입력하세요'
               />
@@ -289,7 +307,7 @@ const AddHealthRecordPage: React.FC = () => {
           </>
         )}
 
-        <SaveButton onClick={() => handleSubmit}>저장하기</SaveButton>
+        <SaveButton type='submit'>저장하기</SaveButton>
       </Form>
     </Container>
   );
@@ -314,7 +332,7 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 32px;

@@ -1,97 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import logo from '@assets/logo.svg';
 import animalIcon from '@assets/동물 아이콘.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
-import axios from 'axios';
+
+const userId = 4; // 로그인 구현 후 수정 예정
+
+/* API 요청 함수 (반려동물 목록 조회) */
+const fetchUserPets = async (userId: number) => {
+  const response = await axios.get(
+    `https://umclittlepet.shop/users/${userId}`,
+    { withCredentials: true }
+  );
+  return response.data.result.userPet || [];
+};
+
+/* 🔹 API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
+const fetchHealthRecord = async (petId: number) => {
+  const response = await axios.get(
+    `http://54.180.205.177:8080/pets/${petId}/health-records/latest`,
+    { withCredentials: true }
+  );
+  return response.data.result.latestRecord;
+};
 
 const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
-  const userId = 4; //로그인 구현 후 수정예정. 일단 4로 고정
-  /* 새로운 api 배포되면 수정 예정 */
-  const [userPets, setUserPets] = useState<
-    { petId: number; name: string; profilePhoto: string; petCategory: string }[]
-  >([]);
-  const [selectedPet, setSelectedPet] = useState<{
-    petId: number;
-    name: string;
-    profilePhoto: string;
-    petCategory: string;
-  } | null>(null);
 
-  //  건강 기록 상태 추가
-  const [healthRecord, setHealthRecord] = useState<{
-    recordDate: string;
-    weight: number;
-    mealAmount: string;
-    fecesStatus: string;
-    fecesColorStatus: string;
-    healthStatus: string;
-    atypicalSymptom: string[];
-    diagnosisName: string;
-    prescription: string;
-  } | null>(null);
+  /* Tanstack Query 사용하여 반려동물 목록 캐싱 */
+  const { data: userPets, isLoading: petsLoading } = useQuery({
+    queryKey: ['userPets', userId],
+    queryFn: () => fetchUserPets(userId),
+    staleTime: 1000 * 60 * 10, // 10분 동안 캐싱 유지
+  });
 
-  const [loading, setLoading] = useState(true);
+  const [selectedPet, setSelectedPet] = useState(userPets?.[0] || null);
 
-  //healthStatus에 따른 뱃지 이미지
+  /* Tanstack Query 사용하여 최신 건강 기록 캐싱 */
+  const { data: healthRecord, isLoading: recordLoading } = useQuery({
+    queryKey: ['healthRecord', selectedPet?.petId],
+    queryFn: () => fetchHealthRecord(selectedPet!.petId),
+    enabled: !!selectedPet, // selectedPet이 있을 때만 실행
+    staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 유지
+  });
 
+  useEffect(() => {
+    if (userPets?.length > 0) {
+      setSelectedPet(userPets[0]); // 첫 번째 반려동물 자동 선택
+    }
+  }, [userPets]);
+
+  /** 건강 상태에 따른 뱃지 이미지 */
   const healthBadgeMap: { [key: string]: string } = {
     건강: healthy,
     양호: good,
     악화: bad,
   };
-
   const healthStatus = healthRecord?.healthStatus || '정보 없음';
   const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
-
-  useEffect(() => {
-    // 사용자 프로필 조회
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/users/${userId}`,
-          { withCredentials: true }
-        );
-
-        const pets = response.data.result.userPet || [];
-        setUserPets(pets);
-        if (pets.length > 0) {
-          setSelectedPet(pets[0]); // 첫 번째 반려동물 선택
-        }
-      } catch (error) {
-        console.error('사용자 프로필 조회 실패:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserProfile();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedPet) return;
-
-    // 선택한 반려동물의 건강 기록 조회
-    const fetchHealthRecord = async () => {
-      try {
-        const response = await axios.get(
-          `http://54.180.205.177:8080/pets/${selectedPet.petId}/health-records/latest`,
-          { withCredentials: true }
-        );
-        setHealthRecord(response.data.result.latestRecord);
-      } catch (error) {
-        console.error('건강 기록 조회 실패:', error);
-        setHealthRecord(null);
-      }
-    };
-
-    fetchHealthRecord();
-  }, [selectedPet]);
 
   const handlePetClick = (pet: any) => {
     setSelectedPet(pet);
@@ -103,9 +75,7 @@ const HealthProfile: React.FC = () => {
     });
   };
 
-  /*if (loading) {
-    return <Loading>로딩 중...</Loading>;
-  }*/
+  if (petsLoading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
     <>
@@ -224,6 +194,13 @@ const HealthProfile: React.FC = () => {
 };
 
 export default HealthProfile;
+
+const Loading = styled.div`
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+`;
+
 const PageTitle = styled.h1`
   font-weight: 600;
   font-size: 22px;

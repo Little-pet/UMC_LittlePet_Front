@@ -8,8 +8,7 @@ const PetDetailPage: React.FC = () => {
   const [petDetail, setPetDetail] = useState<{
     id: number;
     species: string;
-    //title: string;
-    //date: string;
+    title: string;
     features: string;
     foodInfo: string;
     environment: string;
@@ -17,6 +16,8 @@ const PetDetailPage: React.FC = () => {
     featureImagePath: string;
     petBigCategoryId: number;
     petBigCategoryName: string;
+    createdAt: string;
+    updatedAt: string;
   } | null>(null);
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const PetDetailPage: React.FC = () => {
       {/* 🟢 페이지 콘텐츠 */}
       <TitleContainer>
         <Title>{petDetail.title}</Title>
-        <Date>{petDetail.date} </Date>
+        <Date>{petDetail.createdAt} </Date>
         <PetImage src={petDetail.featureImagePath} alt={petDetail.species} />
       </TitleContainer>
 

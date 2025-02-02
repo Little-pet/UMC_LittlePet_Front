@@ -3,20 +3,20 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
 const CareDetailRootLayout: React.FC = () => {
-  // 🟢 각 섹션의 ref 생성
+  //  각 섹션의 ref 생성
   const featureRef = useRef<HTMLDivElement>(null);
   const foodRef = useRef<HTMLDivElement>(null);
   const environmentRef = useRef<HTMLDivElement>(null);
   const playRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<string>('feature');
 
-  // 🟢 스크롤 이동 및 Active 상태 업데이트 함수
+  // 스크롤 이동 및 Active 상태 업데이트 함수
   const handleNavClick = (section: string) => {
-    setSelected(section); // 🟢 선택된 상태 업데이트
-    scrollToSection(section); // 🟢 해당 섹션으로 스크롤 이동
+    setSelected(section); // 선택된 상태 업데이트
+    scrollToSection(section); // 해당 섹션으로 스크롤 이동
   };
 
-  // 🟢 스크롤 이동 함수
+  //  스크롤 이동 함수
   const scrollToSection = (section: string) => {
     const sectionRefs: { [key: string]: React.RefObject<HTMLDivElement> } = {
       feature: featureRef,
@@ -73,8 +73,8 @@ export default CareDetailRootLayout;
 const Container = styled.div``;
 
 const StickyNav = styled.div`
-  position: sticky;
-  top: 0px;
+  position: fixed;
+  top: 95px;
   background-color: white;
   width: 100%;
   height: 45px;
