@@ -52,12 +52,11 @@ const PetRegistrationPage: React.FC = () => {
     birthDay: string; // 생년월일 (날짜 타입도 가능)
     gender: string; // 성별 (선택된 태그)
     profilePhoto: string; // 이미지 URL
-    categoryId: number; // 카테고리 ID
+    categoryName: string; // 카테고리 ID
   }
   // 서버에서 response할 객체
   interface ResponsePet extends Pet {
     petId: number;
-    categoryName: string;
   }
 
   const handleSave = async () => {
@@ -70,7 +69,7 @@ const PetRegistrationPage: React.FC = () => {
         profileImage instanceof File
           ? URL.createObjectURL(profileImage)
           : profileImage,
-      categoryId: categoryId ?? 0,
+      categoryName: categoryText ?? 0,
     };
 
     console.log(newPet);
@@ -86,18 +85,14 @@ const PetRegistrationPage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log('성공', response.data);
+      console.log('반려동물 프로필 등록 성공', response.data);
       const responsePet: ResponsePet = response.data.result;
 
-      const updatedPet = {
-        ...responsePet,
-        categoryId: newPet.categoryId,
-      };
-      addPet(updatedPet);
+      addPet(responsePet);
 
       navigate('/mypage');
     } catch (error) {
-      console.error('실패:', error);
+      console.error('반려동물 프로필 등록 실패:', error);
     }
   };
 

@@ -7,7 +7,6 @@ interface Pet {
   gender: string;
   profilePhoto: string;
   birthDay: string;
-  categoryId: number;
 }
 
 interface PetContextType {
