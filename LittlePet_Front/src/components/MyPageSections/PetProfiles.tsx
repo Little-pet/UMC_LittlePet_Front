@@ -1,22 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePets } from '#/context/PetContext';
 import styled from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
+import axios from 'axios';
+interface PetProfile {
+  petId: number;
+  name: string;
+  profilePhoto: string;
+}
 const PetProfiles: React.FC = () => {
   const { pets } = usePets();
   const navigate = useNavigate();
+  const [profiles, setProfiles] = useState<PetProfile[]>([]);
+  useEffect(() => {
+    const fetchPets = async () => {
+      const endpoint = '/users/4/pets/All';
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL + endpoint
+        );
+        console.log('✅ 성공:', response.data);
+        setProfiles(response.data.result);
+      } catch (error) {
+        console.error('❌ 실패:', error);
+      }
+    };
 
+    fetchPets(); // ✅ 선언한 async 함수 실행
+  }, []);
   const handlePetClick = (petId: number) => {
     navigate(`/edit-pet/${petId}`);
   };
 
   return (
     <Container>
-      {pets.map((pet) => (
-        <ProfileCard key={pet.id} onClick={() => handlePetClick(pet.id)}>
-          <ProfileImage src={pet.profileImage} alt={pet.name} />
-          <ProfileName>{pet.name}</ProfileName>
+      {profiles.map((profile) => (
+        <ProfileCard
+          key={profile.petId}
+          onClick={() => handlePetClick(profile.petId)}
+        >
+          <ProfileImage src={profile.profilePhoto} alt={profile.name} />
+          <ProfileName>{profile.name}</ProfileName>
         </ProfileCard>
       ))}
       <PetItem>
@@ -37,16 +62,8 @@ const Container = styled.div`
   gap: 20px;
   align-items: center;
   overflow-x: auto; /* 가로 스크롤 가능하도록 설정 */
-  max-width: 100%; /* 부모 요소에 맞추기 */
+  width: 100%; /* 부모 요소에 맞추기 */
   white-space: nowrap;
-
-  /* 스크롤바 숨기기 */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const ProfileCard = styled.div`

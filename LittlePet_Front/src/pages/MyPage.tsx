@@ -36,6 +36,12 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 32px;
+  width: 100%;
+  padding: 0 25px;
+  box-sizing: border-box;
+  @media (min-width: 800px) {
+    padding: 0 96px;
+  }
 `;
 
 const Title = styled.p`
@@ -43,10 +49,12 @@ const Title = styled.p`
   font-family: 'Pretendard';
   font-weight: 600;
   font-size: 22px;
+  margin-bottom: 0;
 `;
 
 const ProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 23px;
+  width: 100%;
 `;

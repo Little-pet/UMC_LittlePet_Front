@@ -52,22 +52,20 @@ export default StatsComponent;
 // 스타일 컴포넌트 정의
 const StatsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   border: 1px solid#E6E6E6;
   border-radius: 5px;
   padding: 15px 6px;
-  width: 343px;
-  gap: 10px;
+  width: 100%;
   height: 81px;
   box-sizing: border-box;
   z-index: 0;
 `;
 const ItemContainer = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  width: auto;
   text-align: center;
   position: relative; /* 가상 요소의 위치 조정을 위해 필요 */
   padding: 0 15px;
@@ -89,6 +87,7 @@ const Label = styled.div`
   color: #737373;
   align-items: center;
   height: 22px;
+  white-space: nowrap; // 줄바꿈 금지
 `;
 const Value = styled.div`
   font-size: 16px;
@@ -96,4 +95,5 @@ const Value = styled.div`
   color: #6ea8fe;
   cursor: pointer;
   height: 22px;
+  white-space: nowrap; // 줄바꿈 금지
 `;

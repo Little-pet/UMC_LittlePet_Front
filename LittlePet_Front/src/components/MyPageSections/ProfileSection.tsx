@@ -22,9 +22,9 @@ const ProfileSection: React.FC = () => {
         {/* 반려동물 등록 정보 */}
         <PetList>
           {pets.map((pet, index) => (
-            <PetItem key={pet.id}>
-              <AnimalIcon src={animalIcon} alt={pet.category} />
-              {pet.category}
+            <PetItem key={pet.petId}>
+              <AnimalIcon src={animalIcon} alt={pet.categoryName} />
+              {pet.categoryName}
               <GenderIcon gender={pet.gender}>
                 {pet.gender === 'female' ? '♀' : '♂'}
               </GenderIcon>
@@ -43,7 +43,7 @@ const ProfileSection: React.FC = () => {
 export default ProfileSection;
 
 const ProfileContainer = styled.div`
-  width: 343px;
+  width: 100%;
   height: 50px;
   display: flex;
   gap: 15px;

@@ -37,7 +37,7 @@ const PetRegistrationPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'else',
+      gender: 'ELSE',
       title: '기타',
       icon: null,
     },
@@ -46,18 +46,23 @@ const PetRegistrationPage: React.FC = () => {
   const handleTagClick = (type: string) => {
     setTagSelected(type);
   };
+  // 서버에 post할 객체
   interface Pet {
     name: string; // 반려동물 이름
     birthDay: string; // 생년월일 (날짜 타입도 가능)
     gender: string; // 성별 (선택된 태그)
     profilePhoto: string; // 이미지 URL
-    categoryId: number | undefined; // 카테고리 ID
+    categoryId: number; // 카테고리 ID
+  }
+  // 서버에서 response할 객체
+  interface ResponsePet extends Pet {
+    petId: number;
+    categoryName: string;
   }
 
   const handleSave = async () => {
     const endpoint = '/users/4/pets';
     const newPet: Pet = {
-      /* id: pets.length + 1, // id 자동 생성 */
       name: name, // 상태에서 가져온 이름
       birthDay: birthDate,
       gender: tagSelected,
@@ -65,7 +70,7 @@ const PetRegistrationPage: React.FC = () => {
         profileImage instanceof File
           ? URL.createObjectURL(profileImage)
           : profileImage,
-      categoryId: categoryId,
+      categoryId: categoryId ?? 0,
     };
 
     console.log(newPet);
@@ -75,14 +80,21 @@ const PetRegistrationPage: React.FC = () => {
         newPet,
         {
           headers: {
-            'Content-Type': 'application/json', // ✅ JSON 형식 요청 명시
-            Accept: 'application/json', // ✅ JSON 응답을 받기 위한 설정
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
           withCredentials: true,
         }
       );
       console.log('성공', response.data);
-      addPet(newPet); // 컨텍스트에 새로운 반려동물 추가
+      const responsePet: ResponsePet = response.data.result;
+
+      const updatedPet = {
+        ...responsePet,
+        categoryId: newPet.categoryId,
+      };
+      addPet(updatedPet);
+
       navigate('/mypage');
     } catch (error) {
       console.error('실패:', error);

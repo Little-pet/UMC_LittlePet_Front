@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface Pet {
-  id: number;
+  petId: number;
   name: string;
-  category: string;
+  categoryName: string;
   gender: string;
-  profileImage: string;
+  profilePhoto: string;
   birthDay: string;
+  categoryId: number;
 }
 
 interface PetContextType {
@@ -22,7 +23,7 @@ export const PetProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [pets, setPets] = useState<Pet[]>([]);
-
+  console.log(pets);
   //새 반려동물 추가
   const addPet = (pet: Pet) => {
     if (!pet.birthDay) {
@@ -34,13 +35,13 @@ export const PetProvider: React.FC<{ children: React.ReactNode }> = ({
   // 반려동물 정보 수정
   const updatePet = (updatedPet: Pet) => {
     setPets((prevPets) =>
-      prevPets.map((pet) => (pet.id === updatedPet.id ? updatedPet : pet))
+      prevPets.map((pet) => (pet.petId === updatedPet.petId ? updatedPet : pet))
     );
   };
 
   //반려동물 삭제
   const deletePet = (id: number) => {
-    setPets((prevPets) => prevPets.filter((pet) => pet.id !== id));
+    setPets((prevPets) => prevPets.filter((pet) => pet.petId !== id));
   };
 
   return (

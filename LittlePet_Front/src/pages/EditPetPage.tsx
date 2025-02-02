@@ -6,50 +6,53 @@ import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
-
+import axios from 'axios';
 interface Pet {
-  id: number;
   name: string;
-  profileImage: string | File;
-  category: string;
+  profilePhoto: string;
+  categoryId: number;
   gender: string;
-  birthDate: string;
+  birthDay: string;
 }
-
+// 서버에 post할 객체
+interface ContextPet extends Pet {
+  petId: number;
+  categoryName: string;
+}
 const EditPetPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const { pets, deletePet, updatePet } = usePets();
   const navigate = useNavigate();
-
+  const { categoryId, setCategoryId } = useState<number>();
   const tags = [
     {
-      gender: 'female',
+      gender: 'FEMALE',
       title: '암컷',
       icon: '♀',
     },
     {
-      gender: 'male',
+      gender: 'MALE',
       title: '수컷',
       icon: '♂',
     },
     {
-      gender: 'else',
+      gender: 'ELSE',
       title: '기타',
       icon: null,
     },
   ];
   // 기존 반려동물 정보를 찾기
-  const foundPet = pets.find((p) => p.id === Number(petId));
-
+  const foundPet = pets.find((p) => p.petId === Number(petId));
   const [pet, setPet] = useState<Pet>({
-    id: foundPet?.id || 0,
+    petId: foundPet?.petId || 0,
     name: foundPet?.name || '',
-    profileImage: foundPet?.profileImage || '',
-    category: foundPet?.category || '',
+    profilePhoto: foundPet?.profilePhoto || '',
+    categoryName: foundPet?.categoryName || '',
     gender: foundPet?.gender || 'else',
-    birthDate: foundPet?.birthDate || '',
+    birthDay: foundPet?.birthDay || '',
   });
-
+  console.log(pet);
+  console.log(petId);
   // 초기 상태 저장 (비교용)
   const [initialPet, setInitialPet] = useState<Pet>(pet);
 
@@ -67,12 +70,10 @@ const EditPetPage: React.FC = () => {
   useEffect(() => {
     const hasChanges =
       pet.name.trim() !== initialPet.name.trim() ||
-      (pet.profileImage instanceof File
-        ? URL.createObjectURL(pet.profileImage) !== initialPet.profileImage
-        : pet.profileImage !== initialPet.profileImage) ||
-      pet.category !== initialPet.category ||
+      pet.profilePhoto !== initialPet.profilePhoto ||
+      pet.categoryName !== initialPet.categoryName ||
       pet.gender !== initialPet.gender ||
-      pet.birthDate !== initialPet.birthDate;
+      pet.birthDay !== initialPet.birthDay;
 
     setIsModified(hasChanges);
   }, [pet, initialPet]);
@@ -84,40 +85,61 @@ const EditPetPage: React.FC = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // 반려동물 정보 업데이트
-    updatePet(pet);
-    navigate('/mypage');
+    const newPet: Pet = {
+      name: name, // 상태에서 가져온 이름
+      birthDay: birthDate,
+      gender: tagSelected,
+      profilePhoto:
+        profileImage instanceof File
+          ? URL.createObjectURL(profileImage)
+          : profileImage,
+      categoryId: categoryId ?? 0,
+    };
+    try {
+      const response = await axios.put(
+        import.meta.env.VITE_BACKEND_URL + `/users/4/pets/${petId}`
+      );
+      console.log('성공', response.data);
+      updatePet(pet);
+      navigate('/mypage');
+    } catch (error) {
+      console.error('실패:', error);
+    }
   };
 
-  const handleDelete = () => {
-    deletePet(Number(petId));
-    navigate('/mypage');
+  const handleDelete = async () => {
+    try {
+      console.log(petId);
+      const response = await axios.delete(
+        import.meta.env.VITE_BACKEND_URL + `/users/4/pets/${petId}`
+      );
+      console.log('성공', response.data);
+      deletePet(Number(petId));
+      navigate('/mypage');
+    } catch (error) {
+      console.error('실패:', error);
+    }
   };
 
   return (
     <Container>
       <Title>반려동물 프로필 수정</Title>
 
-      <ProfileWrapper>
-        <ProfileImgContainer
-          onClick={() => document.getElementById('fileInput')?.click()}
-        >
+      <ProfileWrapper
+        onClick={() => document.getElementById('fileInput')?.click()}
+      >
+        <ProfileImgContainer>
           <HiddenInput
             type='file'
             accept='image/*'
             onChange={(e) =>
-              handleInputChange('profileImage', e.target.files![0])
+              handleInputChange('profilePhoto', e.target.files![0])
             }
             id='fileInput'
           />
-          <ProfileImg
-            src={
-              pet.profileImage instanceof File
-                ? URL.createObjectURL(pet.profileImage)
-                : pet.profileImage
-            }
-          />
+          <ProfileImg src={pet.profilePhoto} />
         </ProfileImgContainer>
         <EditIcon src={EditIconImg} alt='편집' />
       </ProfileWrapper>
@@ -135,16 +157,16 @@ const EditPetPage: React.FC = () => {
         <BDInputContainer>
           <Label>생년월일</Label>
           <DatePicker
-            selectedDate={pet.birthDate}
-            onDateChange={(date) => handleInputChange('birthDate', date)}
+            selectedDate={pet.birthDay}
+            onDateChange={(date) => handleInputChange('birthDay', date)}
           />
         </BDInputContainer>
 
         <SelectContainer>
           <CategoryDropdown
-            selectedCategory={pet.category}
+            selectedCategory={pet.categoryName}
             onCategorySelect={(category) =>
-              handleInputChange('category', category)
+              handleInputChange('categoryName', category)
             }
           />
           <TagButtonContainer>
@@ -190,6 +212,7 @@ const ProfileWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const ProfileImgContainer = styled.div`
@@ -197,7 +220,6 @@ const ProfileImgContainer = styled.div`
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  cursor: pointer;
   border: 2px solid #ccc;
 `;
 

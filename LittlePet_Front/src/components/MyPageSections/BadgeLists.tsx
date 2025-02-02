@@ -73,7 +73,7 @@ const BadgeContainer = styled.div`
   display: flex;
   align-items: center;
   height: 50px;
-  width: 343px;
+  width: 100%;
   background-color: #fafafa;
   padding: 12px 18px;
   gap: 12px;
