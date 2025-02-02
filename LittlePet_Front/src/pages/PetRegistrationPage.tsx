@@ -6,7 +6,7 @@ import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
-
+import axios from 'axios';
 const PetRegistrationPage: React.FC = () => {
   const { pets, addPet } = usePets();
   const navigate = useNavigate();
@@ -15,6 +15,7 @@ const PetRegistrationPage: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | File>('');
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
+  const [categoryId, setCategoryId] = useState<number>();
   const [birthDate, sestBirthDate] = useState<string>('');
 
   // 파일 선택 핸들러
@@ -26,12 +27,12 @@ const PetRegistrationPage: React.FC = () => {
 
   const tags = [
     {
-      gender: 'female',
+      gender: 'FEMALE',
       title: '암컷',
       icon: '♀',
     },
     {
-      gender: 'male',
+      gender: 'MALE',
       title: '수컷',
       icon: '♂',
     },
@@ -45,31 +46,57 @@ const PetRegistrationPage: React.FC = () => {
   const handleTagClick = (type: string) => {
     setTagSelected(type);
   };
+  interface Pet {
+    name: string; // 반려동물 이름
+    birthDay: string; // 생년월일 (날짜 타입도 가능)
+    gender: string; // 성별 (선택된 태그)
+    profilePhoto: string; // 이미지 URL
+    categoryId: number | undefined; // 카테고리 ID
+  }
 
-  const handleSave = () => {
-    const newPet = {
-      id: pets.length + 1, // id 자동 생성
+  const handleSave = async () => {
+    const endpoint = '/users/4/pets';
+    const newPet: Pet = {
+      /* id: pets.length + 1, // id 자동 생성 */
       name: name, // 상태에서 가져온 이름
-      profileImage:
+      birthDay: birthDate,
+      gender: tagSelected,
+      profilePhoto:
         profileImage instanceof File
           ? URL.createObjectURL(profileImage)
           : profileImage,
-      category: categoryText,
-      gender: tagSelected,
-      birthDate: birthDate,
+      categoryId: categoryId,
     };
-    addPet(newPet); // 컨텍스트에 새로운 반려동물 추가
-    navigate('/mypage');
+
+    console.log(newPet);
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + endpoint,
+        newPet,
+        {
+          headers: {
+            'Content-Type': 'application/json', // ✅ JSON 형식 요청 명시
+            Accept: 'application/json', // ✅ JSON 응답을 받기 위한 설정
+          },
+          withCredentials: true,
+        }
+      );
+      console.log('성공', response.data);
+      addPet(newPet); // 컨텍스트에 새로운 반려동물 추가
+      navigate('/mypage');
+    } catch (error) {
+      console.error('실패:', error);
+    }
   };
 
   return (
     <Container>
       <Title>반려동물 프로필 등록</Title>
 
-      <ProfileWrapper>
-        <ProfileImgContainer
-          onClick={() => document.getElementById('fileInput')?.click()}
-        >
+      <ProfileWrapper
+        onClick={() => document.getElementById('fileInput')?.click()}
+      >
+        <ProfileImgContainer>
           <HiddenInput
             type='file'
             accept='image/*'
@@ -105,6 +132,7 @@ const PetRegistrationPage: React.FC = () => {
           <CategoryDropdown
             selectedCategory={categoryText}
             onCategorySelect={(category) => setCategoryText(category)}
+            onIdSelect={(id) => setCategoryId(id)}
           />
           <TagButtonContainer>
             {tags.map((tag, index) => (
@@ -152,6 +180,7 @@ const ProfileWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const ProfileImgContainer = styled.div`
@@ -159,7 +188,6 @@ const ProfileImgContainer = styled.div`
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  cursor: pointer;
   border: 2px solid #ccc;
 `;
 

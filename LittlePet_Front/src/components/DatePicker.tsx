@@ -24,7 +24,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   // 날짜 변경 핸들러
   const handleDateChange = (date: Date | null) => {
     if (date) {
-      const formattedDate = format(date, 'yyyy.MM.dd (EEE)', { locale: ko });
+      const formattedDate = format(date, 'yyyy-MM-dd');
       onDateChange(formattedDate); // 부모 컴포넌트로 업데이트 전달
     }
   };

@@ -6,7 +6,7 @@ interface Pet {
   category: string;
   gender: string;
   profileImage: string;
-  birthDate: string;
+  birthDay: string;
 }
 
 interface PetContextType {
@@ -25,7 +25,7 @@ export const PetProvider: React.FC<{ children: React.ReactNode }> = ({
 
   //새 반려동물 추가
   const addPet = (pet: Pet) => {
-    if (!pet.birthDate) {
+    if (!pet.birthDay) {
       console.warn('birthDate가 없는 데이터가 추가되고 있습니다!', pet);
     }
     setPets([...pets, pet]);

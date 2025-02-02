@@ -54,6 +54,7 @@ const ProfileCard = styled.div`
   flex-direction: column;
   align-items: center;
   white-space: nowrap;
+  cursor: pointer;
 `;
 
 const ProfileImage = styled.img`

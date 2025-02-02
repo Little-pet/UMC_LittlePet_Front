@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
-import TagButton from '#/components/Community/AddPage/TagButton';
+import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 
 interface Pet {
   id: number;
@@ -21,6 +21,23 @@ const EditPetPage: React.FC = () => {
   const { pets, deletePet, updatePet } = usePets();
   const navigate = useNavigate();
 
+  const tags = [
+    {
+      gender: 'female',
+      title: '암컷',
+      icon: '♀',
+    },
+    {
+      gender: 'male',
+      title: '수컷',
+      icon: '♂',
+    },
+    {
+      gender: 'else',
+      title: '기타',
+      icon: null,
+    },
+  ];
   // 기존 반려동물 정보를 찾기
   const foundPet = pets.find((p) => p.id === Number(petId));
 
@@ -37,7 +54,7 @@ const EditPetPage: React.FC = () => {
   const [initialPet, setInitialPet] = useState<Pet>(pet);
 
   const [isModified, setIsModified] = useState(false);
-
+  const [tagSelected, setTagSelected] = useState<string>('');
   useEffect(() => {
     // 초기 상태 설정
     if (foundPet) {
@@ -131,22 +148,14 @@ const EditPetPage: React.FC = () => {
             }
           />
           <TagButtonContainer>
-            {['female', 'male', 'else'].map((gender) => (
-              <TagButton
-                key={gender}
-                label={
-                  gender === 'female'
-                    ? '암컷'
-                    : gender === 'male'
-                      ? '수컷'
-                      : '기타'
-                }
-                icon={
-                  gender === 'female' ? '♀' : gender === 'male' ? '♂' : null
-                }
-                type={gender}
-                onClick={() => handleInputChange('gender', gender)}
-                isSelected={pet.gender === gender}
+            {tags.map((tag, index) => (
+              <GenderTagButton
+                key={index}
+                label={tag.title}
+                icon={tag.icon}
+                type={tag.gender}
+                onClick={() => setTagSelected(tag.gender)}
+                isSelected={tagSelected === tag.gender}
               />
             ))}
           </TagButtonContainer>
@@ -170,7 +179,6 @@ const Container = styled.div`
   gap: 24px;
   padding: 20px;
   font-family: 'Pretendard';
-  margin-top: -45px;
 `;
 
 const Title = styled.h1`
