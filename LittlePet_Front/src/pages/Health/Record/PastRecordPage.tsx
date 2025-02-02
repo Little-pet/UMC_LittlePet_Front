@@ -7,7 +7,7 @@ import calendarIcon from '@assets/Calender.svg';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import normal from '@assets/정상.svg';
 import abnormal from '@assets/이상.svg';
-
+import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
   return Array.from({ length: range * 2 + 1 }, (_, i) =>
@@ -165,6 +165,7 @@ const PastRecordPage: React.FC = () => {
         </RecordItem>
       </HealthRecord>
       <MobileAddButton selectedDate={selectedDate} />
+      <DesktopAddButton selectedDate={selectedDate} />
     </Container>
   );
 };

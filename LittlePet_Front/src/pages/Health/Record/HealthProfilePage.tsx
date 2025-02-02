@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
+import banner from '@assets/banner-health.svg';
 
 const HealthProfile: React.FC = () => {
   const { pets } = usePets();
@@ -32,6 +33,7 @@ const HealthProfile: React.FC = () => {
   return (
     <>
       <PageTitle>건강 기록 프로필</PageTitle>
+      <Banner src={banner} />
       <Container>
         {pets.length > 0 ? (
           <>
@@ -135,12 +137,21 @@ const HealthProfile: React.FC = () => {
 };
 
 export default HealthProfile;
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
 
 const PageTitle = styled.h1`
   font-weight: 600;
   font-size: 22px;
   text-align: center;
   margin-top: 34px;
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const EmptyState = styled.div`

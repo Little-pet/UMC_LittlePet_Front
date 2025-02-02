@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import addIcon from '#/assets/add.svg';
+import dayjs from 'dayjs';
 
 interface MobileAddButtonProps {
   selectedDate: dayjs.Dayjs;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import banner from '@assets/banner-caremethod.svg';
 import {
   mainCategories,
   subCategories,
@@ -20,50 +21,68 @@ const CareMethodPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>어떤 소동물이 궁금하신가요?</Title>
-        <ButtonList>
-          {mainCategories.map((category) => (
-            <CategoryButton
-              key={category}
-              onClick={() =>
-                setSelectedCategory(category as keyof typeof subCategories)
-              }
-              isSelected={selectedCategory === category}
-            >
-              {category}
-            </CategoryButton>
-          ))}
-        </ButtonList>
-      </Header>
+    <>
+      <ContainerWrapper>
+        <Banner src={banner} />
+        <Container>
+          <Header>
+            <Title>어떤 소동물이 궁금하신가요?</Title>
+            <ButtonList>
+              {mainCategories.map((category) => (
+                <CategoryButton
+                  key={category}
+                  onClick={() =>
+                    setSelectedCategory(category as keyof typeof subCategories)
+                  }
+                  isSelected={selectedCategory === category}
+                >
+                  {category}
+                </CategoryButton>
+              ))}
+            </ButtonList>
+          </Header>
 
-      {/* Content */}
-      <Content>
-        <CategoryGrid>
-          {subCategories[selectedCategory].map((id) => {
-            const item = animals.find((animal) => animal.id === id);
+          {/* Content */}
+          <Content>
+            <CategoryGrid>
+              {subCategories[selectedCategory].map((id) => {
+                const item = animals.find((animal) => animal.id === id);
 
-            return (
-              item && (
-                <CategoryItem
-                  key={item.id}
-                  src={item.image}
-                  alt={item.name}
-                  onClick={() => handleAnimalClick(item.link)}
-                />
-              )
-            );
-          })}
-        </CategoryGrid>
-      </Content>
-    </Container>
+                return (
+                  item && (
+                    <CategoryItem
+                      key={item.id}
+                      src={item.image}
+                      alt={item.name}
+                      onClick={() => handleAnimalClick(item.link)}
+                    />
+                  )
+                );
+              })}
+            </CategoryGrid>
+          </Content>
+        </Container>
+      </ContainerWrapper>
+    </>
   );
 };
 
 export default CareMethodPage;
 
 // Styled Components
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const Container = styled.div`
   padding: 25px;
 `;
@@ -75,13 +94,20 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 22px;
   font-weight: 600;
-  margin-top: 11px;
+  margin-top: 49px;
   text-align: center;
+  @media (min-width: 800px) {
+    font-size: 26px;
+    line-height: 22px;
+  }
 `;
 const ButtonList = styled.div`
   display: flex;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 42px;
+  @media (min-width: 800px) {
+    justify-content: center;
+  }
 `;
 
 const Content = styled.div`
@@ -96,6 +122,11 @@ const CategoryGrid = styled.div`
   grid-template-columns: repeat(3, 1fr); /* 2-column layout */
   gap: 10px;
   width: 100%;
+  @media (min-width: 800px) {
+    justify-content: space-between;
+    grid-template-columns: repeat(5, 1fr);
+    width: 855px;
+  }
 `;
 
 const CategoryButton = styled.button<{ isSelected: boolean }>`
