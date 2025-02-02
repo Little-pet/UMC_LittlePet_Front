@@ -12,7 +12,7 @@ import axios from 'axios';
 const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
   const userId = 4; //로그인 구현 후 수정예정. 일단 4로 고정
-  /* api수정 후 birthDate, gender 추가 예정  */
+  /* 새로운 api 배포되면 수정 예정 */
   const [userPets, setUserPets] = useState<
     { petId: number; name: string; profilePhoto: string; petCategory: string }[]
   >([]);
@@ -98,7 +98,6 @@ const HealthProfile: React.FC = () => {
   };
 
   const handlePetDetailClick = (pet: any) => {
-    console.log('선택한 반려동물:', pet);
     navigate(`/health/record/detail/${pet.petId}`, {
       state: { petName: pet.name },
     });
@@ -127,9 +126,7 @@ const HealthProfile: React.FC = () => {
               ))}
             </PetList>
 
-            <PetDetails
-              onClick={() => handlePetDetailClick(selectedPet!.petId)}
-            >
+            <PetDetails onClick={() => handlePetDetailClick(selectedPet!)}>
               <PetCard>
                 <PetImgLarge
                   src={selectedPet?.profilePhoto || logo}

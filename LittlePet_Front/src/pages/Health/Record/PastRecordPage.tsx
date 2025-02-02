@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import { usePets } from '#/context/PetContext';
 import calendarIcon from '@assets/Calender.svg';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import normal from '@assets/정상.svg';
@@ -23,8 +22,12 @@ const PastRecordPage: React.FC = () => {
 
   //이름 불러오기
   const petName = location.state?.petName || '알 수 없음';
-  // 기본값을 오늘로 설정
-  const [selectedDate, setSelectedDate] = useState(dayjs());
+  // 기본값 설정
+  const initialDate = location.state?.selectedDate
+    ? dayjs(location.state.selectedDate) // 캘린더에서 선택한 날짜
+    : dayjs(); // 기본값: 오늘 날짜
+
+  const [selectedDate, setSelectedDate] = useState(initialDate);
   const calendarRef = useRef<HTMLDivElement>(null);
   const dateRange = 3; // 중앙을 포함해 양옆으로 3일 표시
 
@@ -107,8 +110,9 @@ const PastRecordPage: React.FC = () => {
           onClick={() =>
             navigate(`/health/record/calendar/${petId}`, {
               state: {
-                selectedDate: dayjs().format('YYYY-MM-DD'),
+                selectedDate: selectedDate.format('YYYY-MM-DD'),
                 petName: petName,
+                petId: petId,
               },
             })
           }
