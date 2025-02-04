@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import calendarIcon from '@assets/Calender.svg';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import normal from '@assets/정상.svg';
+import { usePetStore } from '#/context/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
 
@@ -19,9 +20,10 @@ const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
+  const { getPetName } = usePetStore();
 
-  //이름 불러오기
-  const petName = location.state?.petName || '알 수 없음';
+  //petId에 해당하는 petName찾기
+  const petName = getPetName(Number(petId));
   // 기본값 설정
   const initialDate = location.state?.selectedDate
     ? dayjs(location.state.selectedDate) // 캘린더에서 선택한 날짜

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { usePets } from '#/context/PetContext';
+import { usePetStore } from '#/context/petStore';
 import { useUser } from '#/context/UserContext';
 import Edit from '@assets/Edit.svg';
 import animalIcon from '@assets/동물 아이콘.svg';
 
 const ProfileSection: React.FC = () => {
-  const { pets } = usePets();
+  const { pets } = usePetStore();
   const { user } = useUser();
   const navigate = useNavigate();
   const handleEditProfile = () => {
@@ -22,9 +22,9 @@ const ProfileSection: React.FC = () => {
         {/* 반려동물 등록 정보 */}
         <PetList>
           {pets.map((pet, index) => (
-            <PetItem key={pet.id}>
-              <AnimalIcon src={animalIcon} alt={pet.category} />
-              {pet.category}
+            <PetItem key={pet.petId}>
+              <AnimalIcon src={animalIcon} alt={pet.petCategory} />
+              {pet.petCategory}
               <GenderIcon gender={pet.gender}>
                 {pet.gender === 'female' ? '♀' : '♂'}
               </GenderIcon>

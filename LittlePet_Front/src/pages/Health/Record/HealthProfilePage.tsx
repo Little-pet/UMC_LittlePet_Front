@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -10,18 +11,7 @@ import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
 
-const userId = 4; // 로그인 구현 후 수정 예정
-
-/* API 요청 함수 (반려동물 목록 조회) */
-const fetchUserPets = async (userId: number) => {
-  const response = await axios.get(
-    `https://umclittlepet.shop/users/${userId}`,
-    { withCredentials: true }
-  );
-  return response.data.result.userPet || [];
-};
-
-/* 🔹 API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
+/* API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
 const fetchHealthRecord = async (petId: number) => {
   const response = await axios.get(
     `http://54.180.205.177:8080/pets/${petId}/health-records/latest`,
@@ -32,29 +22,59 @@ const fetchHealthRecord = async (petId: number) => {
 
 const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
+  const { pets, fetchPets, selectedPet, selectPet } = usePetStore();
+  const [loading, setLoading] = useState(true);
+  const [selectedPetDetails, setSelectedPetDetails] = useState<{
+    gender?: string;
+    birthDay?: string;
+    petCategory?: string;
+  } | null>(null);
 
-  /* Tanstack Query 사용하여 반려동물 목록 캐싱 */
-  const { data: userPets, isLoading: petsLoading } = useQuery({
-    queryKey: ['userPets', userId],
-    queryFn: () => fetchUserPets(userId),
-    staleTime: 1000 * 60 * 10, // 10분 동안 캐싱 유지
-  });
+  const userId = 4;
 
-  const [selectedPet, setSelectedPet] = useState(userPets?.[0] || null);
+  //처음 실행될 때 fetchPets
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPets(userId);
+    };
+
+    fetchData();
+  }, []);
+
+  //pets배열이 바뀔 때마다다
+  useEffect(() => {
+    if (pets.length > 0) {
+      setLoading(false);
+    }
+  }, [pets]);
 
   /* Tanstack Query 사용하여 최신 건강 기록 캐싱 */
   const { data: healthRecord, isLoading: recordLoading } = useQuery({
     queryKey: ['healthRecord', selectedPet?.petId],
     queryFn: () => fetchHealthRecord(selectedPet!.petId),
+
     enabled: !!selectedPet, // selectedPet이 있을 때만 실행
     staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 유지
   });
 
   useEffect(() => {
-    if (userPets?.length > 0) {
-      setSelectedPet(userPets[0]); // 첫 번째 반려동물 자동 선택
+    if (healthRecord && selectedPet?.petId === healthRecord.petId) {
+      setSelectedPetDetails({
+        gender: healthRecord.gender || '정보 없음',
+        birthDay:
+          healthRecord.birthDay && healthRecord.birthDay !== 'Invalid Date'
+            ? dayjs(healthRecord.birthDay).format('YYYY.MM.DD')
+            : '정보 없음',
+        petCategory: healthRecord.petCategory || '정보 없음',
+      });
+
+      console.log('✅ selectedPetDetails 업데이트됨:', {
+        gender: healthRecord.gender,
+        birthDay: healthRecord.birthDay,
+        petCategory: healthRecord.petCategory,
+      });
     }
-  }, [userPets]);
+  }, [healthRecord, selectedPet]);
 
   /** 건강 상태에 따른 뱃지 이미지 */
   const healthBadgeMap: { [key: string]: string } = {
@@ -65,29 +85,23 @@ const HealthProfile: React.FC = () => {
   const healthStatus = healthRecord?.healthStatus || '정보 없음';
   const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
 
-  const handlePetClick = (pet: any) => {
-    setSelectedPet(pet);
-  };
-
   const handlePetDetailClick = (pet: any) => {
-    navigate(`/health/record/detail/${pet.petId}`, {
-      state: { petName: pet.name },
-    });
+    navigate(`/health/record/detail/${pet.petId}`);
   };
 
-  if (petsLoading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
+  if (loading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
     <>
       <PageTitle>건강 기록 프로필</PageTitle>
       <Container>
-        {userPets.length > 0 ? (
+        {pets.length > 0 ? (
           <>
             <PetList>
-              {userPets.map((pet) => (
+              {pets.map((pet) => (
                 <PetItem
                   key={pet.petId}
-                  onClick={() => handlePetClick(pet)}
+                  onClick={() => selectPet(pet)}
                   isSelected={selectedPet?.petId === pet.petId}
                 >
                   <PetImg src={pet.profilePhoto} alt={pet.name} />
@@ -109,17 +123,18 @@ const HealthProfile: React.FC = () => {
                   <PetDetail>
                     <AnimalIcon
                       src={animalIcon}
-                      alt={selectedPet?.petCategory || ''}
+                      alt={selectedPetDetails?.petCategory || ''}
                     />
-                    {/* gender,birthDate은 user에서 조회한 api응답에 없으므로 추후 수정 */}
-                    {selectedPet?.petCategory}
-                    <GenderIcon gender={selectedPet?.gender}>
-                      {selectedPet?.gender === 'female' ? '♀' : '♂'}
+                    {selectedPetDetails?.petCategory || '정보 없음'}
+
+                    <GenderIcon gender={selectedPetDetails?.gender}>
+                      {selectedPetDetails?.gender === 'female' ? '♀' : '♂'}
                     </GenderIcon>
+
                     <PetBirthDate>
                       생년월일:{' '}
-                      {selectedPet?.birthDate
-                        ? dayjs(selectedPet?.birthDate).format('YYYY.MM.DD')
+                      {selectedPetDetails?.birthDay
+                        ? selectedPetDetails.birthDay
                         : '정보 없음'}
                     </PetBirthDate>
                   </PetDetail>
@@ -150,9 +165,7 @@ const HealthProfile: React.FC = () => {
 
                 <RecordItem>
                   <Label>특이 증상</Label>
-                  <Value>
-                    {healthRecord?.atypicalSymptom.join(', ') || '없음'}
-                  </Value>
+                  <Value>{healthRecord?.atypicalSymptom || '없음'}</Value>
                 </RecordItem>
 
                 <RecordItem>
@@ -248,6 +261,10 @@ const PetList = styled.div`
   display: flex;
   gap: 8px;
   height: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
 `;
 
 const PetItem = styled.div<{ isSelected: boolean }>`

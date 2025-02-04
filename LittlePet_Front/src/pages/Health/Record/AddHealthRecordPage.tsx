@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useSearchParams,
+  useParams,
+  useLocation,
+} from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -28,21 +33,23 @@ const AddHealthRecordPage: React.FC = () => {
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
+  const location = useLocation();
+  const petName = location.state?.petName;
 
   //식사량
   const mealAmountOptions = [
-    { id: '적음', label: '적음' },
+    { id: '감소', label: '감소' },
     { id: '정상', label: '정상' },
-    { id: '많음', label: '많음' },
+    { id: '증가', label: '증가' },
   ];
 
   //배변 상태
   const fecesTypes = [
-    { id: '1', label: '적당한 무르기', icon: feces1 },
-    { id: '2', label: '딱딱한 똥', icon: feces2 },
-    { id: '3', label: '설사', icon: feces3 },
-    { id: '4', label: '혈변', icon: feces4 },
-    { id: '5', label: '대변 안 봄', icon: feces5 },
+    { id: 1, label: '적당한 무르기', icon: feces1 },
+    { id: 2, label: '딱딱한 똥', icon: feces2 },
+    { id: 3, label: '설사', icon: feces3 },
+    { id: 4, label: '혈변', icon: feces4 },
+    { id: 5, label: '대변 안 봄', icon: feces5 },
   ];
 
   //대변 색
@@ -138,41 +145,55 @@ const AddHealthRecordPage: React.FC = () => {
       return;
     }
 
-    // ✅ `hospitalVisit`을 boolean 값으로 변환하여 서버에서 요구하는 형태로 맞추기
+    //  `hospitalVisit`을 boolean 값으로 변환하여 서버에서 요구하는 형태로 맞추기
     const requestData = {
       recordDate: date,
       weight: Number(formData.weight), // 숫자로 변환
       mealAmount: formData.mealAmount,
       fecesStatus: formData.fecesStatus,
       fecesColorStatus: formData.fecesColorStatus,
-      atypicalSymptom: formData.atypicalSymptom
-        ? [formData.atypicalSymptom]
-        : [], // 배열 변환
+      atypicalSymptom: formData.atypicalSymptom,
       healthStatus: formData.healthStatus,
-      hospitalVisit: formData.hospitalVisit === 'o', // ✅ 문자열 "o"이면 true, 아니면 false
+      hospitalVisit: formData.hospitalVisit === 'o', //  문자열 "o"이면 true, 아니면 false
       diagnosisName: formData.diagnosisName || null,
       prescription: formData.prescription || null,
       otherSymptom: formData.otherSymptom?.trim() || null,
     };
 
-    // ✅ 변환된 요청 데이터 확인
+    //  변환된 요청 데이터 확인
     console.log('📤 변환된 요청 데이터:', requestData);
 
     try {
       const response = await axios.post(
         `https://umclittlepet.shop/pets/${petId}/health-records`,
         requestData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'application/json' },
+        }
       );
 
       if (response.data.isSuccess) {
         alert('건강 기록이 저장되었습니다!');
-        navigate(`/health/record/detail/${petId}?date=${date}`);
+        navigate(`/health/record/detail/${petId}?date=${date}`, {
+          state: { petName: petName },
+        });
+        console.log('🚀 Navigating with petName:', petName);
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
-    } catch (error) {
-      console.error('저장 오류:', error);
+    } catch (error: any) {
+      console.error('❌ 저장 오류:', error);
+
+      if (error.response) {
+        console.error('⚠️ 서버 응답 오류 데이터:', error.response.data); // ✅ 서버가 보낸 오류 메시지 확인
+        console.error('⚠️ HTTP 상태 코드:', error.response.status);
+      } else if (error.request) {
+        console.error('⚠️ 요청은 전송되었으나 응답이 없습니다.', error.request);
+      } else {
+        console.error('⚠️ 요청 설정 중 오류 발생:', error.message);
+      }
+
       alert('서버 오류가 발생했습니다.');
     }
   };
@@ -246,7 +267,7 @@ const AddHealthRecordPage: React.FC = () => {
         {formData.atypicalSymptom === '기타' && (
           <InputGroup>
             <Input
-              name='otherSymptoms'
+              name='otherSymptom'
               value={formData.otherSymptom}
               onChange={handleChange}
               placeholder='기타 특이 증상을 적어주세요'

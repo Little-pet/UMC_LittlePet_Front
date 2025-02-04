@@ -4,7 +4,7 @@ import styled from 'styled-components';
 interface SelectableButtonProps {
   name: string;
   options: {
-    id: string;
+    id: number;
     label: string;
     color: string;
   }[];

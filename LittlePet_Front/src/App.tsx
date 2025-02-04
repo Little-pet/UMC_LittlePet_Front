@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { UserProvider } from './context/UserContext'; // UserProvider 추가
-import { PetProvider } from './context/PetContext'; // PetProvider 추가
 import '#/font.css';
 import CommunityRootLayout from '#/layout/CommunityRootLayout';
 import QnaPage from '#/pages/QnaPage';
@@ -26,8 +25,7 @@ import HomePage from '#/pages/HomePage';
 import MyPage from '#/pages/MyPage';
 import SplashScreen from '#/pages/SplashScreen';
 import EditProfilePage from '#/pages/EditProfilePage';
-import PetRegistration from '#/pages/PetRegistrationPage';
-import EditPetPage from '#/pages/EditPetPage';
+
 import HealthRootLayout from '#/layout/HealthRootLayout';
 import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
@@ -49,8 +47,7 @@ const router = createBrowserRouter([
       { path: 'onboarding', element: <OnBoardingPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'edit-profile', element: <EditProfilePage /> },
-      { path: 'pet-register', element: <PetRegistration /> },
-      { path: 'edit-pet/:petId', element: <EditPetPage /> },
+
       { path: 'caremethod', element: <CareMethodPage /> },
 
       {
@@ -138,12 +135,10 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
   return (
     <UserProvider>
-      <PetProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </PetProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </UserProvider>
   );
 };

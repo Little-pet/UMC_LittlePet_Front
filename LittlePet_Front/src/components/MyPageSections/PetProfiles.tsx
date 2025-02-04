@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePets } from '#/context/PetContext';
+import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
 const PetProfiles: React.FC = () => {
-  const { pets } = usePets();
+  const { pets } = usePetStore();
   const navigate = useNavigate();
 
   const handlePetClick = (petId: number) => {
@@ -14,9 +14,9 @@ const PetProfiles: React.FC = () => {
   return (
     <Container>
       {pets.map((pet) => (
-        <ProfileCard key={pet.id} onClick={() => handlePetClick(pet.id)}>
-          <ProfileImage src={pet.profileImage} alt={pet.name} />
-          <ProfileName>{pet.name}</ProfileName>
+        <ProfileCard key={pet.petId} onClick={() => handlePetClick(pet.id)}>
+          <ProfileImage src={pet.profilePhoto} alt={pet.petName} />
+          <ProfileName>{pet.petName}</ProfileName>
         </ProfileCard>
       ))}
       <PetItem>

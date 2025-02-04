@@ -51,7 +51,6 @@ const PetDetailPage: React.FC = () => {
 
   return (
     <Container>
-      {/* 🟢 페이지 콘텐츠 */}
       <TitleContainer>
         <Title>{petDetail.title}</Title>
         <Date>{petDetail.createdAt} </Date>
@@ -62,25 +61,25 @@ const PetDetailPage: React.FC = () => {
         <Section>
           <SectionTitle ref={featureRef}>특징</SectionTitle>
           <hr />
-          <p>{petDetail.features}</p>
+          <p dangerouslySetInnerHTML={{ __html: petDetail.features }} />
         </Section>
 
         <Section>
           <SectionTitle ref={foodRef}>먹이</SectionTitle>
           <hr />
-          <p>{petDetail.foodInfo}</p>
+          <p dangerouslySetInnerHTML={{ __html: petDetail.foodInfo }} />
         </Section>
 
         <Section>
           <SectionTitle ref={environmentRef}>환경</SectionTitle>
           <hr />
-          <p>{petDetail.environment}</p>
+          <p dangerouslySetInnerHTML={{ __html: petDetail.environment }} />
         </Section>
 
         <Section>
           <SectionTitle ref={playRef}>놀이방법</SectionTitle>
           <hr />
-          <p>{petDetail.playMethods}</p>
+          <p dangerouslySetInnerHTML={{ __html: petDetail.playMethods }} />
         </Section>
       </Content>
     </Container>
@@ -89,7 +88,6 @@ const PetDetailPage: React.FC = () => {
 
 export default PetDetailPage;
 
-// 🟢 Styled Components
 const Container = styled.div`
   max-width: 600px;
   margin: auto;
