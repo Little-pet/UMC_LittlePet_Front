@@ -5,7 +5,7 @@ import styled from 'styled-components';
 interface Category {
   type: string;
   title: string;
-  path: string;
+  link: string;
 }
 // 뒤로가기를 누르면 type이 복원이 안되는 문제 발생..
 const HealthRootLayout: React.FC = () => {
@@ -33,11 +33,10 @@ const HealthRootLayout: React.FC = () => {
   };
   useEffect(() => {
     if (location.pathname === '/health') {
-      // ✅ `/health` 진입 시 기본값 `record` 설정
+      // `/health` 진입 시 기본값 `record` 설정
       setSelected('record');
       localStorage.setItem('selectedCategory', 'record');
     }
-    console.log(localStorage.getItem('selectedCategory'));
   }, [location.pathname]);
   return (
     <Container>

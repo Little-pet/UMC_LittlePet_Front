@@ -6,8 +6,8 @@ import logo from '@assets/logo.svg';
 import animalIcon from '@assets/동물 아이콘.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
-import good from '@assets/양호.svg';
-import bad from '@assets/악화.svg';
+//import good from '@assets/양호.svg';
+//import bad from '@assets/악화.svg';
 
 const HealthProfile: React.FC = () => {
   const { pets } = usePets();
@@ -64,7 +64,9 @@ const HealthProfile: React.FC = () => {
                       alt={selectedPet?.category || ''}
                     />
                     {selectedPet?.category}
-                    <GenderIcon gender={selectedPet?.gender}>
+                    <GenderIcon
+                      gender={selectedPet?.gender as 'female' | 'male'}
+                    >
                       {selectedPet?.gender === 'female' ? '♀' : '♂'}
                     </GenderIcon>
                     <PetBirthDate>

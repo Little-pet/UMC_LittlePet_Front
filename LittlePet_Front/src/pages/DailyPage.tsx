@@ -1,5 +1,5 @@
 import SearchBar from '#/components/SearchBar';
-import Item from '#/components/Community/Item';
+import Item from '#/components/Community/item';
 import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';

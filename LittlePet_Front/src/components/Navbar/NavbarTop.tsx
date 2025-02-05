@@ -1,11 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
 import logoBlack from '#/assets/logo.svg';
 import hamburger from '#/assets/hamburger.svg';
 import close from '#/assets/close.svg';
-import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
 import littlePet from '#/assets/리틀펫.svg';

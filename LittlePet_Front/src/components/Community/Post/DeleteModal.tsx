@@ -40,7 +40,7 @@ const ButtonGroup = styled.div`
   gap: 20px;
 `;
 
-const Button = styled.div`
+const Button = styled.div<{ textColor?: string }>`
   background-color: ${({ color }) => color || '#E6E6E6'};
   color: ${({ textColor }) => textColor || '#737373'};
   font-size: 16px;

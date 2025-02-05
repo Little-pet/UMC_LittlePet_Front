@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentWrapper, ItemList } from '#/components/Community/styles/common';
-import Item from '#/components/Community/Item';
+import Item from '#/components/Community/item';
 import HedgeHog from '#/assets/고슴도치.png';
 
 const PopularSection: React.FC = () => {

@@ -104,7 +104,7 @@ const DropdownMenu = styled.ul`
   gap: 15px;
 `;
 
-const ArrowIcon = styled(({ isOpen, ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled.img<{ isOpen: boolean }>`
   transition: transform 0.3s ease-in-out;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;

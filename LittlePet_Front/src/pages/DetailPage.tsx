@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+//import { useParams } from 'react-router-dom';
 import PostContent from '#/components/Community/Post/postContent';
 import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
@@ -8,7 +8,7 @@ import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
 
 // CommentList의 높이를 어떻게 고정시킬껀지는 생각해봐야겠다..
 const DetailPage: React.FC = () => {
-  const { postId } = useParams<{ postId: string }>();
+  //const { postId } = useParams<{ postId: string }>();
   // 추후 백엔드와 연결
   /*  const { data, isLoading, isError } = useQuery({
     queryFn: () => useGetDetail({ postId }),

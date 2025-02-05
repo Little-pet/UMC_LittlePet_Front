@@ -45,7 +45,7 @@ const HospitalPage: React.FC = () => {
       <TopActions>
         <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
           <AreaText>서울시 {selectedArea}</AreaText>
-          <ArrowIcon src={arrowIcon} />
+          <ArrowIcon src={arrowIcon} view={view} />
         </AreaModalButton>
         <MapButton
           to='/health/hospital/map'
@@ -254,7 +254,7 @@ const FilterButton = styled.button<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? 'white' : 'black')};
   cursor: pointer;
 `;
-const ArrowIcon = styled(({ view, ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled.img<{ view: boolean }>`
   transition: transform 0.3s ease-in-out;
   transform: ${({ view }) => (view ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;

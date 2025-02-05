@@ -1,6 +1,6 @@
 import { useParams, useLocation } from 'react-router-dom';
 import { Outlet, Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';

@@ -5,7 +5,7 @@ import animalIcon from '#/assets/동물 아이콘.svg';
 import vectorIcon from '#/assets/Vector.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DeleteModal from './DeleteModal';
 
 interface PostContentProps {
@@ -179,7 +179,7 @@ const ActionGroup = styled.div`
   gap: 12px;
 `;
 
-const ActionText = styled.div`
+const ActionText = styled.div<{ isClickable?: boolean }>`
   font-size: 12px;
   color: #737373;
   font-family: 'Pretendard-Medium';

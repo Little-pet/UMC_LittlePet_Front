@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
-import TagButton from '#/components/Community/AddPage/TagButton';
+import TagButton from '#/components/Community/AddPage/tagButton';
 
 interface Pet {
   id: number;
@@ -274,13 +274,6 @@ const TagButtonContainer = styled.div`
   height: 35px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 343px;
-  margin-top:;
-`;
 const SaveButton = styled.button`
   width: 100%;
   height: 48px;

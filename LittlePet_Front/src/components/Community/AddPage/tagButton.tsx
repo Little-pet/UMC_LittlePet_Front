@@ -43,7 +43,7 @@ const CategoryButtonText = styled.div<{ isSelected: boolean }>`
   color: ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
 `;
 
-const SpanIcon = styled.span<{ gender: string }>`
+const SpanIcon = styled.span<{ gender?: string }>`
   font-weight: 700;
   font-size: 14px;
   line-height: 22px;

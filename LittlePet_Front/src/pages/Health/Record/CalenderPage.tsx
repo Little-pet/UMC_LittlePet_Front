@@ -80,9 +80,7 @@ const CalendarPage: React.FC = () => {
               isCurrentMonth={date.month() === currentMonth.month()}
               onClick={() => setSelectedDate(date)}
             >
-              <DateNumber isSelected={dayjs(selectedDate).isSame(date, 'day')}>
-                {date.date()}
-              </DateNumber>
+              <DateNumber>{date.date()}</DateNumber>
             </DateItem>
           ))}
         </CalendarGrid>

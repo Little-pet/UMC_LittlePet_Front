@@ -25,7 +25,7 @@ const ProfileSection: React.FC = () => {
             <PetItem key={pet.id}>
               <AnimalIcon src={animalIcon} alt={pet.category} />
               {pet.category}
-              <GenderIcon gender={pet.gender}>
+              <GenderIcon gender={pet.gender as 'female' | 'male'}>
                 {pet.gender === 'female' ? '♀' : '♂'}
               </GenderIcon>
               {index < pets.length - 1 && <Separator>·</Separator>}
