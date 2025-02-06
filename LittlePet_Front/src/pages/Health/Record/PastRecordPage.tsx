@@ -20,7 +20,7 @@ const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { getPetName, getWeightChange } = usePetStore();
+  const { getPetName } = usePetStore();
 
   //petId에 해당하는 petName찾기
   const petName = getPetName(Number(petId));
@@ -71,13 +71,23 @@ const PastRecordPage: React.FC = () => {
     atypicalSymptom: string[];
     diagnosisName: string;
     prescription: string;
+    weightDifference: number;
   } | null>(null);
 
   //몸무게 차이
-  const weightChangeText = getWeightChange(
-    Number(petId),
-    recordData?.recordDate ?? ''
-  );
+  const roundedWeightDiff =
+    recordData && recordData.weightDifference !== undefined
+      ? Math.round(recordData.weightDifference * 10) / 10
+      : null;
+
+  const weightChangeText =
+    recordData && roundedWeightDiff
+      ? recordData.weightDifference === 0
+        ? '유지'
+        : recordData.weightDifference > 0
+          ? `${roundedWeightDiff}kg 증가`
+          : `${Math.abs(roundedWeightDiff)}kg 감소`
+      : '데이터 없음';
 
   //대변 상태 뱃지
 

@@ -28,8 +28,7 @@ const fetchHealthRecord = async (petId: number) => {
 const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
 
-  const { pets, fetchPets, selectedPet, selectPet, getWeightChange } =
-    usePetStore();
+  const { pets, fetchPets, selectedPet, selectPet } = usePetStore();
   const [loading, setLoading] = useState(true);
   const [selectedPetDetails, setSelectedPetDetails] = useState<{
     gender?: string;
@@ -67,7 +66,7 @@ const HealthProfile: React.FC = () => {
 
   useEffect(() => {
     if (healthRecord) {
-      console.log('✅ healthRecord 업데이트 감지!', healthRecord);
+      console.log(' healthRecord 업데이트 감지!', healthRecord);
       setSelectedPetDetails({
         gender: healthRecord.gender || '정보 없음',
         birthDay:
@@ -77,7 +76,7 @@ const HealthProfile: React.FC = () => {
         petCategory: healthRecord.petCategory || '정보 없음',
       });
     } else {
-      console.log('⚠️ healthRecord가 업데이트되지 않음');
+      console.log('healthRecord가 업데이트되지 않음');
     }
   }, [healthRecord, selectedPet]);
 
@@ -99,10 +98,17 @@ const HealthProfile: React.FC = () => {
   const animalCategory = selectedPetDetails?.petCategory || '정보 없음';
   const animalIcon = animalIconMap[animalCategory] || null;
 
-  const weightChangeText = getWeightChange(
-    Number(selectedPet?.petId),
-    healthRecord?.latestRecord.recordDate ?? ''
-  );
+  const roundedWeightDiff =
+    Math.round(healthRecord?.weightDifference * 10) / 10;
+  const weightChangeText =
+    roundedWeightDiff !== undefined
+      ? roundedWeightDiff === 0
+        ? '유지'
+        : roundedWeightDiff > 0
+          ? `${roundedWeightDiff}kg 증가`
+          : `${Math.abs(roundedWeightDiff)}kg 감소`
+      : '데이터 없음';
+
   const handlePetDetailClick = (pet: any) => {
     navigate(`/health/record/detail/${pet.petId}`);
   };
