@@ -10,6 +10,9 @@ import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
+import rabbit from '@assets/animaldropdown/rabbit.svg';
+import hamster from '@assets/animaldropdown/hamster.svg';
+import hedgehog from '@assets/animaldropdown/hedgehog.svg';
 
 import { getFormattedDate } from '@utils/dateUtils';
 
@@ -19,7 +22,7 @@ const fetchHealthRecord = async (petId: number) => {
     `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
     { withCredentials: true }
   );
-  return response.data.result.latestRecord;
+  return response.data.result;
 };
 
 const HealthProfile: React.FC = () => {
@@ -59,13 +62,12 @@ const HealthProfile: React.FC = () => {
     queryFn: () => fetchHealthRecord(selectedPet!.petId),
 
     enabled: !!selectedPet, // selectedPet이 있을 때만 실행
-    staleTime: 0, // 5분 동안 캐싱 유지
+    staleTime: 0,
   });
 
   useEffect(() => {
-    if (healthRecord && selectedPet?.petId === healthRecord.petId) {
+    if (healthRecord) {
       console.log('✅ healthRecord 업데이트 감지!', healthRecord);
-
       setSelectedPetDetails({
         gender: healthRecord.gender || '정보 없음',
         birthDay:
@@ -87,9 +89,19 @@ const HealthProfile: React.FC = () => {
   };
   const healthStatus = healthRecord?.healthStatus || '정보 없음';
   const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
+
+  //동물 종 /** 건강 상태에 따른 뱃지 이미지 */
+  const animalIconMap: { [key: string]: string } = {
+    토끼: rabbit,
+    햄스터: hamster,
+    고슴도치: hedgehog,
+  };
+  const animalCategory = selectedPetDetails?.petCategory || '정보 없음';
+  const animalIcon = animalIconMap[animalCategory] || null;
+
   const weightChangeText = getWeightChange(
     Number(selectedPet?.petId),
-    healthRecord?.recordDate ?? ''
+    healthRecord?.latestRecord.recordDate ?? ''
   );
   const handlePetDetailClick = (pet: any) => {
     navigate(`/health/record/detail/${pet.petId}`);
@@ -127,10 +139,7 @@ const HealthProfile: React.FC = () => {
                     {selectedPet?.name || '등록된 반려동물 없음'}
                   </PetName>
                   <PetDetail>
-                    <AnimalIcon
-                      src={animalIcon}
-                      alt={selectedPetDetails?.petCategory || ''}
-                    />
+                    <AnimalIcon src={animalIcon} />
                     {selectedPetDetails?.petCategory || '정보 없음'}
 
                     <GenderIcon gender={selectedPetDetails?.gender}>
@@ -148,7 +157,7 @@ const HealthProfile: React.FC = () => {
                   {/* 응답 데이터 확인 후 recordDate그대로가 아니라 0일전으로 변경해야될 수도 있음 */}
                   <RecentUpdate>
                     최근 업데이트:{' '}
-                    {` ${getFormattedDate(healthRecord?.recordDate ?? null)}`}
+                    {` ${getFormattedDate(healthRecord?.latestRecord.recordDate ?? null)}`}
                   </RecentUpdate>
                 </PetInfo>
                 <HealthBadge src={healthBadgeImage} alt={healthStatus} />
@@ -158,7 +167,7 @@ const HealthProfile: React.FC = () => {
                 <RecordItem>
                   <Label>체중</Label>
                   <Value>
-                    {healthRecord?.weight}kg
+                    {healthRecord?.latestRecord.weight}kg
                     <WeightChange>
                       {/* 몸무게 차이 계산 로직 추후 추가 */}
                       지난 기록 대비 <span> {weightChangeText}</span>
@@ -167,28 +176,30 @@ const HealthProfile: React.FC = () => {
                 </RecordItem>
                 <RecordItem>
                   <Label>식사량</Label>
-                  <MealValue>{healthRecord?.mealAmount}</MealValue>
+                  <MealValue>{healthRecord?.latestRecord.mealAmount}</MealValue>
                 </RecordItem>
 
                 <RecordItem>
                   <Label>특이 증상</Label>
-                  <Value>{healthRecord?.atypicalSymptom || '없음'}</Value>
+                  <Value>
+                    {healthRecord?.latestRecord.atypicalSymptom || '없음'}
+                  </Value>
                 </RecordItem>
 
-                {healthRecord && healthRecord?.diagnosisName && (
+                {healthRecord && healthRecord?.latestRecord.diagnosisName && (
                   <RecordItem>
                     <Label>진료 내역</Label>
                     <HospitalRecordValue>
                       <RecordRow>
                         <ListTitle>진단명</ListTitle>
                         <RecordText>
-                          {healthRecord?.diagnosisName || '없음'}
+                          {healthRecord?.latestRecord.diagnosisName || '없음'}
                         </RecordText>
                       </RecordRow>
                       <RecordRow>
                         <ListTitle>검사 및 처방 내역</ListTitle>
                         <RecordText>
-                          {healthRecord?.prescription || '없음'}
+                          {healthRecord?.latestRecord.prescription || '없음'}
                         </RecordText>
                       </RecordRow>
                     </HospitalRecordValue>

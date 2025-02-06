@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
@@ -18,6 +19,7 @@ import symptom5 from '@assets/symptoms/이상 행동.svg';
 import symptom6 from '@assets/symptoms/털 빠짐.svg';
 import symptom7 from '@assets/symptoms/체온 감소.svg';
 import symptom8 from '@assets/symptoms/체온 상승.svg';
+
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
 import { getWeightChangeText } from '@utils/weightUtils';
@@ -30,8 +32,18 @@ const AddHealthRecordPage: React.FC = () => {
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
+  //몸무게변화
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
   const { setWeightChange, getWeightChange } = usePetStore();
+  // 토스트 메시지 상태 추가
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isToastVisible, setToastVisible] = useState(false);
+
+  // ✅ `setTimeout()` 제거하고 상태만 변경
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
   //식사량
   const mealAmountOptions = [
@@ -126,7 +138,6 @@ const AddHealthRecordPage: React.FC = () => {
     console.log('요청 데이터 전처리 전:', formData);
 
     if (!petId) {
-      alert('잘못된 요청입니다. 반려동물을 선택해주세요.');
       return;
     }
 
@@ -146,7 +157,7 @@ const AddHealthRecordPage: React.FC = () => {
       isDiagnosisRequired ||
       isPrescriptionRequired
     ) {
-      alert('필수 입력 항목을 확인해주세요!');
+      showToast('필수 입력 항목을 확인해주세요!');
       return;
     }
 
@@ -218,6 +229,7 @@ const AddHealthRecordPage: React.FC = () => {
           setLatestWeight(
             response.data.result?.latestRecord?.weight ?? '데이터 없음'
           );
+          console.log(latestWeight);
         }
       } catch (error) {
         console.error(error);
@@ -230,6 +242,13 @@ const AddHealthRecordPage: React.FC = () => {
   return (
     <Container>
       <Title>건강 기록하기</Title>
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          isVisible={!!toastMessage}
+          onClose={() => setToastMessage(null)}
+        />
+      )}
       <Form onSubmit={handleSubmit}>
         <InputGroup>
           <Label>
