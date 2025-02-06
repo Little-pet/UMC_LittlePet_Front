@@ -3,7 +3,7 @@ import axios from 'axios';
 
 interface WeightChangeData {
   [petId: number]: {
-    [date: string]: number | null; // 특정 날짜별 weightChange 저장
+    [date: string]: string | null; // 특정 날짜별 weightChange 저장
   };
 }
 
@@ -23,9 +23,9 @@ interface PetStore {
   setWeightChange: (
     petId: number,
     date: string,
-    weightChange: number | null
+    weightChange: string | null
   ) => void;
-  getWeightChange: (petId: number, date: string) => number | null;
+  getWeightChange: (petId: number, date: string) => string | null;
 }
 
 export const usePetStore = create<PetStore>((set, get) => ({

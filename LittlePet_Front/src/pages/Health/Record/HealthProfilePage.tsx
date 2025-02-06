@@ -59,7 +59,7 @@ const HealthProfile: React.FC = () => {
     queryFn: () => fetchHealthRecord(selectedPet!.petId),
 
     enabled: !!selectedPet, // selectedPet이 있을 때만 실행
-    staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 유지
+    staleTime: 0, // 5분 동안 캐싱 유지
   });
 
   useEffect(() => {
@@ -79,13 +79,6 @@ const HealthProfile: React.FC = () => {
     }
   }, [healthRecord, selectedPet]);
 
-  console.log('selectedPet.petId:', selectedPet?.petId);
-  console.log('healthRecord?.recordDate:', healthRecord?.recordDate);
-  console.log(
-    'weightChangeText:',
-    getWeightChange(selectedPet?.petId, healthRecord?.recordDate)
-  );
-
   /** 건강 상태에 따른 뱃지 이미지 */
   const healthBadgeMap: { [key: string]: string } = {
     건강: healthy,
@@ -94,9 +87,10 @@ const HealthProfile: React.FC = () => {
   };
   const healthStatus = healthRecord?.healthStatus || '정보 없음';
   const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
-  const weightChangeText = selectedPet
-    ? getWeightChange(selectedPet.petId, healthRecord?.recordDate)
-    : '데이터 없음';
+  const weightChangeText = getWeightChange(
+    Number(selectedPet?.petId),
+    healthRecord?.recordDate ?? ''
+  );
   const handlePetDetailClick = (pet: any) => {
     navigate(`/health/record/detail/${pet.petId}`);
   };

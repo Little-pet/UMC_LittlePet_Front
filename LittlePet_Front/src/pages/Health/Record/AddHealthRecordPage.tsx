@@ -31,7 +31,7 @@ const AddHealthRecordPage: React.FC = () => {
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
-  const { setWeightChange } = usePetStore();
+  const { setWeightChange, getWeightChange } = usePetStore();
 
   //식사량
   const mealAmountOptions = [
@@ -188,12 +188,15 @@ const AddHealthRecordPage: React.FC = () => {
             selectedDate: date,
           },
         });
-        // 몸무게 차이 저장
+
         const weightChangeText = getWeightChangeText(
-          latestWeight,
-          formData.weight
+          formData.weight,
+          latestWeight
         );
-        setWeightChange(Number(petId), date, Number(weightChangeText));
+
+        setWeightChange(Number(petId), date, weightChangeText);
+        const storedValue = getWeightChange(1, '2025-02-06');
+        console.log('🎯 getWeightChange(1, "2025-02-06") 결과:', storedValue);
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
@@ -207,13 +210,17 @@ const AddHealthRecordPage: React.FC = () => {
     const fetchLatestRecord = async () => {
       try {
         const response = await axios.get(
-          `https://umclittlepet.shop/api/pets/${petId}/latest-record`
+          `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
+          { withCredentials: true }
         );
+
         if (response.data.isSuccess) {
-          setLatestWeight(response.data.result.weight);
+          setLatestWeight(
+            response.data.result?.latestRecord?.weight ?? '데이터 없음'
+          );
         }
       } catch (error) {
-        console.error('최신 기록 불러오기 실패:', error);
+        console.error(error);
       }
     };
 

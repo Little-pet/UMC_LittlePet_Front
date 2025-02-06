@@ -8,7 +8,6 @@ import normal from '@assets/정상.svg';
 import { usePetStore } from '#/context/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
-import { getWeightChangeText } from '@utils/weightUtils';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
@@ -75,10 +74,11 @@ const PastRecordPage: React.FC = () => {
   } | null>(null);
 
   //몸무게 차이
-  const weightChangeText = getWeightChangeText(
-    getWeightChange(Number(petId), recordData?.recordDate ?? ''),
-    null
+  const weightChangeText = getWeightChange(
+    Number(petId),
+    recordData?.recordDate ?? ''
   );
+
   //대변 상태 뱃지
 
   const fecesBadgeMap: { [key: string]: string } = {
@@ -161,7 +161,7 @@ const PastRecordPage: React.FC = () => {
         <RecordItem>
           <Label>체중</Label>
           <Value>
-            {recordData?.weight || ''}
+            {recordData?.weight || ''}kg
             <WeightChange>
               지난 기록 대비 <span>{weightChangeText} </span>
             </WeightChange>
