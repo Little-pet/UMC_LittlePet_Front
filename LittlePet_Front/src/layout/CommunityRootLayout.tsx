@@ -42,7 +42,6 @@ const CommunityRootLayout: React.FC = () => {
       setSelected('qna');
       localStorage.setItem('selectedCategory', 'qna');
     }
-    console.log(localStorage.getItem('selectedCategory'));
   }, [location.pathname]);
 
   const [totalHeight, setTotalHeight] = useState<number>(
@@ -50,10 +49,6 @@ const CommunityRootLayout: React.FC = () => {
       ? window.innerHeight - 50 - 45 - 42
       : window.innerHeight - 50 - 42
   );
-
-  useEffect(() => {
-    console.log(`📏 계산된 높이: ${totalHeight}px`);
-  }, [window.innerHeight, window.innerWidth]);
 
   return (
     <Container>

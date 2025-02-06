@@ -20,10 +20,10 @@ const PetProfiles: React.FC = () => {
         const response = await axios.get(
           import.meta.env.VITE_BACKEND_URL + endpoint
         );
-        console.log('✅ 성공:', response.data);
+        console.log('사용자별 반려동물 목록 조회 성공:', response.data);
         setProfiles(response.data.result);
       } catch (error) {
-        console.error('❌ 실패:', error);
+        console.error('사용자별 반려동물 목록 조회 실패:', error);
       }
     };
 

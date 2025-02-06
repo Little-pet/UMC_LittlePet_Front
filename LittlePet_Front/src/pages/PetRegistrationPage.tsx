@@ -16,7 +16,7 @@ const PetRegistrationPage: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number>();
-  const [birthDate, sestBirthDate] = useState<string>('');
+  const [birthDate, setBirthDate] = useState<string>('');
 
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,10 +42,7 @@ const PetRegistrationPage: React.FC = () => {
       icon: null,
     },
   ];
-  // 태그 클릭
-  const handleTagClick = (type: string) => {
-    setTagSelected(type);
-  };
+
   // 서버에 post할 객체
   interface Pet {
     name: string; // 반려동물 이름
@@ -87,9 +84,7 @@ const PetRegistrationPage: React.FC = () => {
       );
       console.log('반려동물 프로필 등록 성공', response.data);
       const responsePet: ResponsePet = response.data.result;
-
       addPet(responsePet);
-
       navigate('/mypage');
     } catch (error) {
       console.error('반려동물 프로필 등록 실패:', error);
@@ -99,7 +94,6 @@ const PetRegistrationPage: React.FC = () => {
   return (
     <Container>
       <Title>반려동물 프로필 등록</Title>
-
       <ProfileWrapper
         onClick={() => document.getElementById('fileInput')?.click()}
       >
@@ -131,7 +125,7 @@ const PetRegistrationPage: React.FC = () => {
           <Label>생년월일</Label>
           <DatePicker
             selectedDate={birthDate}
-            onDateChange={(date) => sestBirthDate(date)}
+            onDateChange={(date) => setBirthDate(date)}
           />
         </BDInputContainer>
 
@@ -148,7 +142,7 @@ const PetRegistrationPage: React.FC = () => {
                 label={tag.title}
                 icon={tag.icon}
                 type={tag.gender}
-                onClick={() => handleTagClick(tag.gender)}
+                onClick={() => setTagSelected(tag.gender)}
                 isSelected={tagSelected === tag.gender}
               />
             ))}

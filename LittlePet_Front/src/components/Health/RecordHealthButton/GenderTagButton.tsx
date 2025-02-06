@@ -47,9 +47,9 @@ const SpanIcon = styled.span<{ gender: string }>`
   font-size: 13px;
   line-height: 22px;
   color: ${({ gender }) =>
-    gender === 'female'
+    gender === 'FEMALE'
       ? '#FF5A5A'
-      : gender === 'male'
+      : gender === 'MALE'
         ? '#6EA8FE'
         : '#737373'};
 `;
