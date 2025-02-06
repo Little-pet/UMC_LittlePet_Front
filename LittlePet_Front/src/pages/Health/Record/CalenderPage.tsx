@@ -46,7 +46,7 @@ const CalendarPage: React.FC = () => {
     : dayjs();
 
   // 기본값을 이전 페이지에서 선택한 날짜로 설정
-  // 추후 백엔드와 연동시 수정할 예정정
+
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(initialDate);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(initialDate);
   const [recordDates, setRecordDates] = useState<string[]>([]);

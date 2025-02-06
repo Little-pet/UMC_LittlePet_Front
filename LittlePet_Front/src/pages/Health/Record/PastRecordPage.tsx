@@ -119,6 +119,30 @@ const PastRecordPage: React.FC = () => {
     fetchHealthData();
   }, [selectedDate, petId]);
 
+  //삭제 핸들러
+  const handleDelete = async () => {
+    if (!petId || !selectedDate) {
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        `https://umclittlepet.shop/api/pets/${petId}/health-records`,
+        {
+          withCredentials: true,
+          params: { localDate: selectedDate.format('YYYY-MM-DD') },
+        }
+      );
+      if (response.data.isSuccess) {
+        alert('건강 기록이 삭제되었습니다!');
+        setRecordData(null);
+      } else {
+        alert('삭제 실패! 다시 시도해주세요.');
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
   return (
     <Container>
       <Title>{petName}의 건강 기록</Title>
@@ -149,8 +173,12 @@ const PastRecordPage: React.FC = () => {
             isSelected={dayjs(selectedDate).isSame(date, 'day')}
             onClick={() => setSelectedDate(date)}
           >
-            <DayLabel>{date.format('ddd').toUpperCase()}</DayLabel>
-            <DateNumber isSelected={dayjs(selectedDate).isSame(date, 'day')}>
+            <DayLabel>{date.locale('en').format('ddd').toUpperCase()}</DayLabel>
+
+            <DateNumber
+              isSelected={dayjs(selectedDate).isSame(date, 'day')}
+              isFuture={date.isAfter(dayjs(selectedDate), 'day')}
+            >
               {date.date()}
             </DateNumber>
           </DateItem>
@@ -161,10 +189,15 @@ const PastRecordPage: React.FC = () => {
         <RecordItem>
           <Label>체중</Label>
           <Value>
-            {recordData?.weight || ''}kg
-            <WeightChange>
-              지난 기록 대비 <span>{weightChangeText} </span>
-            </WeightChange>
+            {recordData?.weight !== null &&
+              recordData?.weight !== undefined && (
+                <>
+                  {recordData.weight}kg
+                  <WeightChange>
+                    지난 기록 대비 <span>{weightChangeText} </span>
+                  </WeightChange>
+                </>
+              )}
           </Value>
         </RecordItem>
         <RecordItem>
@@ -203,6 +236,7 @@ const PastRecordPage: React.FC = () => {
             </HospitalRecordValue>
           </RecordItem>
         )}
+        <DeleteButton onClick={() => handleDelete()}>삭제하기</DeleteButton>
       </HealthRecord>
       <MobileAddButton selectedDate={selectedDate} />
     </Container>
@@ -299,13 +333,14 @@ const DayLabel = styled.div`
   padding: 8px;
 `;
 
-const DateNumber = styled.div<{ isSelected: boolean }>`
+const DateNumber = styled.div<{ isSelected: boolean; isFuture: boolean }>`
   width: 38px;
   height: 38px;
   line-height: 38px;
   border-radius: 50%;
   background: ${({ isSelected }) => (isSelected ? '#6EA8FE' : 'transparent')};
-  color: ${({ isSelected }) => (isSelected ? '#FFFFFF' : '#737373')};
+  color: ${({ isSelected, isFuture }) =>
+    isSelected ? '#fff' : isFuture ? '#6a6a6d' : '#D5D5D6'};
   text-align: center;
   position: relative;
 `;
@@ -396,4 +431,18 @@ const RecordText = styled.p`
   font-weight: 600;
   font-size: 14px;
   color: #262627;
+`;
+
+const DeleteButton = styled.button`
+  background-color: #c76b6b;
+  color: white;
+  height: 48px;
+  font-family: 'Pretendard';
+  font-weight: 600;
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
 `;
