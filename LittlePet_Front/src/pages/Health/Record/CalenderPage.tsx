@@ -55,7 +55,7 @@ const CalendarPage: React.FC = () => {
     const fetchRecordDates = async () => {
       try {
         const response = await axios.get(
-          `https://umclittlepet.shop/pets/${petId}/health-records/record-dates`
+          `https://umclittlepet.shop/api/pets/${petId}/health-records/record-dates`
         );
         if (response.data.isSuccess) {
           setRecordDates(response.data.result);

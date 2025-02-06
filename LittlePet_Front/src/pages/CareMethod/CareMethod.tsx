@@ -18,7 +18,7 @@ const CareMethodPage: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          'https://umclittlepet.shop/animal-categories'
+          'https://umclittlepet.shop/api/animal-categories'
         );
 
         const categoryData = response.data.result; // "result" 배열 가져오기

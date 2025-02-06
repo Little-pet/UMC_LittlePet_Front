@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  useNavigate,
-  useSearchParams,
-  useParams,
-  useLocation,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -25,6 +20,8 @@ import symptom7 from '@assets/symptoms/체온 감소.svg';
 import symptom8 from '@assets/symptoms/체온 상승.svg';
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
+import { getWeightChangeText } from '@utils/weightUtils';
+import { usePetStore } from '#/context/petStore';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -33,8 +30,8 @@ const AddHealthRecordPage: React.FC = () => {
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
-  const location = useLocation();
-  const petName = location.state?.petName;
+  const [latestWeight, setLatestWeight] = useState<number | null>(null);
+  const { setWeightChange } = usePetStore();
 
   //식사량
   const mealAmountOptions = [
@@ -91,16 +88,16 @@ const AddHealthRecordPage: React.FC = () => {
 
   // 입력 데이터 상태 관리
   const [formData, setFormData] = useState({
-    weight: '',
-    mealAmount: '',
-    fecesStatus: '',
-    fecesColorStatus: '',
-    atypicalSymptom: '',
-    healthStatus: '',
-    hospitalVisit: '',
-    diagnosisName: '',
-    prescription: '',
-    otherSymptom: '',
+    weight: 0,
+    mealAmount: null,
+    fecesStatus: null,
+    fecesColorStatus: null,
+    atypicalSymptom: null,
+    healthStatus: null,
+    hospitalVisit: null,
+    diagnosisName: null,
+    prescription: null,
+    otherSymptom: null,
   });
 
   // 입력 변경 핸들러
@@ -114,32 +111,40 @@ const AddHealthRecordPage: React.FC = () => {
   //선택 핸들러
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
-      ...prevFormData, // 기존 상태 유지
-      [name]: value, // 선택한 값 업데이트
+      ...prevFormData,
+      [name as keyof typeof formData]:
+        prevFormData[name as keyof typeof formData] === value ? null : value,
     }));
   };
 
   // 폼 제출 핸들러
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
 
     // 요청 데이터 확인용 로그
-    console.log('📤 요청 데이터 전처리 전:', formData);
+    console.log('요청 데이터 전처리 전:', formData);
 
     if (!petId) {
       alert('잘못된 요청입니다. 반려동물을 선택해주세요.');
       return;
     }
 
+    const isHospitalVisit = formData.hospitalVisit === 'o';
+    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
+    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
+    const isFecesColorRequired =
+      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
+
     if (
       !formData.weight ||
       !formData.mealAmount ||
-      !formData.fecesColorStatus ||
+      isFecesColorRequired ||
       !formData.healthStatus ||
       !formData.fecesStatus ||
       !formData.hospitalVisit ||
-      !formData.diagnosisName ||
-      !formData.prescription
+      isDiagnosisRequired ||
+      isPrescriptionRequired
     ) {
       alert('필수 입력 항목을 확인해주세요!');
       return;
@@ -151,21 +156,24 @@ const AddHealthRecordPage: React.FC = () => {
       weight: Number(formData.weight), // 숫자로 변환
       mealAmount: formData.mealAmount,
       fecesStatus: formData.fecesStatus,
-      fecesColorStatus: formData.fecesColorStatus,
+      fecesColorStatus:
+        formData.fecesStatus === '대변 안 봄'
+          ? null
+          : formData.fecesColorStatus, // 대변 안 봄이면 null 처리
       atypicalSymptom: formData.atypicalSymptom,
       healthStatus: formData.healthStatus,
       hospitalVisit: formData.hospitalVisit === 'o', //  문자열 "o"이면 true, 아니면 false
-      diagnosisName: formData.diagnosisName || null,
-      prescription: formData.prescription || null,
-      otherSymptom: formData.otherSymptom?.trim() || null,
+      diagnosisName: isHospitalVisit ? formData.diagnosisName : null,
+      prescription: isHospitalVisit ? formData.prescription : null,
+      otherSymptom: formData.otherSymptom || null,
     };
 
     //  변환된 요청 데이터 확인
-    console.log('📤 변환된 요청 데이터:', requestData);
+    console.log('변환된 요청 데이터:', requestData);
 
     try {
       const response = await axios.post(
-        `https://umclittlepet.shop/pets/${petId}/health-records`,
+        `https://umclittlepet.shop/api/pets/${petId}/health-records`,
         requestData,
         {
           withCredentials: true,
@@ -176,27 +184,41 @@ const AddHealthRecordPage: React.FC = () => {
       if (response.data.isSuccess) {
         alert('건강 기록이 저장되었습니다!');
         navigate(`/health/record/detail/${petId}?date=${date}`, {
-          state: { petName: petName },
+          state: {
+            selectedDate: date,
+          },
         });
-        console.log('🚀 Navigating with petName:', petName);
+        // 몸무게 차이 저장
+        const weightChangeText = getWeightChangeText(
+          latestWeight,
+          formData.weight
+        );
+        setWeightChange(Number(petId), date, Number(weightChangeText));
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
     } catch (error: any) {
-      console.error('❌ 저장 오류:', error);
-
-      if (error.response) {
-        console.error('⚠️ 서버 응답 오류 데이터:', error.response.data); // ✅ 서버가 보낸 오류 메시지 확인
-        console.error('⚠️ HTTP 상태 코드:', error.response.status);
-      } else if (error.request) {
-        console.error('⚠️ 요청은 전송되었으나 응답이 없습니다.', error.request);
-      } else {
-        console.error('⚠️ 요청 설정 중 오류 발생:', error.message);
-      }
-
-      alert('서버 오류가 발생했습니다.');
+      console.error(' 저장 오류:', error);
     }
   };
+
+  //  최신 기록 가져오기
+  useEffect(() => {
+    const fetchLatestRecord = async () => {
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/pets/${petId}/latest-record`
+        );
+        if (response.data.isSuccess) {
+          setLatestWeight(response.data.result.weight);
+        }
+      } catch (error) {
+        console.error('최신 기록 불러오기 실패:', error);
+      }
+    };
+
+    fetchLatestRecord();
+  }, [petId]);
 
   return (
     <Container>

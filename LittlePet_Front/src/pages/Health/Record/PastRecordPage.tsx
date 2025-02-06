@@ -8,6 +8,7 @@ import normal from '@assets/정상.svg';
 import { usePetStore } from '#/context/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
+import { getWeightChangeText } from '@utils/weightUtils';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
@@ -20,10 +21,11 @@ const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const { getPetName } = usePetStore();
+  const { getPetName, getWeightChange } = usePetStore();
 
   //petId에 해당하는 petName찾기
   const petName = getPetName(Number(petId));
+
   // 기본값 설정
   const initialDate = location.state?.selectedDate
     ? dayjs(location.state.selectedDate) // 캘린더에서 선택한 날짜
@@ -72,6 +74,22 @@ const PastRecordPage: React.FC = () => {
     prescription: string;
   } | null>(null);
 
+  //몸무게 차이
+  const weightChangeText = getWeightChangeText(
+    getWeightChange(Number(petId), recordData?.recordDate ?? ''),
+    null
+  );
+  //대변 상태 뱃지
+
+  const fecesBadgeMap: { [key: string]: string } = {
+    '적당한 무르기': normal,
+  };
+  const fecesStatus = recordData?.fecesStatus?.trim() || null;
+
+  const fecesBadgeImage = fecesStatus
+    ? fecesBadgeMap[fecesStatus] || abnormal
+    : null;
+
   useEffect(() => {
     const fetchHealthData = async () => {
       if (!petId) {
@@ -79,7 +97,7 @@ const PastRecordPage: React.FC = () => {
       }
       try {
         const response = await axios.get(
-          `https://umclittlepet.shop/pets/${petId}/health-records?localDate=${selectedDate.format(
+          `https://umclittlepet.shop/api/pets/${petId}/health-records?localDate=${selectedDate.format(
             'YYYY-MM-DD'
           )}`,
           { withCredentials: true }
@@ -139,14 +157,13 @@ const PastRecordPage: React.FC = () => {
         ))}
       </CalendarScroll>
 
-      {/* 추후에 건강 기록 내역 연동해 나타낼 예정 */}
       <HealthRecord>
         <RecordItem>
           <Label>체중</Label>
           <Value>
             {recordData?.weight || ''}
             <WeightChange>
-              지난 기록 대비 <span> 유지</span>
+              지난 기록 대비 <span>{weightChangeText} </span>
             </WeightChange>
           </Value>
         </RecordItem>
@@ -160,30 +177,32 @@ const PastRecordPage: React.FC = () => {
             {recordData?.fecesStatus && recordData?.fecesColorStatus
               ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
               : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
-            <FecesBadge src={normal} alt={'정상'} />
+            <FecesBadge src={fecesBadgeImage || ''} alt={fecesStatus || ''} />
           </Value>
         </RecordItem>
         <RecordItem>
           <Label>특이 증상</Label>
-          <Value>{recordData?.atypicalSymptom || '-'}</Value>
+          <Value>{recordData?.atypicalSymptom || ''}</Value>
         </RecordItem>
         <RecordItem>
           <Label>건강 상태</Label>
           <Value>{recordData?.healthStatus || ''}</Value>
         </RecordItem>
-        <RecordItem>
-          <Label>진료 내역</Label>
-          <HospitalRecordValue>
-            <RecordRow>
-              <ListTitle>진단명</ListTitle>
-              <RecordText>{recordData?.diagnosisName || ''}</RecordText>
-            </RecordRow>
-            <RecordRow>
-              <ListTitle>검사 및 처방 내역</ListTitle>
-              <RecordText>{recordData?.prescription || ''}</RecordText>
-            </RecordRow>
-          </HospitalRecordValue>
-        </RecordItem>
+        {recordData && recordData?.diagnosisName && (
+          <RecordItem>
+            <Label>진료 내역</Label>
+            <HospitalRecordValue>
+              <RecordRow>
+                <ListTitle>진단명</ListTitle>
+                <RecordText>{recordData?.diagnosisName || ''}</RecordText>
+              </RecordRow>
+              <RecordRow>
+                <ListTitle>검사 및 처방 내역</ListTitle>
+                <RecordText>{recordData?.prescription || ''}</RecordText>
+              </RecordRow>
+            </HospitalRecordValue>
+          </RecordItem>
+        )}
       </HealthRecord>
       <MobileAddButton selectedDate={selectedDate} />
     </Container>

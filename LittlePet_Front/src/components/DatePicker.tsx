@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { ko as koLocale } from 'date-fns/locale';
 import CalendarIconSrc from '../assets/Calender.svg'; // 이미지 경로 확인 필요
 
 // DatePicker 컴포넌트 props 타입 정의
@@ -21,10 +21,12 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
     ? new Date(selectedDate.replace(/\./g, '-')) // "yyyy.MM.dd" -> "yyyy-MM-dd"
     : new Date();
 
-  // 날짜 변경 핸들러
-  const handleDateChange = (date: Date | null) => {
-    if (date) {
-      const formattedDate = format(date, 'yyyy.MM.dd (EEE)', { locale: ko });
+  // 날짜 변경 핸들러 (배열 체크 추가)
+  const handleDateChange = (date: Date | Date[] | null) => {
+    if (date && !Array.isArray(date)) {
+      const formattedDate = format(date, 'yyyy.MM.dd (EEE)', {
+        locale: koLocale,
+      });
       onDateChange(formattedDate); // 부모 컴포넌트로 업데이트 전달
     }
   };
@@ -34,8 +36,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       <StyledDatePicker
         selected={parsedDate}
         onChange={handleDateChange}
-        dateFormat='yyyy.MM.dd (EEE)' // 사용자 지정 형식 적용
-        locale={ko} // 한글 요일 적용
+        dateFormat={'yyyy.MM.dd (EEE)'} // ✅ 문자열로 명확하게 지정
+        locale={koLocale} // ✅ locale을 명확하게 설정
       />
       <CalendarIconWrapper>
         <CalendarIcon src={CalendarIconSrc} alt='달력 아이콘' />
@@ -60,7 +62,9 @@ const DateContainer = styled.div`
   color: #737373;
 `;
 
-const StyledDatePicker = styled(DatePicker)`
+const StyledDatePicker = styled(
+  DatePicker as unknown as React.ComponentType<any>
+)`
   flex: 1; /* 내부 요소가 가득 차도록 */
   font-size: 14px;
   padding: 10px 15px; /* 좌측 여백 유지 */

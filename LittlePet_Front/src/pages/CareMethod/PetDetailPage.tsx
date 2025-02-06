@@ -24,7 +24,7 @@ const PetDetailPage: React.FC = () => {
     const fetchPetDetail = async () => {
       try {
         const response = await axios.get(
-          `https://umclittlepet.shop/animal-categories/species`,
+          `https://umclittlepet.shop/api/animal-categories/species`,
           {
             params: { 'species-id': speciesId }, // Query Parameter로 전달
           }
