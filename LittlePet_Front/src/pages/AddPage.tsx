@@ -14,13 +14,13 @@ const VALID_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
 const AddPage: React.FC = () => {
   const [tagSelected, setTagSelected] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
-  const [postImgs, setPostImgs] = useState([]); // 서버에 전송할 파일 자체
+  const [postImgs, setPostImgs] = useState<File[]>([]); // 서버에 전송할 파일 자체
   const [title, setTitle] = useState<string>('');
   const [textCount, setTextCount] = useState<number>(0);
   const [imgCount, setImgCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);
-  const imgRef = useRef<HTMLInputElement>(null);
+  const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = textCount > 0;
   // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
@@ -48,6 +48,44 @@ const AddPage: React.FC = () => {
   const handleEditorChange = (value: string) => {
     setContent(value); // 상태 업데이트
   };
+
+  // 파일 선택 핸들러
+  const handleFileChange = () => {
+    //input type= file DOM을 만든다.
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click(); //toolbar 이미지를 누르게 되면 이 부분이 실행된다.
+    input.onchange = async () => {
+      /*이미지 선택에 따른 조건을 다시 한번 하게 된다.*/
+      const file = input.files ? input.files[0] : null;
+      /*선택을 안하면 취소버튼처럼 수행하게 된다.*/
+      if (!file) return;
+      // ✅ 파일 유효성 검사
+      if (!VALID_TYPES.includes(file.type)) {
+        alert('지원되지 않는 파일 형식입니다.');
+        return;
+      }
+      if (file.size > MAX_SIZE) {
+        alert('파일 크기가 20MB를 초과할 수 없습니다.');
+        return;
+      }
+      // ✅ `FileReader`를 사용하여 로컬에서 이미지 URL 생성
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imgUrl = reader.result as string; // ✅ Base64 URL
+        let quillObj = quillRef.current?.getEditor(); // ✅ Quill 에디터 인스턴스 가져오기
+        const range = quillObj?.getSelection();
+        quillObj?.insertEmbed(range?.index || 0, 'image', imgUrl); // ✅ Quill 에디터에 이미지 삽입
+        setContent(quillObj?.root.innerHTML || '');
+        console.log(quillRef.current);
+      };
+
+      reader.readAsDataURL(file); // ✅ 파일을 Base64로 변환하여 `onload` 실행
+      setPostImgs((prevImgs) => [...prevImgs, file]);
+    };
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (categoryText === '') {
@@ -90,7 +128,9 @@ const AddPage: React.FC = () => {
     } else {
       setValid(false);
     }
+    console.log(imgCount);
   }, [title, content, categoryText, tagSelected]);
+
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -103,6 +143,7 @@ const AddPage: React.FC = () => {
           bold: () => {},
           underline: () => {},
           size: () => {},
+          image: handleFileChange,
         },
       },
     };
@@ -141,6 +182,7 @@ const AddPage: React.FC = () => {
             onChange={handleEditorChange}
             value={content}
           />
+
           {/*  <div
             dangerouslySetInnerHTML={{ __html: sanitizedContent }} // 안전하게 렌더링
           /> */}

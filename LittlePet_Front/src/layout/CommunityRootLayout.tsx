@@ -51,10 +51,6 @@ const CommunityRootLayout: React.FC = () => {
       : window.innerHeight - 50 - 42
   );
 
-  useEffect(() => {
-    console.log(`📏 계산된 높이: ${totalHeight}px`);
-  }, [window.innerHeight, window.innerWidth]);
-
   return (
     <Container>
       <Header>
