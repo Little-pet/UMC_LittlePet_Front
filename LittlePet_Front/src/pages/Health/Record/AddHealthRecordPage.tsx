@@ -23,7 +23,6 @@ import symptom8 from '@assets/symptoms/체온 상승.svg';
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
 import { getWeightChangeText } from '@utils/weightUtils';
-import { usePetStore } from '#/context/petStore';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -32,9 +31,7 @@ const AddHealthRecordPage: React.FC = () => {
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
-  //몸무게변화
-  const [latestWeight, setLatestWeight] = useState<number | null>(null);
-  const { setWeightChange, getWeightChange } = usePetStore();
+
   // 토스트 메시지 상태 추가
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isToastVisible, setToastVisible] = useState(false);
@@ -199,45 +196,11 @@ const AddHealthRecordPage: React.FC = () => {
             selectedDate: date,
           },
         });
-
-        const weightChangeText = getWeightChangeText(
-          formData.weight,
-          latestWeight
-        );
-
-        setWeightChange(Number(petId), date, weightChangeText);
-        const storedValue = getWeightChange(1, '2025-02-06');
-        console.log('🎯 getWeightChange(1, "2025-02-06") 결과:', storedValue);
-      } else {
-        alert('저장 실패! 다시 시도해주세요.');
       }
     } catch (error: any) {
       console.error(' 저장 오류:', error);
     }
   };
-
-  //  최신 기록 가져오기
-  useEffect(() => {
-    const fetchLatestRecord = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
-          { withCredentials: true }
-        );
-
-        if (response.data.isSuccess) {
-          setLatestWeight(
-            response.data.result?.latestRecord?.weight ?? '데이터 없음'
-          );
-          console.log(latestWeight);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchLatestRecord();
-  }, [petId]);
 
   return (
     <Container>

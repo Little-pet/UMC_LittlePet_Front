@@ -58,9 +58,9 @@ const HealthProfile: React.FC = () => {
   const { data: healthRecord, isLoading: recordLoading } = useQuery({
     queryKey: ['healthRecord', selectedPet?.petId],
     queryFn: () => fetchHealthRecord(selectedPet!.petId),
-
     enabled: !!selectedPet, // selectedPet이 있을 때만 실행
     staleTime: 0,
+    gcTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
