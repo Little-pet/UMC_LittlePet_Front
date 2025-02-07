@@ -89,9 +89,16 @@ const PetDetailPage: React.FC = () => {
 export default PetDetailPage;
 
 const Container = styled.div`
-  max-width: 600px;
   margin: auto;
   padding: 20px;
+  padding-top: 76px;
+  @media (min-width: 768px) {
+    padding-top: 64px;
+    padding-bottom: 64px;
+    margin-top: 39px;
+    box-sizing: border-box;
+    margin: 100px 96px;
+  }
 `;
 
 const TitleContainer = styled.div`
@@ -154,4 +161,7 @@ const SectionTitle = styled.h2`
   font-size: 16px;
   margin: 0;
   scroll-margin-top: 150px;
+  @media (min-width: 768px) {
+    scroll-margin-top: 104px;
+  }
 `;
