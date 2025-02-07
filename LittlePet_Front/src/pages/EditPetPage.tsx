@@ -18,7 +18,7 @@ interface Pet {
 
 const EditPetPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
-  const { pets, deletePet, updatePet } = usePets();
+  const { pets, deletePet } = usePets();
   const navigate = useNavigate();
 
   // 기존 반려동물 정보를 찾기
@@ -69,7 +69,7 @@ const EditPetPage: React.FC = () => {
 
   const handleSave = () => {
     // 반려동물 정보 업데이트
-    updatePet(pet);
+
     navigate('/mypage');
   };
 

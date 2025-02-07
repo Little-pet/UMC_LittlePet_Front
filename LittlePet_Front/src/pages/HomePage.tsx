@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SearchBar from '#/components/SearchBar';
+import SearchBar from '#/components/searchBar';
 import Carousel from '@components/HomePageSections/Carousel';
 import ChallengeSection from '@components/HomePageSections/ChallengeSection';
 import QuizSection from '@components/HomePageSections/QuizSection';

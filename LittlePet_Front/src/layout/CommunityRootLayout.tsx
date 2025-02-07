@@ -45,7 +45,7 @@ const CommunityRootLayout: React.FC = () => {
     console.log(localStorage.getItem('selectedCategory'));
   }, [location.pathname]);
 
-  const [totalHeight, setTotalHeight] = useState<number>(
+  const [totalHeight] = useState<number>(
     window.innerWidth < 768
       ? window.innerHeight - 50 - 45 - 42
       : window.innerHeight - 50 - 42
