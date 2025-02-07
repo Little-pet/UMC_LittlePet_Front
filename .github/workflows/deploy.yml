@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Change directory to LittlePet_Front
+        run: cd LittlePet_Front
+
       # 3. Vite React 프로젝트 빌드
       - name: Install dependencies and build (Vite)
         run: |
