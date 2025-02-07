@@ -5,7 +5,7 @@ import profileIcon from '#/assets/프로필.svg';
 import animalIcon from '#/assets/동물 아이콘.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
-import BadgeComponent from '#/components/Community/badge';
+import BadgeComponent from '#/components/Community/Badge';
 
 interface Badge {
   type: 'challenge' | 'popular'; // Badge type 제한
