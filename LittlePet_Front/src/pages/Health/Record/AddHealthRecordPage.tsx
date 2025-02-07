@@ -22,7 +22,6 @@ import symptom8 from '@assets/symptoms/체온 상승.svg';
 
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
-import { getWeightChangeText } from '@utils/weightUtils';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -196,6 +195,8 @@ const AddHealthRecordPage: React.FC = () => {
             selectedDate: date,
           },
         });
+      } else {
+        alert('저장 실패! 다시 시도해주세요.');
       }
     } catch (error: any) {
       console.error(' 저장 오류:', error);
