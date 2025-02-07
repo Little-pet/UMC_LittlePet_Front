@@ -17,8 +17,8 @@ const AddPage: React.FC = () => {
   const [postImgs, setPostImgs] = useState<File[]>([]); // 서버에 전송할 파일 자체
   const [title, setTitle] = useState<string>('');
   const [textCount, setTextCount] = useState<number>(0);
-  const [imgCount, setImgCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
+  const [imgCount, setImgCount] = useState<number>(0);
   const [valid, setValid] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
@@ -48,6 +48,11 @@ const AddPage: React.FC = () => {
   const handleEditorChange = (value: string) => {
     setContent(value); // 상태 업데이트
   };
+  const getImageCount = (htmlContent: string): number => {
+    const imgTags =
+      htmlContent.match(/<img [^>]*src=["'][^"']*["'][^>]*>/g) || [];
+    return imgTags.length;
+  };
 
   // 파일 선택 핸들러
   const handleFileChange = () => {
@@ -70,6 +75,14 @@ const AddPage: React.FC = () => {
         alert('파일 크기가 20MB를 초과할 수 없습니다.');
         return;
       }
+      // ✅ 현재 content에서 이미지 개수 직접 확인
+      const currentImageCount = getImageCount(content);
+      console.log('현재 이미지 개수:', currentImageCount);
+
+      if (currentImageCount >= MAX_IMAGES) {
+        alert(`최대 ${MAX_IMAGES}개의 이미지만 업로드할 수 있습니다.`);
+        return;
+      }
       // ✅ `FileReader`를 사용하여 로컬에서 이미지 URL 생성
       const reader = new FileReader();
       reader.onload = () => {
@@ -78,7 +91,6 @@ const AddPage: React.FC = () => {
         const range = quillObj?.getSelection();
         quillObj?.insertEmbed(range?.index || 0, 'image', imgUrl); // ✅ Quill 에디터에 이미지 삽입
         setContent(quillObj?.root.innerHTML || '');
-        console.log(quillRef.current);
       };
 
       reader.readAsDataURL(file); // ✅ 파일을 Base64로 변환하여 `onload` 실행
@@ -110,13 +122,9 @@ const AddPage: React.FC = () => {
     const plainText = content.replace(/<[^>]*>/g, '').trim();
     const textCount = plainText.length; // 글자 수 계산
 
-    // 이미지 개수 계산 (img 태그 매칭)
-    const imgTags = content.match(/<img [^>]*src=["'][^"']*["'][^>]*>/g) || [];
-    const imgCount = imgTags.length; // 이미지 개수 계산
-
     // 상태 업데이트
     setTextCount(textCount);
-    setImgCount(imgCount);
+    setImgCount(getImageCount(content));
 
     if (
       plainText.length > 0 &&
@@ -128,6 +136,7 @@ const AddPage: React.FC = () => {
     } else {
       setValid(false);
     }
+    console.log(textCount);
     console.log(imgCount);
   }, [title, content, categoryText, tagSelected]);
 
@@ -176,6 +185,7 @@ const AddPage: React.FC = () => {
           <Divider />
 
           <StyledQuill
+            ref={quillRef}
             theme='snow'
             modules={modules}
             placeholder='내용을 입력하세요'
