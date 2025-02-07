@@ -171,7 +171,7 @@ const AddHealthRecordPage: React.FC = () => {
         formData.fecesStatus === '대변 안 봄'
           ? null
           : formData.fecesColorStatus, // 대변 안 봄이면 null 처리
-      atypicalSymptom: formData.atypicalSymptom,
+      atypicalSymptom: formData.atypicalSymptom || null,
       healthStatus: formData.healthStatus,
       hospitalVisit: formData.hospitalVisit === 'o', //  문자열 "o"이면 true, 아니면 false
       diagnosisName: isHospitalVisit ? formData.diagnosisName : null,

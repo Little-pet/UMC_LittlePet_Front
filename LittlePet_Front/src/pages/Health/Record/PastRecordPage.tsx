@@ -68,7 +68,7 @@ const PastRecordPage: React.FC = () => {
     fecesStatus: string;
     fecesColorStatus: string;
     healthStatus: string;
-    atypicalSymptom: string[];
+    atypicalSymptom: string;
     diagnosisName: string;
     prescription: string;
     weightDifference: number;
