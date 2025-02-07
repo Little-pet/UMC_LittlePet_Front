@@ -13,21 +13,32 @@ const HealthRootLayout: React.FC = () => {
     {
       type: 'record',
       title: '건강기록',
-      path: '/health/record',
+      link: '/health/record',
     },
     {
       type: 'hospital',
       title: '병원찾기',
-      path: '/health/hospital',
+      link: '/health/hospital',
     },
   ];
 
-  const [selected, setSelected] = useState<string>('record');
-
+  /* const [selected, setSelected] = useState<string>('record'); */
+  const location = useLocation();
+  const [selected, setSelected] = useState<string>(
+    localStorage.getItem('selectedCategory') || 'record'
+  );
   const handleClick = (type: string) => {
     setSelected(type);
+    localStorage.setItem('selectedCategory', type);
   };
-
+  useEffect(() => {
+    if (location.pathname === '/health') {
+      // ✅ `/health` 진입 시 기본값 `record` 설정
+      setSelected('record');
+      localStorage.setItem('selectedCategory', 'record');
+    }
+    console.log(localStorage.getItem('selectedCategory'));
+  }, [location.pathname]);
   return (
     <Container>
       <Header>
@@ -35,7 +46,7 @@ const HealthRootLayout: React.FC = () => {
           {categories.map((category, index) => (
             <MenuItem
               key={index}
-              to={category.path}
+              to={category.link}
               onClick={() => handleClick(category.type)}
               isActive={selected === category.type}
             >
@@ -59,7 +70,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 100%;
   width: 100%;
 `;
 

@@ -33,15 +33,12 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     <CardContainer to={`/community/${postId}`}>
       <ContentWrapper>
         <ProfileWrapper>
-          <img src={profileIcon} style={{ width: '20px', height: '20px' }} />
+          <ProfileImg src={profileIcon} />
           <div>
             <UserInfoWrapper>
               <UserName>{name}</UserName>
               <AnimalWrapper>
-                <img
-                  src={animalIcon}
-                  style={{ width: '16px', height: '16px' }}
-                />
+                <AnimalImg src={animalIcon} />
                 <AnimalText>{animal}</AnimalText>
                 {gender == 'female' ? (
                   <img src={femaleIcon} style={{ width: '6px' }} />
@@ -73,6 +70,10 @@ const CardContainer = styled(Link)`
   background-color: #00000080;
   position: relative;
   flex-shrink: 0; /* 카드가 축소되지 않도록 설정 */
+  @media (min-width: 768px) {
+    width: 400px;
+    height: 480px;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -84,6 +85,13 @@ const ContentWrapper = styled.div`
   position: absolute;
   top: 120px;
   left: 18px;
+  @media (min-width: 768px) {
+    width: 342px;
+    height: 142px;
+    top: 317px;
+    left: 26px;
+    gap: 8px;
+  }
 `;
 
 const ProfileWrapper = styled.div`
@@ -92,6 +100,14 @@ const ProfileWrapper = styled.div`
   align-items: center;
 `;
 
+const ProfileImg = styled.img`
+  width: 20px;
+  height: 20px;
+  @media (min-width: 768px) {
+    width: 50px;
+    height: 50px;
+  }
+`;
 const UserInfoWrapper = styled.div`
   display: flex;
   gap: 4px;
@@ -104,17 +120,31 @@ const AnimalWrapper = styled.div`
   align-items: center;
 `;
 
+const AnimalImg = styled.img`
+  width: 16px;
+  height: 16px;
+  @media (min-width: 768px) {
+    width: 26px;
+    height: 26px;
+  }
+`;
 const UserName = styled.div`
   font-size: 12px;
   font-family: 'Pretendard-SemiBold';
   line-height: 35px;
   color: #ffffff;
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 const AnimalText = styled.div`
   font-size: 10px;
   font-family: 'Pretendard-SemiBold';
   color: #ffffff;
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const DescriptionWrapper = styled.div``;
@@ -124,6 +154,10 @@ const DescriptionTitle = styled.div`
   font-family: 'Pretendard-Bold';
   line-height: 28px;
   color: #ffffff;
+  @media (min-width: 768px) {
+    font-size: 24px;
+    line-height: 35px;
+  }
 `;
 
 const DescriptionText = styled.div`
@@ -131,4 +165,8 @@ const DescriptionText = styled.div`
   font-family: 'Pretendard-SemiBold';
   line-height: 21px;
   color: #ffffff;
+  @media (min-width: 768px) {
+    font-size: 16px;
+    line-height: 35px;
+  }
 `;

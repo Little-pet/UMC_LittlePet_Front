@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Notice from '@assets/Notice.svg';
 import Logout from '@assets/Logout.svg';
+import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
 
 // 메뉴 항목 데이터 타입 정의
@@ -26,6 +27,10 @@ const SettingsPage: React.FC = () => {
       <Section>
         <SectionTitle>도움말</SectionTitle>
         <MenuItem icon={<img src={Notice} alt='공지사항' />} text='공지사항' />
+        <MenuItem
+          icon={<img src={TermsOfService} alt='이용약관' />}
+          text='이용약관'
+        />
       </Section>
 
       <Section>

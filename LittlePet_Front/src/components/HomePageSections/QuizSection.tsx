@@ -44,61 +44,73 @@ const QuizSection: React.FC = () => {
   };
 
   return (
-    <QuizContainer isSelected={isSelected}>
-      <QuizQuesetion>
-        <QuizTitle>오늘의 퀴즈</QuizTitle>
-        <Question>{quizData.question}</Question>
-      </QuizQuesetion>
-      <Answers>
-        {quizData.choices.map((choice, index) => (
-          <Choice
-            key={index}
-            onClick={() => handleClick(index)}
-            isCorrect={showAnswer && index === quizData.correctIndex}
-            isSelected={
-              showAnswer &&
-              index === selectedIndex &&
-              index !== quizData.correctIndex
-            }
-          >
-            {`${index + 1}) ${choice}`}
-          </Choice>
-        ))}
-      </Answers>
-      {showAnswer && <Explanation>{quizData.explanation}</Explanation>}
-      <Participants>
-        <ParticipantsIcon src={participantsIcon} alt='Participants Icon' />
-        <ParticipantsText>
-          {participantCount}명의 사람들이 퀴즈에 참여했어요
-        </ParticipantsText>
-      </Participants>
-    </QuizContainer>
+    <Container>
+      <QuizContainer isSelected={isSelected}>
+        <QuizQuesetion>
+          <QuizTitle>오늘의 퀴즈</QuizTitle>
+          <Question>{quizData.question}</Question>
+        </QuizQuesetion>
+        <Answers>
+          {quizData.choices.map((choice, index) => (
+            <Choice
+              key={index}
+              onClick={() => handleClick(index)}
+              isCorrect={showAnswer && index === quizData.correctIndex}
+              isSelected={
+                showAnswer &&
+                index === selectedIndex &&
+                index !== quizData.correctIndex
+              }
+            >
+              {`${index + 1}) ${choice}`}
+            </Choice>
+          ))}
+        </Answers>
+        {showAnswer && <Explanation>{quizData.explanation}</Explanation>}
+        <Participants>
+          <ParticipantsIcon src={participantsIcon} alt='Participants Icon' />
+          <ParticipantsText>
+            {participantCount}명의 사람들이 퀴즈에 참여했어요
+          </ParticipantsText>
+        </Participants>
+      </QuizContainer>
+    </Container>
   );
 };
 
 export default QuizSection;
 
+const Container = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 24px;
+  margin-left: 25px;
+  margin-right: 25px;
+  padding: 0 25px;
+  @media (min-width: 768px) {
+    padding: 0 96px;
+  }
+`;
+
 const QuizContainer = styled.div<{ isSelected?: boolean }>`
-  box-sizing: border-box;
   height: ${({ isSelected }) => (isSelected ? '357px' : '309px')};
-  box-sizing: border-box;
   border-radius: 10px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 24px;
   box-shadow: 0px 4px 10px #0000001a;
-  margin-left: 25px;
-  margin-right: 25px;
   @media (min-width: 768px) {
-    margin: 0 96px;
-    margin-top: 24px;
+    gap: 24px;
+    padding: 48px 64px;
+    height: ${({ isSelected }) => (isSelected ? '561px' : '502px')};
   }
 `;
 
 const QuizQuesetion = styled.div`
-  height: 74px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const QuizTitle = styled.h1`
@@ -106,6 +118,9 @@ const QuizTitle = styled.h1`
   font-weight: 700;
   line-height: 35px;
   margin: 0;
+  @media (min-width: 768px) {
+    font-size: 36px;
+  }
 `;
 
 const Question = styled.h2`
@@ -114,6 +129,9 @@ const Question = styled.h2`
   line-height: 35px;
   color: #737373;
   margin: 0;
+  @media (min-width: 768px) {
+    font-size: 26px;
+  }
 `;
 
 const Answers = styled.div`
@@ -121,6 +139,10 @@ const Answers = styled.div`
   height: 139px;
   display: flex;
   flex-direction: column;
+  @media (min-width: 768px) {
+    height: 220px;
+    gap: 20px;
+  }
 `;
 
 const Choice = styled.button<{ isCorrect?: boolean; isSelected?: boolean }>`
@@ -137,28 +159,46 @@ const Choice = styled.button<{ isCorrect?: boolean; isSelected?: boolean }>`
   background-color: #ffffff;
   font-family: 'Pretendard';
   font-weight: 500;
+  @media (min-width: 768px) {
+    height: 60px;
+    padding: 16px 24px;
+    font-size: 24px;
+    line-height: 35px;
+  }
 `;
 
 const Explanation = styled.div`
   font-size: 12px;
   color: #6ea8fe;
   font-weight: 600;
-  line-height: 18px;
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const Participants = styled.div`
   height: 24px;
   display: flex;
   align-items: center;
+  @media (min-width: 768px) {
+    height: 48px;
+  }
 `;
 
 const ParticipantsIcon = styled.img`
   width: 36px;
   height: 24px;
+  @media (min-width: 768px) {
+    width: 48px;
+  }
 `;
 
 const ParticipantsText = styled.p`
   font-size: 12px;
   font-weight: 600;
   color: #737373;
+  @media (min-width: 768px) {
+    font-size: 18px;
+    line-height: 35px;
+  }
 `;
