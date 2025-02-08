@@ -56,8 +56,8 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /home/ubuntu/UMC_LittlePet_Front/LittlePet_Front
-            docker-compose down
+            cd /home/ubuntu
+            docker-compose stop frontend
             docker rmi -f $(docker images ${{ secrets.DOCKER_USERNAME }}/littlepet-frontend -q) || true  # 기존 이미지 삭제
-            docker pull ${{ secrets.DOCKER_USERNAME }}/littlepet-frontend:latest  # 최신 이미지 가져오기
+            docker-compose frontend
             docker-compose up -d --build frontend
