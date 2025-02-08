@@ -1,19 +1,33 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 
-// 커뮤니티 글 등록 버튼
-const DesktopAddButton: React.FC = () => {
+interface DesktopAddButtonProps {
+  selectedDate: dayjs.Dayjs;
+}
+
+const DesktopAddButton: React.FC<DesktopAddButtonProps> = ({
+  selectedDate,
+}) => {
   const navigate = useNavigate();
+  const { petId } = useParams<{ petId: string }>();
 
   const handleNavigate = (): void => {
-    navigate('/community/add');
+    if (petId) {
+      navigate(
+        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`
+      );
+    } else {
+      console.error('petId를 찾을 수 없습니다.');
+    }
   };
 
-  return <DesktopButton onClick={handleNavigate}>글쓰기</DesktopButton>;
+  return <DesktopButton onClick={handleNavigate}>기록하기</DesktopButton>;
 };
 
 export default DesktopAddButton;
+
 const DesktopButton = styled.button`
   width: 100px;
   padding: 11px 8px;

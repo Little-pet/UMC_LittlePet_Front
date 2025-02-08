@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import ChallengeCard from '#/components/Community/ChallengeCard';
+import ChallengeCard from '#/components/Community/challengeCard';
 
 const ChallengeSection: React.FC = () => {
   const navigate = useNavigate();

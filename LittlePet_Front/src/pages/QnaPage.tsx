@@ -1,9 +1,9 @@
-import SearchBar from '#/components/SearchBar';
+import SearchBar from '@components/SearchBar';
 import Item from '#/components/Community/Item';
 import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
-import banner from '#/assets/큐앤에이 배너.svg';
+import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
 import React, { useState } from 'react';
 import {

@@ -4,7 +4,7 @@ import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import logo from '@assets/logo.svg';
+import logo from '@assets/Logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
@@ -12,6 +12,7 @@ import bad from '@assets/악화.svg';
 import rabbit from '@assets/animaldropdown/rabbit.svg';
 import hamster from '@assets/animaldropdown/hamster.svg';
 import hedgehog from '@assets/animaldropdown/hedgehog.svg';
+import banner from '@assets/banner/banner-health.svg';
 
 import { getFormattedDate } from '@utils/dateUtils';
 
@@ -117,6 +118,7 @@ const HealthProfile: React.FC = () => {
   return (
     <>
       <PageTitle>건강 기록 프로필</PageTitle>
+      <Banner src={banner} />
       <Container>
         {pets.length > 0 ? (
           <>
@@ -232,6 +234,12 @@ const HealthProfile: React.FC = () => {
 };
 
 export default HealthProfile;
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
 
 const Loading = styled.div`
   text-align: center;
@@ -244,6 +252,9 @@ const PageTitle = styled.h1`
   font-size: 22px;
   text-align: center;
   margin-top: 34px;
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const EmptyState = styled.div`

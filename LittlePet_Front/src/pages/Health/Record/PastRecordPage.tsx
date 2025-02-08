@@ -8,6 +8,7 @@ import normal from '@assets/정상.svg';
 import { usePetStore } from '#/context/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
+import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
