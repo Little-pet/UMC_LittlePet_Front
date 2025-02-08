@@ -93,27 +93,34 @@ const Container = styled.div`
   padding: 20px;
   padding-top: 76px;
   @media (min-width: 768px) {
-    padding-top: 64px;
-    padding-bottom: 64px;
+    padding: 64px 96px;
     margin-top: 39px;
     box-sizing: border-box;
     margin: 100px 96px;
+    box-shadow: 0px 2px 5px 0px #00000026;
   }
 `;
 
 const TitleContainer = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-family: 'Pretendard';
+  @media (min-width: 800px) {
+    gap: 24px;
+  }
 `;
 
 const Title = styled.div`
   font-size: 20px;
   font-weight: 600;
   height: 22px;
+  @media (min-width: 800px) {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 22px;
+  }
 `;
 
 const Date = styled.div`
@@ -121,6 +128,10 @@ const Date = styled.div`
   font-weight: 500;
   font-size: 12px;
   color: #737373;
+  @media (min-width: 800px) {
+    font-size: 22px;
+    line-height: 22px;
+  }
 `;
 
 const PetImage = styled.img`
@@ -152,6 +163,13 @@ const Section = styled.div`
     line-height: 18px;
     color: #262627cc;
   }
+  @media (min-width: 800px) {
+    gap: 32px;
+    p {
+      font-size: 28px;
+      line-height: 42px;
+    }
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -161,7 +179,9 @@ const SectionTitle = styled.h2`
   font-size: 16px;
   margin: 0;
   scroll-margin-top: 150px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     scroll-margin-top: 104px;
+    font-size: 32px;
+    line-height: 42px;
   }
 `;

@@ -1,13 +1,20 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
 
-  server: {
-    host: true, // 로컬 네트워크에서 접근 가능하도록 설정
-  },
+export default defineConfig(({ mode }) => {
+  // 환경 변수 로드
+  const env = loadEnv(mode, process.cwd());
+
+  return {
+    plugins: [react(), tsconfigPaths()],
+    define: {
+      'import.meta.env': env, // ✅ Vite 환경 변수 바인딩
+    },
+    server: {
+      host: true,
+    },
+  };
 });

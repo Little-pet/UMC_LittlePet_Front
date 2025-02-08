@@ -86,6 +86,9 @@ const StickyNav = styled.div`
   border-top: 0.5px solid #d9d9d9;
   gap: 50px;
   padding: 0 25px;
+  @media (min-width: 800px) {
+    height: 70px;
+  }
 `;
 
 const NavButton = styled.button<{ isActive: boolean }>`
@@ -95,6 +98,12 @@ const NavButton = styled.button<{ isActive: boolean }>`
   font-weight: 500;
   cursor: pointer;
   font-family: 'Pretendard';
-  color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#737373')};
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
   padding: 0;
+  @media (min-width: 800px) {
+    height: 70px;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 35px;
+  }
 `;

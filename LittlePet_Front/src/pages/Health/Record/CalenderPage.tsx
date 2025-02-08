@@ -6,7 +6,7 @@ import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddBut
 import left from '#/assets/left.svg';
 import right from '#/assets/right.svg';
 import axios from 'axios';
-
+import banner from '@assets/banner/banner-health.svg';
 // 요일 배열
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -84,48 +84,65 @@ const CalendarPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Title>{petName}의 건강 기록</Title>
-      <CalendarContainer>
-        <MonthNavigation>
-          <NavButton src={left} onClick={() => handleMonthChange(-1)} />
-          <Month>{currentMonth.format('YYYY년 M월')}</Month>
-          <NavButton src={right} onClick={() => handleMonthChange(1)} />
-        </MonthNavigation>
+    <ContainerWrapper>
+      <Banner src={banner} />
+      <Container>
+        <Title>{petName}의 건강 기록</Title>
+        <CalendarContainer>
+          <MonthNavigation>
+            <NavButton src={left} onClick={() => handleMonthChange(-1)} />
+            <Month>{currentMonth.format('YYYY년 M월')}</Month>
+            <NavButton src={right} onClick={() => handleMonthChange(1)} />
+          </MonthNavigation>
 
-        <CalendarGrid>
-          {daysOfWeek.map((day, index) => (
-            <DayLabel key={index}>{day}</DayLabel>
-          ))}
+          <CalendarGrid>
+            {daysOfWeek.map((day, index) => (
+              <DayLabel key={index}>{day}</DayLabel>
+            ))}
 
-          {monthlyDates.map((date, index) => {
-            const formattedDate = date.format('YYYY-MM-DD');
-            const hasRecord = recordDates.includes(formattedDate);
-            return (
-              <DateItem
-                key={index}
-                isSelected={dayjs(selectedDate).isSame(date, 'day')}
-                isCurrentMonth={date.month() === currentMonth.month()}
-                onClick={() => handleDaySelect(date)}
-              >
-                {hasRecord && <RecordDot />}
-                <DateNumber
+            {monthlyDates.map((date, index) => {
+              const formattedDate = date.format('YYYY-MM-DD');
+              const hasRecord = recordDates.includes(formattedDate);
+              return (
+                <DateItem
+                  key={index}
                   isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                  isCurrentMonth={date.month() === currentMonth.month()}
+                  onClick={() => handleDaySelect(date)}
                 >
-                  {date.date()}
-                </DateNumber>
-              </DateItem>
-            );
-          })}
-        </CalendarGrid>
-      </CalendarContainer>
-      <MobileAddButton selectedDate={selectedDate} />
-    </Container>
+                  {hasRecord && <RecordDot />}
+                  <DateNumber
+                    isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                  >
+                    {date.date()}
+                  </DateNumber>
+                </DateItem>
+              );
+            })}
+          </CalendarGrid>
+        </CalendarContainer>
+        <MobileAddButton selectedDate={selectedDate} />
+      </Container>
+    </ContainerWrapper>
   );
 };
 
 export default CalendarPage;
 // Styled Components
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Container = styled.div`
   padding: 0 25px;
   box-sizing: border-box;
@@ -140,6 +157,9 @@ const Title = styled.h1`
   font-size: 22px;
   font-weight: 600;
   margin: 34px 0 36px;
+  @media only screen and (min-width: 800px) {
+    font-size: 26px;
+  }
 `;
 
 const CalendarContainer = styled.div`

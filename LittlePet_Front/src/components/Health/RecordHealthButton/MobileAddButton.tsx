@@ -1,7 +1,8 @@
 import React from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import addIcon from '#/assets/add.svg';
+import dayjs from 'dayjs';
 
 interface MobileAddButtonProps {
   selectedDate: dayjs.Dayjs;
@@ -11,9 +12,6 @@ interface MobileAddButtonProps {
 const MobileAddButton: React.FC<MobileAddButtonProps> = ({ selectedDate }) => {
   const navigate = useNavigate();
   const { petId } = useParams<{ petId: string }>();
-  const [searchParams] = useSearchParams();
-  const date =
-    searchParams.get('date') || new Date().toISOString().split('T')[0];
 
   const handleNavigate = (): void => {
     if (petId) {

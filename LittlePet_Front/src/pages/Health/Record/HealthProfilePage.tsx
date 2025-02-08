@@ -4,7 +4,7 @@ import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import logo from '@assets/logo.svg';
+import logo from '@assets/Logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
@@ -12,6 +12,7 @@ import bad from '@assets/악화.svg';
 import rabbit from '@assets/animaldropdown/rabbit.svg';
 import hamster from '@assets/animaldropdown/hamster.svg';
 import hedgehog from '@assets/animaldropdown/hedgehog.svg';
+import banner from '@assets/banner/banner-health.svg';
 
 import { getFormattedDate } from '@utils/dateUtils';
 
@@ -115,9 +116,11 @@ const HealthProfile: React.FC = () => {
   if (loading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
-    <>
+    <ContainerWrapper>
+      <Banner src={banner} />
       <PageTitle>건강 기록 프로필</PageTitle>
-      <Container>
+
+      <ContentContainer>
         {pets.length > 0 ? (
           <>
             <PetList>
@@ -226,13 +229,25 @@ const HealthProfile: React.FC = () => {
             </RegisterButton>
           </EmptyState>
         )}
-      </Container>
-    </>
+      </ContentContainer>
+    </ContainerWrapper>
   );
 };
 
 export default HealthProfile;
 
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const Loading = styled.div`
   text-align: center;
   font-size: 16px;
@@ -244,6 +259,9 @@ const PageTitle = styled.h1`
   font-size: 22px;
   text-align: center;
   margin-top: 34px;
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const EmptyState = styled.div`
@@ -315,7 +333,7 @@ const PetImg = styled.img`
   border-radius: 50px;
 `;
 
-const Container = styled.div`
+const ContentContainer = styled.div`
   width: 100%; /* 전체 화면 너비 적용 */
   padding: 16px 25px; /* 좌우 패딩 조정 */
   display: flex;
