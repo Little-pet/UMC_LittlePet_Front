@@ -10,6 +10,6 @@ RUN yarn install && yarn build
 
 # 2) Nginx로 정적 파일 서빙
 FROM nginx:latest
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
