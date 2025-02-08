@@ -7,6 +7,7 @@ import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
+import DeleteModal from '#/components/DeleteModal';
 interface Pet {
   name: string;
   profilePhoto: string;
@@ -20,6 +21,7 @@ interface ContextPet extends Pet {
   categoryName: string;
 }
 const EditPetPage: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { petId } = useParams<{ petId: string }>();
   //const { pets, deletePet, updatePet } = usePets();
   const navigate = useNavigate();
@@ -74,20 +76,9 @@ const EditPetPage: React.FC = () => {
 
     fetchPets(); // ✅ 선언한 async 함수 실행
   }, []);
-  // 초기 상태 저장 (비교용)
-  //const [initialPet, setInitialPet] = useState<Pet>(pet);
 
   const [isModified, setIsModified] = useState(false);
 
-  /*  useEffect(() => {
-    // 초기 상태 설정
-    if (foundPet) {
-      setPet(foundPet);
-      setInitialPet(foundPet);
-    }
-  }, [petId, pets]); */
-
-  // ✅ `info`가 변경될 때 `useState` 값 업데이트
   useEffect(() => {
     if (info) {
       setName(info.name);
@@ -109,37 +100,42 @@ const EditPetPage: React.FC = () => {
 
     setIsModified(hasChanges);
   }, [name, birthDate, categoryText, profileImage, tagSelected]);
+
+  // 반려동물 정보 수정
   const handleSave = async () => {
-    console.log(profileImage);
-    // 반려동물 정보 수정
-    const newPet: Pet = {
-      name: name, // 상태에서 가져온 이름
+    const petProfileRequest = {
+      name,
       birthDay: birthDate,
       gender: tagSelected,
-      profilePhoto:
-        profileImage instanceof File
-          ? URL.createObjectURL(profileImage)
-          : profileImage,
-      categoryName: categoryText ?? 0,
+      categoryName: categoryText,
     };
+    const formData = new FormData();
+    formData.append(
+      'petProfileRequest',
+      new Blob([JSON.stringify(petProfileRequest)], {
+        type: 'application/json',
+      })
+    );
+    if (profileImage instanceof File) {
+      formData.append('profileImage', profileImage);
+    }
     try {
       const response = await axios.put(
         import.meta.env.VITE_BACKEND_URL + `/users/4/pets/${petId}`,
-        newPet,
+        formData,
         {
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
           withCredentials: true,
         }
       );
       console.log('반려동물 프로필 수정 성공', response.data);
-      //updatePet(pet);
       navigate('/mypage');
     } catch (error) {
       console.error('반려동물 프로필 수정 실패:', error);
     }
+    console.log(categoryText);
   };
 
   const handleDelete = async () => {
@@ -222,7 +218,17 @@ const EditPetPage: React.FC = () => {
       <SaveButton onClick={handleSave} disabled={!isModified}>
         수정하기
       </SaveButton>
-      <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
+      <DeleteButton onClick={() => setIsModalOpen(!isModalOpen)}>
+        삭제하기
+      </DeleteButton>
+      {isModalOpen && (
+        <Overlay>
+          <DeleteModal
+            onClose={() => setIsModalOpen(false)}
+            onDelete={handleDelete}
+          />
+        </Overlay>
+      )}
     </Container>
   );
 };
@@ -339,13 +345,6 @@ const TagButtonContainer = styled.div`
   height: 35px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 343px;
-  margin-top:;
-`;
 const SaveButton = styled.button`
   width: 100%;
   height: 48px;
@@ -375,4 +374,16 @@ const DeleteButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
+`;
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 `;

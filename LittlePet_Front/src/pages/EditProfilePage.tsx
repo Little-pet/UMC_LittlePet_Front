@@ -51,7 +51,7 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
-    // 전화번호 입력 핸들러 (자동 '-' 추가)
+  // 전화번호 입력 핸들러 (자동 '-' 추가)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
 
@@ -61,10 +61,11 @@ const EditProfilePage: React.FC = () => {
     } else if (numericValue.length <= 7) {
       setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3)}`);
     } else {
-      setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3, 7)}-${numericValue.slice(7, 11)}`);
+      setPhone(
+        `${numericValue.slice(0, 3)}-${numericValue.slice(3, 7)}-${numericValue.slice(7, 11)}`
+      );
     }
   };
-
 
   <Input type='text' value={phone} onChange={handlePhoneChange} />;
 
@@ -160,7 +161,6 @@ const Container = styled.div`
   gap: 24px;
   padding: 20px;
   font-family: 'Pretendard';
-  margin-top: -45px;
 `;
 
 const Title = styled.h1`

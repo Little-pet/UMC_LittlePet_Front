@@ -4,12 +4,12 @@ import React from 'react';
 interface DeleteModalProps {
   onClose: () => void; // onClose는 함수이며 반환값은 없습니다.
 }
-const DeleteModal: React.FC<DeleteModalProps> = ({ onClose }) => {
+const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, onDelete }) => {
   return (
     <Container>
       <Message>정말 삭제하시겠습니까?</Message>
       <ButtonGroup>
-        <Button color='#C76B6B' textColor='white'>
+        <Button onClick={onDelete} color='#C76B6B' textColor='white'>
           삭제
         </Button>
         <Button onClick={onClose}>취소</Button>

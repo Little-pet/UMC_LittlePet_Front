@@ -112,4 +112,5 @@ const EditButton = styled.button`
   justify-content: center;
   background-color: #fff;
   align-items: center;
+  z-index: 100;
 `;

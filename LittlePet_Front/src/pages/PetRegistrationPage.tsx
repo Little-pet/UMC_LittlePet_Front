@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { usePets } from '#/context/PetContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
@@ -8,7 +7,6 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
 const PetRegistrationPage: React.FC = () => {
-  const { pets, addPet } = usePets();
   const navigate = useNavigate();
   const [tagSelected, setTagSelected] = useState<string>('');
   // 반려동물 정보 상태 관리
@@ -51,44 +49,42 @@ const PetRegistrationPage: React.FC = () => {
     profilePhoto: string; // 이미지 URL
     categoryName: string; // 카테고리 ID
   }
-  // 서버에서 response할 객체
-  interface ResponsePet extends Pet {
-    petId: number;
-  }
 
   const handleSave = async () => {
     const endpoint = '/users/4/pets';
-    const newPet: Pet = {
-      name: name, // 상태에서 가져온 이름
+    const petProfileRequest = {
+      name,
       birthDay: birthDate,
       gender: tagSelected,
-      profilePhoto:
-        profileImage instanceof File
-          ? URL.createObjectURL(profileImage)
-          : profileImage,
-      categoryName: categoryText ?? 0,
+      categoryName: categoryText,
     };
-
-    console.log(newPet);
+    const formData = new FormData();
+    formData.append(
+      'petProfileRequest',
+      new Blob([JSON.stringify(petProfileRequest)], {
+        type: 'application/json',
+      })
+    );
+    if (profileImage instanceof File) {
+      formData.append('profileImage', profileImage);
+    }
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + endpoint,
-        newPet,
+        formData,
         {
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
           withCredentials: true,
         }
       );
       console.log('반려동물 프로필 등록 성공', response.data);
-      const responsePet: ResponsePet = response.data.result;
-      addPet(responsePet);
       navigate('/mypage');
     } catch (error) {
       console.error('반려동물 프로필 등록 실패:', error);
     }
+    console.log(formData);
   };
 
   return (

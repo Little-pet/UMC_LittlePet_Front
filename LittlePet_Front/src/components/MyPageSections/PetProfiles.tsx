@@ -1,47 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePets } from '#/context/PetContext';
+import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
-import axios from 'axios';
 interface PetProfile {
   petId: number;
   name: string;
   profilePhoto: string;
 }
 const PetProfiles: React.FC = () => {
-  const { pets } = usePets();
+  const { pets, fetchPets } = usePetStore();
   const navigate = useNavigate();
-  const [profiles, setProfiles] = useState<PetProfile[]>([]);
   useEffect(() => {
-    const fetchPets = async () => {
-      const endpoint = '/users/4/pets/All';
-      try {
-        const response = await axios.get(
-          import.meta.env.VITE_BACKEND_URL + endpoint
-        );
-        console.log('사용자별 반려동물 목록 조회 성공:', response.data);
-        setProfiles(response.data.result);
-      } catch (error) {
-        console.error('사용자별 반려동물 목록 조회 실패:', error);
-      }
-    };
-
-    fetchPets(); // ✅ 선언한 async 함수 실행
-  }, []);
+    fetchPets(4);
+  }, [fetchPets]);
   const handlePetClick = (petId: number) => {
     navigate(`/edit-pet/${petId}`);
   };
 
   return (
     <Container>
-      {profiles.map((profile) => (
-        <ProfileCard
-          key={profile.petId}
-          onClick={() => handlePetClick(profile.petId)}
-        >
-          <ProfileImage src={profile.profilePhoto} alt={profile.name} />
-          <ProfileName>{profile.name}</ProfileName>
+      {pets.map((pet) => (
+        <ProfileCard key={pet.petId} onClick={() => handlePetClick(pet.petId)}>
+          <ProfileImage src={pet.profilePhoto} alt={pet.name} />
+          <ProfileName>{pet.name}</ProfileName>
         </ProfileCard>
       ))}
       <PetItem>
