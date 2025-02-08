@@ -9,6 +9,7 @@ import { usePetStore } from '#/context/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
 import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';
+import banner from '@assets/banner/banner-health.svg';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
@@ -155,108 +156,129 @@ const PastRecordPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Title>{petName}의 건강 기록</Title>
-      <Line />
+    <ContainerWrapper>
+      <Banner src={banner} />
+      <Container>
+        <Title>{petName}의 건강 기록</Title>
+        <Line />
 
-      <SelectedDateContainer>
-        <SelectedDate>{selectedDate.format('YYYY년 MM월 DD일')}</SelectedDate>
-        <WholeCalender
-          onClick={() =>
-            navigate(`/health/record/calendar/${petId}`, {
-              state: {
-                selectedDate: selectedDate.format('YYYY-MM-DD'),
-                petName: petName,
-                petId: petId,
-              },
-            })
-          }
-        >
-          <img src={calendarIcon} alt='달력 아이콘' />
-          전체보기
-        </WholeCalender>
-      </SelectedDateContainer>
-
-      <CalendarScroll>
-        {weekDates.map((date) => (
-          <DateItem
-            key={date.toString()}
-            isSelected={dayjs(selectedDate).isSame(date, 'day')}
-            onClick={() => setSelectedDate(date)}
+        <SelectedDateContainer>
+          <SelectedDate>{selectedDate.format('YYYY년 MM월 DD일')}</SelectedDate>
+          <WholeCalender
+            onClick={() =>
+              navigate(`/health/record/calendar/${petId}`, {
+                state: {
+                  selectedDate: selectedDate.format('YYYY-MM-DD'),
+                  petName: petName,
+                  petId: petId,
+                },
+              })
+            }
           >
-            <DayLabel>{date.locale('en').format('ddd').toUpperCase()}</DayLabel>
+            <img src={calendarIcon} alt='달력 아이콘' />
+            전체보기
+          </WholeCalender>
+        </SelectedDateContainer>
 
-            <DateNumber
+        <CalendarScroll>
+          {weekDates.map((date) => (
+            <DateItem
+              key={date.toString()}
               isSelected={dayjs(selectedDate).isSame(date, 'day')}
-              isFuture={date.isAfter(dayjs(selectedDate), 'day')}
+              onClick={() => setSelectedDate(date)}
             >
-              {date.date()}
-            </DateNumber>
-          </DateItem>
-        ))}
-      </CalendarScroll>
+              <DayLabel>
+                {date.locale('en').format('ddd').toUpperCase()}
+              </DayLabel>
 
-      <HealthRecord>
-        <RecordItem>
-          <Label>체중</Label>
-          <Value>
-            {recordData?.weight !== null &&
-              recordData?.weight !== undefined && (
-                <>
-                  {recordData.weight}kg
-                  <WeightChange>
-                    지난 기록 대비 <span>{weightChangeText} </span>
-                  </WeightChange>
-                </>
-              )}
-          </Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>식사량</Label>
-          <MealValue>{recordData?.mealAmount || ''}</MealValue>
-        </RecordItem>
-        <RecordItem>
-          <Label>대변 상태</Label>
-          <Value>
-            {recordData?.fecesStatus && recordData?.fecesColorStatus
-              ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
-              : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
-            <FecesBadge src={fecesBadgeImage || ''} alt={fecesStatus || ''} />
-          </Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>특이 증상</Label>
-          <Value>{recordData?.atypicalSymptom || ''}</Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>건강 상태</Label>
-          <Value>{recordData?.healthStatus || ''}</Value>
-        </RecordItem>
-        {recordData && recordData?.diagnosisName && (
+              <DateNumber
+                isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                isFuture={date.isAfter(dayjs(selectedDate), 'day')}
+              >
+                {date.date()}
+              </DateNumber>
+            </DateItem>
+          ))}
+        </CalendarScroll>
+
+        <HealthRecord>
           <RecordItem>
-            <Label>진료 내역</Label>
-            <HospitalRecordValue>
-              <RecordRow>
-                <ListTitle>진단명</ListTitle>
-                <RecordText>{recordData?.diagnosisName || ''}</RecordText>
-              </RecordRow>
-              <RecordRow>
-                <ListTitle>검사 및 처방 내역</ListTitle>
-                <RecordText>{recordData?.prescription || ''}</RecordText>
-              </RecordRow>
-            </HospitalRecordValue>
+            <Label>체중</Label>
+            <Value>
+              {recordData?.weight !== null &&
+                recordData?.weight !== undefined && (
+                  <>
+                    {recordData.weight}kg
+                    <WeightChange>
+                      지난 기록 대비 <span>{weightChangeText} </span>
+                    </WeightChange>
+                  </>
+                )}
+            </Value>
           </RecordItem>
-        )}
-        <DeleteButton onClick={() => handleDelete()}>삭제하기</DeleteButton>
-      </HealthRecord>
-      <MobileAddButton selectedDate={selectedDate} />
-    </Container>
+          <RecordItem>
+            <Label>식사량</Label>
+            <MealValue>{recordData?.mealAmount || ''}</MealValue>
+          </RecordItem>
+          <RecordItem>
+            <Label>대변 상태</Label>
+            <Value>
+              {recordData?.fecesStatus && recordData?.fecesColorStatus
+                ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
+                : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
+              <FecesBadge src={fecesBadgeImage || ''} alt={fecesStatus || ''} />
+            </Value>
+          </RecordItem>
+          <RecordItem>
+            <Label>특이 증상</Label>
+            <Value>{recordData?.atypicalSymptom || ''}</Value>
+          </RecordItem>
+          <RecordItem>
+            <Label>건강 상태</Label>
+            <Value>{recordData?.healthStatus || ''}</Value>
+          </RecordItem>
+          {recordData && recordData?.diagnosisName && (
+            <RecordItem>
+              <Label>진료 내역</Label>
+              <HospitalRecordValue>
+                <RecordRow>
+                  <ListTitle>진단명</ListTitle>
+                  <RecordText>{recordData?.diagnosisName || ''}</RecordText>
+                </RecordRow>
+                <RecordRow>
+                  <ListTitle>검사 및 처방 내역</ListTitle>
+                  <RecordText>{recordData?.prescription || ''}</RecordText>
+                </RecordRow>
+              </HospitalRecordValue>
+            </RecordItem>
+          )}
+          <ButtonContainer>
+            <DesktopAddButton selectedDate={selectedDate} />
+            <DeleteButton onClick={() => handleDelete()}>삭제하기</DeleteButton>
+          </ButtonContainer>
+        </HealthRecord>
+        <MobileAddButton selectedDate={selectedDate} />
+      </Container>
+    </ContainerWrapper>
   );
 };
 
 export default PastRecordPage;
 
 // Styled Components
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const Container = styled.div`
   padding: 0 25px;
@@ -274,6 +296,9 @@ const Title = styled.h1`
   font-size: 22px;
   font-weight: 600;
   margin: 34px 0 36px;
+  @media only screen and (min-width: 800px) {
+    font-size: 26px;
+  }
 `;
 
 const Line = styled.hr`
@@ -444,6 +469,12 @@ const RecordText = styled.p`
   color: #262627;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+`;
+
 const DeleteButton = styled.button`
   background-color: #c76b6b;
   color: white;
@@ -456,4 +487,7 @@ const DeleteButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
+  @media only screen and (min-width: 800px) {
+    width: 197px;
+  }
 `;

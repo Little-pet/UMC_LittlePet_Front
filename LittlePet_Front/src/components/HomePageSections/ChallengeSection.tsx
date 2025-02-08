@@ -117,7 +117,7 @@ const ChallengeWrapper = styled.div`
   /* 파이어폭스에서 스크롤바 숨기기 */
   scrollbar-width: none; 
    @media only screen and (min-width: 800px) {
-    justify-content:space-between;
+  
     gap:25px;
   }
 }

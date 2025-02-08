@@ -116,10 +116,11 @@ const HealthProfile: React.FC = () => {
   if (loading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
-    <>
-      <PageTitle>건강 기록 프로필</PageTitle>
+    <ContainerWrapper>
       <Banner src={banner} />
-      <Container>
+      <PageTitle>건강 기록 프로필</PageTitle>
+
+      <ContentContainer>
         {pets.length > 0 ? (
           <>
             <PetList>
@@ -228,19 +229,25 @@ const HealthProfile: React.FC = () => {
             </RegisterButton>
           </EmptyState>
         )}
-      </Container>
-    </>
+      </ContentContainer>
+    </ContainerWrapper>
   );
 };
 
 export default HealthProfile;
+
 const Banner = styled.img`
-  width: 100%;
+  width: 100vw;
   @media (max-width: 800px) {
     display: none;
   }
 `;
 
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const Loading = styled.div`
   text-align: center;
   font-size: 16px;
@@ -326,7 +333,7 @@ const PetImg = styled.img`
   border-radius: 50px;
 `;
 
-const Container = styled.div`
+const ContentContainer = styled.div`
   width: 100%; /* 전체 화면 너비 적용 */
   padding: 16px 25px; /* 좌우 패딩 조정 */
   display: flex;

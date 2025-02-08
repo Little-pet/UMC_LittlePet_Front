@@ -158,6 +158,7 @@ const Title = styled.h1`
   @media (min-width: 800px) {
     font-size: 26px;
     line-height: 22px;
+    margin-top: 24px;
   }
 `;
 const ButtonList = styled.div`
@@ -166,6 +167,7 @@ const ButtonList = styled.div`
   margin-top: 20px;
   @media (min-width: 800px) {
     justify-content: center;
+    margin-top: 42px;
   }
 `;
 
@@ -197,9 +199,13 @@ const CategoryButton = styled.button<{ isSelected: boolean }>`
   border: none;
   cursor: pointer;
   height: 27px;
-  width: 50px;
+  width: auto;
   font-family: 'Pretendard';
   font-weight: 500;
+  @media (min-width: 800px) {
+    font-size: 14px
+    :35px;
+  }
 `;
 
 const CategoryItem = styled.img`

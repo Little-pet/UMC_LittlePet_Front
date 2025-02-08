@@ -22,6 +22,7 @@ import symptom8 from '@assets/symptoms/체온 상승.svg';
 
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
+import banner from '@assets/banner/banner-health.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -204,149 +205,165 @@ const AddHealthRecordPage: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Title>건강 기록하기</Title>
-      {toastMessage && (
-        <Toast
-          message={toastMessage}
-          isVisible={!!toastMessage}
-          onClose={() => setToastMessage(null)}
-        />
-      )}
-      <Form onSubmit={handleSubmit}>
-        <InputGroup>
-          <Label>
-            체중 <span>*</span>
-          </Label>
-          <WeightInputContainer>
-            <WeightInput
-              type='text'
-              name='weight'
-              value={formData.weight}
-              onChange={handleChange}
-              placeholder='0.00'
-            />
-            <Unit>kg</Unit>
-          </WeightInputContainer>
-        </InputGroup>
-
-        <InputGroup>
-          <Label>
-            식사량 <span>*</span>
-          </Label>
-          <SelectableButtonGroup
-            name='mealAmount'
-            options={mealAmountOptions}
-            selectedValue={formData.mealAmount}
-            onSelect={handleSelectChange}
+    <ContainerWrapper>
+      <Banner src={banner} />
+      <Container>
+        <Title>건강 기록하기</Title>
+        {toastMessage && (
+          <Toast
+            message={toastMessage}
+            isVisible={!!toastMessage}
+            onClose={() => setToastMessage(null)}
           />
-        </InputGroup>
-
-        <SelectGroup>
-          <Label>
-            배변 형태 <span>*</span>
-          </Label>
-          <SelectableButton
-            name='fecesStatus'
-            options={fecesTypes}
-            selectedOption={formData.fecesStatus}
-            onSelect={handleSelectChange}
-          />
-        </SelectGroup>
-
-        <SelectGroup>
-          <Label>
-            대변 색 <span>*</span>
-          </Label>
-          <FecesColorButton
-            name='fecesColorStatus'
-            options={fecesColors}
-            selectedOption={formData.fecesColorStatus}
-            onSelect={handleSelectChange}
-          />
-        </SelectGroup>
-
-        <SelectGroup>
-          <Label>특이 증상</Label>
-          <SelectableButton
-            name='atypicalSymptom'
-            options={Symptoms}
-            selectedOption={formData.atypicalSymptom}
-            onSelect={handleSelectChange}
-          />
-        </SelectGroup>
-
-        {formData.atypicalSymptom === '기타' && (
+        )}
+        <Form onSubmit={handleSubmit}>
           <InputGroup>
-            <Input
-              name='otherSymptom'
-              value={formData.otherSymptom}
-              onChange={handleChange}
-              placeholder='기타 특이 증상을 적어주세요'
+            <Label>
+              체중 <span>*</span>
+            </Label>
+            <WeightInputContainer>
+              <WeightInput
+                type='text'
+                name='weight'
+                value={formData.weight}
+                onChange={handleChange}
+                placeholder='0.00'
+              />
+              <Unit>kg</Unit>
+            </WeightInputContainer>
+          </InputGroup>
+
+          <InputGroup>
+            <Label>
+              식사량 <span>*</span>
+            </Label>
+            <SelectableButtonGroup
+              name='mealAmount'
+              options={mealAmountOptions}
+              selectedValue={formData.mealAmount}
+              onSelect={handleSelectChange}
             />
           </InputGroup>
-        )}
 
-        <InputGroup>
-          <Label>
-            건강 상태 <span>*</span>
-          </Label>
-          <SelectableButtonGroup
-            name='healthStatus'
-            options={healthStatusOptions}
-            selectedValue={formData.healthStatus}
-            onSelect={handleSelectChange}
-          />
-        </InputGroup>
+          <SelectGroup>
+            <Label>
+              배변 형태 <span>*</span>
+            </Label>
+            <SelectableButton
+              name='fecesStatus'
+              options={fecesTypes}
+              selectedOption={formData.fecesStatus}
+              onSelect={handleSelectChange}
+            />
+          </SelectGroup>
 
-        <InputGroup>
-          <Label>
-            병원 내진 여부 <span>*</span>
-          </Label>
+          <SelectGroup>
+            <Label>
+              대변 색 <span>*</span>
+            </Label>
+            <FecesColorButton
+              name='fecesColorStatus'
+              options={fecesColors}
+              selectedOption={formData.fecesColorStatus}
+              onSelect={handleSelectChange}
+            />
+          </SelectGroup>
 
-          <SelectableButtonGroup
-            name='hospitalVisit'
-            options={HospitalVisitOptions}
-            selectedValue={formData.hospitalVisit}
-            onSelect={handleSelectChange}
-          />
-        </InputGroup>
+          <SelectGroup>
+            <Label>특이 증상</Label>
+            <SelectableButton
+              name='atypicalSymptom'
+              options={Symptoms}
+              selectedOption={formData.atypicalSymptom}
+              onSelect={handleSelectChange}
+            />
+          </SelectGroup>
 
-        {formData.hospitalVisit === 'o' && (
-          <>
+          {formData.atypicalSymptom === '기타' && (
             <InputGroup>
-              <Label>
-                진단명 <span>*</span>
-              </Label>
               <Input
-                name='diagnosisName'
-                value={formData.diagnosisName}
+                name='otherSymptom'
+                value={formData.otherSymptom}
                 onChange={handleChange}
-                placeholder='진단명을 입력하세요'
+                placeholder='기타 특이 증상을 적어주세요'
               />
             </InputGroup>
+          )}
 
-            <InputGroup>
-              <Label>
-                검사 및 처방 내역 <span>*</span>
-              </Label>
-              <Input
-                name='prescription'
-                value={formData.prescription}
-                onChange={handleChange}
-                placeholder='검사 및 처방 내용을 입력하세요'
-              />
-            </InputGroup>
-          </>
-        )}
+          <InputGroup>
+            <Label>
+              건강 상태 <span>*</span>
+            </Label>
+            <SelectableButtonGroup
+              name='healthStatus'
+              options={healthStatusOptions}
+              selectedValue={formData.healthStatus}
+              onSelect={handleSelectChange}
+            />
+          </InputGroup>
 
-        <SaveButton type='submit'>저장하기</SaveButton>
-      </Form>
-    </Container>
+          <InputGroup>
+            <Label>
+              병원 내진 여부 <span>*</span>
+            </Label>
+
+            <SelectableButtonGroup
+              name='hospitalVisit'
+              options={HospitalVisitOptions}
+              selectedValue={formData.hospitalVisit}
+              onSelect={handleSelectChange}
+            />
+          </InputGroup>
+
+          {formData.hospitalVisit === 'o' && (
+            <>
+              <InputGroup>
+                <Label>
+                  진단명 <span>*</span>
+                </Label>
+                <Input
+                  name='diagnosisName'
+                  value={formData.diagnosisName}
+                  onChange={handleChange}
+                  placeholder='진단명을 입력하세요'
+                />
+              </InputGroup>
+
+              <InputGroup>
+                <Label>
+                  검사 및 처방 내역 <span>*</span>
+                </Label>
+                <Input
+                  name='prescription'
+                  value={formData.prescription}
+                  onChange={handleChange}
+                  placeholder='검사 및 처방 내용을 입력하세요'
+                />
+              </InputGroup>
+            </>
+          )}
+
+          <SaveButton type='submit'>저장하기</SaveButton>
+        </Form>
+      </Container>
+    </ContainerWrapper>
   );
 };
 
 export default AddHealthRecordPage;
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const Container = styled.div`
   padding: 0 25px;
@@ -452,4 +469,13 @@ const SaveButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  @media (min-width: 800px) {
+    width: 197px;
+    height: 68px;
+    padding: 16px 60px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 5px 0px #00000026;
+    font-size: 22px;
+    justify-content: end;
+  }
 `;

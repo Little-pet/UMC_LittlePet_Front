@@ -70,7 +70,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  width: 100%;
 `;
 
 const Header = styled.div`
@@ -82,6 +81,10 @@ const Header = styled.div`
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
+  width: 100%;
+  @media (min-width: 800px) {
+    min-height: 70px;
+  }
 `;
 const ItemContainer = styled.div`
   display: flex;
@@ -93,8 +96,13 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   font-size: 14px;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+  @media (min-width: 800px) {
+    font-size: 22px;
+    line-height: 35px;
+    font-weight: 600;
+  }
 `;
 const MainContent = styled.main`
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
   }
 `;
