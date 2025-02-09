@@ -6,10 +6,10 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 
 interface UserActivity {
-  likes: number;
-  posts: number;
-  comments: number;
-  scrape: number;
+  likeCount: number;
+  postCount: number;
+  commentCount: number;
+  scrapCount: number;
 }
 
 const badgeCriteria: {
@@ -20,22 +20,22 @@ const badgeCriteria: {
   };
 } = {
   LikeKing: {
-    condition: (user) => user.likes >= 50,
+    condition: (user) => user.likeCount >= 50,
     label: '소셜응원왕',
     icon: LikeBadge,
   },
   masterWriter: {
-    condition: (user) => user.posts >= 15,
+    condition: (user) => user.postCount >= 15,
     label: '글쓰기마스터',
     icon: MasterWriterBadge,
   },
   CommentGenius: {
-    condition: (user) => user.comments >= 30,
+    condition: (user) => user.commentCount >= 30,
     label: '소통천재',
     icon: CommentBadge,
   },
   Challenger: {
-    condition: (user) => user.posts >= 15,
+    condition: (user) => user.postCount >= 15,
     label: '챌린저',
     icon: ChallengerBadge,
   },

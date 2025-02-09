@@ -6,7 +6,7 @@ import { useUser } from '#/context/UserContext';
 import Edit from '@assets/Edit.svg';
 import animalIcon from '@assets/동물 아이콘.svg';
 
-const ProfileSection: React.FC = () => {
+const ProfileSection: React.FC = ({ isLoading }) => {
   const { pets } = usePets();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -112,5 +112,4 @@ const EditButton = styled.button`
   justify-content: center;
   background-color: #fff;
   align-items: center;
-  z-index: 100;
 `;

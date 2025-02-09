@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePetStore } from '#/context/petStore';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
-interface PetProfile {
-  petId: number;
-  name: string;
-  profilePhoto: string;
-}
+import { useQuery } from '@tanstack/react-query';
+
 const PetProfiles: React.FC = () => {
   const { pets, fetchPets } = usePetStore();
   const navigate = useNavigate();
-  useEffect(() => {
-    fetchPets(4);
-  }, [fetchPets]);
+
   const handlePetClick = (petId: number) => {
     navigate(`/edit-pet/${petId}`);
   };
+  const userId = 4;
 
+  const { isLoading } = useQuery({
+    queryKey: ['pets', userId],
+    queryFn: () => fetchPets(userId),
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+  if (true) {
+    return (
+      <Container>
+        {Array.from({ length: 3 }).map((_, idx) => (
+          <ProfileCard key={idx}>
+            <SkeletonCard />
+            <ProfileName>dd</ProfileName>
+          </ProfileCard>
+        ))}
+      </Container>
+    );
+  }
   return (
     <Container>
       {pets.map((pet) => (
@@ -78,3 +92,19 @@ const PetItem = styled.div`
 `;
 
 const AddButton = styled.img``;
+const blink = keyframes`
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+`;
+const SkeletonCard = styled.div`
+  width: 60px;
+  height: 60px;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  animation: ${blink} 1.5s ease-in-out infinite;
+`;

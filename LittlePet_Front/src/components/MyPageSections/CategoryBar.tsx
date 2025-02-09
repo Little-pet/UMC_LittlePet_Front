@@ -8,10 +8,11 @@ interface StatItemProps {
 }
 
 interface UserActivity {
-  likes: number;
-  posts: number;
-  comments: number;
-  scrape: number;
+  likeCount: number;
+  postCount: number;
+  commentCount: number;
+  scrapCount: number;
+  reviewCount: number;
 }
 
 interface StatsProps {
@@ -31,11 +32,11 @@ const StatItem: React.FC<StatItemProps> = ({ label, value }) => {
 const StatsComponent: React.FC<StatsProps> = ({ user }) => {
   // user 데이터를 활용하여 statsData 구성
   const statsData = [
-    { label: '글', value: user.posts },
-    { label: '댓글', value: user.comments },
-    { label: '좋아요', value: user.likes },
-    { label: '병원 리뷰', value: 0 },
-    { label: '스크랩', value: user.scrape },
+    { label: '글', value: user.postCount },
+    { label: '댓글', value: user.commentCount },
+    { label: '좋아요', value: user.likeCount },
+    { label: '병원 리뷰', value: user.reviewCount },
+    { label: '스크랩', value: user.scrapCount },
   ];
 
   return (
