@@ -42,7 +42,7 @@ const HospitalPage: React.FC = () => {
     setView(false);
   };
   return (
-    <ContainerWrapper>
+    <>
       <Banner src={banner} />
       <MainContainer>
         <TopActions>
@@ -130,23 +130,17 @@ const HospitalPage: React.FC = () => {
           </Overlay>
         )}
       </MainContainer>
-    </ContainerWrapper>
+    </>
   );
 };
 
 export default HospitalPage;
 
 const Banner = styled.img`
-  width: 100vw;
+  width: 100%;
   @media (max-width: 800px) {
     display: none;
   }
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const MainContainer = styled.div`

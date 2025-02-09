@@ -47,7 +47,7 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   justify-content: center;
-  max-width: 100vw;
+  max-width: 100%;
   height: calc(100vh - 50px - 45px);
   padding: 0;
   margin: 0;
