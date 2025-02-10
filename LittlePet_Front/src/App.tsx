@@ -25,7 +25,8 @@ import HomePage from '#/pages/HomePage';
 import MyPage from '#/pages/MyPage';
 import SplashScreen from '#/pages/SplashScreen';
 import EditProfilePage from '#/pages/EditProfilePage';
-
+import EditPetPage from '#/pages/EditPetPage';
+import PetRegistration from '#/pages/PetRegistrationPage';
 import HealthRootLayout from '#/layout/HealthRootLayout';
 import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
@@ -47,7 +48,8 @@ const router = createBrowserRouter([
       { path: 'onboarding', element: <OnBoardingPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'edit-profile', element: <EditProfilePage /> },
-
+      { path: 'pet-register', element: <PetRegistration /> },
+      { path: 'edit-pet/:petId', element: <EditPetPage /> },
       { path: 'caremethod', element: <CareMethodPage /> },
 
       {
