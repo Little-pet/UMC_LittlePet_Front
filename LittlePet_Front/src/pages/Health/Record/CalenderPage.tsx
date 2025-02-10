@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { usePets } from '#/context/PetContext';
 import dayjs from 'dayjs';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import left from '#/assets/left.svg';
 import right from '#/assets/right.svg';
-
+import axios from 'axios';
+import banner from '@assets/banner/banner-health.svg';
 // 요일 배열
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -38,19 +38,36 @@ const getMonthlyDates = (selectedDate: dayjs.Dayjs) => {
 
 const CalendarPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
-  const { pets } = usePets();
-  const selectedPet = pets.find((pet) => pet.id.toString() === petId);
   const location = useLocation();
-  console.log('Received location state:', location.state);
+  const petName = location.state?.petName;
+  const navigate = useNavigate();
   const initialDate = location.state?.selectedDate
     ? dayjs(location.state.selectedDate)
     : dayjs();
-  console.log('Parsed initialDate:', initialDate.format('YYYY-MM-DD'));
 
   // 기본값을 이전 페이지에서 선택한 날짜로 설정
-  // 추후 백엔드와 연동시 수정할 예정정
+
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(initialDate);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(initialDate);
+  const [recordDates, setRecordDates] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchRecordDates = async () => {
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/pets/${petId}/health-records/record-dates`
+        );
+        if (response.data.isSuccess) {
+          setRecordDates(response.data.result);
+        }
+      } catch (error) {
+        console.error('Error fetching health record dates:', error);
+      }
+    };
+    if (petId) {
+      fetchRecordDates();
+    }
+  }, [petId]);
 
   // 해당 월의 모든 날짜 가져오기 (이전 달 포함)
   const monthlyDates = getMonthlyDates(currentMonth);
@@ -59,42 +76,73 @@ const CalendarPage: React.FC = () => {
     setCurrentMonth(currentMonth.add(offset, 'month'));
   };
 
-  return (
-    <Container>
-      <Title>{selectedPet?.name}의 건강 기록</Title>
-      <CalendarContainer>
-        <MonthNavigation>
-          <NavButton src={left} onClick={() => handleMonthChange(-1)} />
-          <Month>{currentMonth.format('YYYY년 M월')}</Month>
-          <NavButton src={right} onClick={() => handleMonthChange(1)} />
-        </MonthNavigation>
+  const handleDaySelect = (date: any) => {
+    setSelectedDate(date);
+    navigate(`/health/record/detail/${petId}`, {
+      state: { selectedDate: date.format('YYYY-MM-DD'), petName: petName },
+    });
+  };
 
-        <CalendarGrid>
-          {daysOfWeek.map((day, index) => (
-            <DayLabel key={index}>{day}</DayLabel>
-          ))}
-          {monthlyDates.map((date, index) => (
-            <DateItem
-              key={index}
-              isSelected={dayjs(selectedDate).isSame(date, 'day')}
-              isCurrentMonth={date.month() === currentMonth.month()}
-              onClick={() => setSelectedDate(date)}
-            >
-              <DateNumber isSelected={dayjs(selectedDate).isSame(date, 'day')}>
-                {date.date()}
-              </DateNumber>
-            </DateItem>
-          ))}
-        </CalendarGrid>
-      </CalendarContainer>
-      <MobileAddButton selectedDate={selectedDate} />
-    </Container>
+  return (
+    <ContainerWrapper>
+      <Banner src={banner} />
+      <Container>
+        <Title>{petName}의 건강 기록</Title>
+        <CalendarContainer>
+          <MonthNavigation>
+            <NavButton src={left} onClick={() => handleMonthChange(-1)} />
+            <Month>{currentMonth.format('YYYY년 M월')}</Month>
+            <NavButton src={right} onClick={() => handleMonthChange(1)} />
+          </MonthNavigation>
+
+          <CalendarGrid>
+            {daysOfWeek.map((day, index) => (
+              <DayLabel key={index}>{day}</DayLabel>
+            ))}
+
+            {monthlyDates.map((date, index) => {
+              const formattedDate = date.format('YYYY-MM-DD');
+              const hasRecord = recordDates.includes(formattedDate);
+              return (
+                <DateItem
+                  key={index}
+                  isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                  isCurrentMonth={date.month() === currentMonth.month()}
+                  onClick={() => handleDaySelect(date)}
+                >
+                  {hasRecord && <RecordDot />}
+                  <DateNumber
+                    isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                  >
+                    {date.date()}
+                  </DateNumber>
+                </DateItem>
+              );
+            })}
+          </CalendarGrid>
+        </CalendarContainer>
+        <MobileAddButton selectedDate={selectedDate} />
+      </Container>
+    </ContainerWrapper>
   );
 };
 
 export default CalendarPage;
-
 // Styled Components
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Container = styled.div`
   padding: 0 25px;
   box-sizing: border-box;
@@ -109,6 +157,9 @@ const Title = styled.h1`
   font-size: 22px;
   font-weight: 600;
   margin: 34px 0 36px;
+  @media only screen and (min-width: 800px) {
+    font-size: 26px;
+  }
 `;
 
 const CalendarContainer = styled.div`
@@ -147,12 +198,13 @@ const CalendarGrid = styled.div`
 
 const DateItem = styled.div<{ isSelected: boolean; isCurrentMonth: boolean }>`
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   justify-content: center;
   height: 42px;
   width: 44px;
   color: #6a6a6d;
   font-weight: 400;
-  text-align: center;
   align-items: center;
   font-size: 14px;
   box-sizing: border-box;
@@ -162,6 +214,20 @@ const DateItem = styled.div<{ isSelected: boolean; isCurrentMonth: boolean }>`
     isSelected ? '#6EA8FE' : 'transparent'};
   color: ${({ isSelected, isCurrentMonth }) =>
     isSelected ? '#fff' : isCurrentMonth ? '#6a6a6d' : '#D5D5D6'};
+  position: relative;
+`;
+
+const DateNumber = styled.div<{ isSelected: boolean }>`
+  text-align: center;
+`;
+
+const RecordDot = styled.div`
+  width: 4px;
+  height: 4px;
+  background-color: #6ea8fe;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
 `;
 
 const DayLabel = styled.div`
@@ -172,5 +238,3 @@ const DayLabel = styled.div`
   font-size: 12px;
   color: #d5d5d6;
 `;
-
-const DateNumber = styled.div``;

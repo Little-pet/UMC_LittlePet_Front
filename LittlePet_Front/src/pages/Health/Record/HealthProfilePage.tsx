@@ -1,57 +1,145 @@
-import { usePets } from '#/context/PetContext';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
-import logo from '@assets/logo.svg';
-import animalIcon from '@assets/동물 아이콘.svg';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import logo from '@assets/Logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
+import rabbit from '@assets/animaldropdown/rabbit.svg';
+import hamster from '@assets/animaldropdown/hamster.svg';
+import hedgehog from '@assets/animaldropdown/hedgehog.svg';
+import banner from '@assets/banner/banner-health.svg';
+
+import { getFormattedDate } from '@utils/dateUtils';
+
+/* API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
+const fetchHealthRecord = async (petId: number) => {
+  const response = await axios.get(
+    `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
+    { withCredentials: true }
+  );
+  return response.data.result;
+};
 
 const HealthProfile: React.FC = () => {
-  const { pets } = usePets();
   const navigate = useNavigate();
 
-  // 선택된 반려동물 ID 상태 관리 (초기값은 첫 번째 반려동물)
-  const [selectedPetId, setSelectedPetId] = useState<number>(
-    pets.length > 0 ? pets[0].id : 0
-  );
+  const { pets, fetchPets, selectedPet, selectPet } = usePetStore();
+  const [loading, setLoading] = useState(true);
+  const [selectedPetDetails, setSelectedPetDetails] = useState<{
+    gender?: string;
+    birthDay?: string;
+    petCategory?: string;
+  } | null>(null);
 
-  // 선택한 반려동물 찾기
-  const selectedPet = pets.find((pet) => pet.id === selectedPetId);
+  const userId = 4;
+  //const recordDate = dayjs().format('YYYY-MM-DD');
 
-  const handlePetClick = (petId: number) => {
-    setSelectedPetId(petId); // 선택한 반려동물 ID 업데이트
+  //처음 실행될 때 fetchPets
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPets(userId);
+    };
+
+    fetchData();
+  }, []);
+
+  //pets배열이 바뀔 때마다다
+  useEffect(() => {
+    if (pets.length > 0) {
+      setLoading(false);
+    }
+  }, [pets]);
+
+  /* Tanstack Query 사용하여 최신 건강 기록 캐싱 */
+  const { data: healthRecord, isLoading: recordLoading } = useQuery({
+    queryKey: ['healthRecord', selectedPet?.petId],
+    queryFn: () => fetchHealthRecord(selectedPet!.petId),
+    enabled: !!selectedPet, // selectedPet이 있을 때만 실행
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (healthRecord) {
+      console.log(' healthRecord 업데이트 감지!', healthRecord);
+      setSelectedPetDetails({
+        gender: healthRecord.gender || '정보 없음',
+        birthDay:
+          healthRecord.birthDay && healthRecord.birthDay !== 'Invalid Date'
+            ? dayjs(healthRecord.birthDay).format('YYYY.MM.DD')
+            : '정보 없음',
+        petCategory: healthRecord.petCategory || '정보 없음',
+      });
+    } else {
+      console.log('healthRecord가 업데이트되지 않음');
+    }
+  }, [healthRecord, selectedPet]);
+
+  /** 건강 상태에 따른 뱃지 이미지 */
+  const healthBadgeMap: { [key: string]: string } = {
+    건강: healthy,
+    양호: good,
+    악화: bad,
+  };
+  const healthStatus = healthRecord?.healthStatus || '정보 없음';
+  const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
+
+  //동물 종 /** 건강 상태에 따른 뱃지 이미지 */
+  const animalIconMap: { [key: string]: string } = {
+    토끼: rabbit,
+    햄스터: hamster,
+    고슴도치: hedgehog,
+  };
+  const animalCategory = selectedPetDetails?.petCategory || '정보 없음';
+  const animalIcon = animalIconMap[animalCategory] || null;
+
+  const roundedWeightDiff =
+    Math.round(healthRecord?.weightDifference * 10) / 10;
+  const weightChangeText =
+    roundedWeightDiff !== undefined
+      ? roundedWeightDiff === 0
+        ? '유지'
+        : roundedWeightDiff > 0
+          ? `${roundedWeightDiff}kg 증가`
+          : `${Math.abs(roundedWeightDiff)}kg 감소`
+      : '데이터 없음';
+
+  const handlePetDetailClick = (pet: any) => {
+    navigate(`/health/record/detail/${pet.petId}`);
   };
 
-  const handlePetDetailClick = (petId: number) => {
-    navigate(`/health/record/detail/${petId}`);
-  };
+  if (loading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
-    <>
+    <ContainerWrapper>
+      <Banner src={banner} />
       <PageTitle>건강 기록 프로필</PageTitle>
-      <Container>
+
+      <ContentContainer>
         {pets.length > 0 ? (
           <>
             <PetList>
               {pets.map((pet) => (
                 <PetItem
-                  key={pet.id}
-                  onClick={() => handlePetClick(pet.id)}
-                  isSelected={pet.id === selectedPetId}
+                  key={pet.petId}
+                  onClick={() => selectPet(pet)}
+                  isSelected={selectedPet?.petId === pet.petId}
                 >
-                  <PetImg src={pet.profileImage} alt={pet.name} />
+                  <PetImg src={pet.profilePhoto} alt={pet.name} />
                   {pet.name}
                 </PetItem>
               ))}
             </PetList>
 
-            <PetDetails onClick={() => handlePetDetailClick(selectedPetId)}>
+            <PetDetails onClick={() => handlePetDetailClick(selectedPet!)}>
               <PetCard>
                 <PetImgLarge
-                  src={selectedPet?.profileImage || logo}
+                  src={selectedPet?.profilePhoto || logo}
                   alt={selectedPet?.name || '등록된 반려동물 없음'}
                 />
                 <PetInfo>
@@ -59,60 +147,72 @@ const HealthProfile: React.FC = () => {
                     {selectedPet?.name || '등록된 반려동물 없음'}
                   </PetName>
                   <PetDetail>
-                    <AnimalIcon
-                      src={animalIcon}
-                      alt={selectedPet?.category || ''}
-                    />
-                    {selectedPet?.category}
-                    <GenderIcon gender={selectedPet?.gender}>
-                      {selectedPet?.gender === 'female' ? '♀' : '♂'}
+                    <AnimalIcon src={animalIcon} />
+                    {selectedPetDetails?.petCategory || '정보 없음'}
+
+                    <GenderIcon gender={selectedPetDetails?.gender}>
+                      {selectedPetDetails?.gender === 'female' ? '♀' : '♂'}
                     </GenderIcon>
+
                     <PetBirthDate>
                       생년월일:{' '}
-                      {selectedPet?.birthDate
-                        ? dayjs(selectedPet?.birthDate).format('YYYY.MM.DD')
+                      {selectedPetDetails?.birthDay
+                        ? selectedPetDetails.birthDay
                         : '정보 없음'}
                     </PetBirthDate>
                   </PetDetail>
 
-                  <RecentUpdate>최근 업데이트: 어제</RecentUpdate>
+                  {/* 응답 데이터 확인 후 recordDate그대로가 아니라 0일전으로 변경해야될 수도 있음 */}
+                  <RecentUpdate>
+                    최근 업데이트:{' '}
+                    {` ${getFormattedDate(healthRecord?.latestRecord.recordDate ?? null)}`}
+                  </RecentUpdate>
                 </PetInfo>
-                <HealthBadge src={healthy} alt={'건강'} />
+                <HealthBadge src={healthBadgeImage} alt={healthStatus} />
               </PetCard>
               <HealthRecord>
-                {/* 추후에 기록한 데이터 연동해서 보이게할 예정정 */}
+                {/* 추후에 기록한 데이터 연동해서 보이게할 예정 */}
                 <RecordItem>
                   <Label>체중</Label>
                   <Value>
-                    20g
+                    {healthRecord?.latestRecord.weight}kg
                     <WeightChange>
-                      지난 기록 대비 <span> 유지</span>
+                      {/* 몸무게 차이 계산 로직 추후 추가 */}
+                      지난 기록 대비 <span> {weightChangeText}</span>
                     </WeightChange>
                   </Value>
                 </RecordItem>
                 <RecordItem>
                   <Label>식사량</Label>
-                  <MealValue>정상</MealValue>
+                  <MealValue>{healthRecord?.latestRecord.mealAmount}</MealValue>
                 </RecordItem>
 
                 <RecordItem>
                   <Label>특이 증상</Label>
-                  <Value>기침</Value>
+                  <Value>
+                    {healthRecord?.latestRecord.atypicalSymptom || '없음'}
+                  </Value>
                 </RecordItem>
 
-                <RecordItem>
-                  <Label>진료 내역</Label>
-                  <HospitalRecordValue>
-                    <RecordRow>
-                      <ListTitle>진단명</ListTitle>
-                      <RecordText>일반 감기</RecordText>
-                    </RecordRow>
-                    <RecordRow>
-                      <ListTitle>검사 및 처방 내역</ListTitle>
-                      <RecordText>약 처방, 3일 뒤 재방문</RecordText>
-                    </RecordRow>
-                  </HospitalRecordValue>
-                </RecordItem>
+                {healthRecord && healthRecord?.latestRecord.diagnosisName && (
+                  <RecordItem>
+                    <Label>진료 내역</Label>
+                    <HospitalRecordValue>
+                      <RecordRow>
+                        <ListTitle>진단명</ListTitle>
+                        <RecordText>
+                          {healthRecord?.latestRecord.diagnosisName || '없음'}
+                        </RecordText>
+                      </RecordRow>
+                      <RecordRow>
+                        <ListTitle>검사 및 처방 내역</ListTitle>
+                        <RecordText>
+                          {healthRecord?.latestRecord.prescription || '없음'}
+                        </RecordText>
+                      </RecordRow>
+                    </HospitalRecordValue>
+                  </RecordItem>
+                )}
               </HealthRecord>
             </PetDetails>
           </>
@@ -129,18 +229,39 @@ const HealthProfile: React.FC = () => {
             </RegisterButton>
           </EmptyState>
         )}
-      </Container>
-    </>
+      </ContentContainer>
+    </ContainerWrapper>
   );
 };
 
 export default HealthProfile;
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const Loading = styled.div`
+  text-align: center;
+  font-size: 16px;
+  margin-top: 20px;
+`;
 
 const PageTitle = styled.h1`
   font-weight: 600;
   font-size: 22px;
   text-align: center;
   margin-top: 34px;
+  @media (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const EmptyState = styled.div`
@@ -183,6 +304,10 @@ const PetList = styled.div`
   display: flex;
   gap: 8px;
   height: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  max-width: 100%;
 `;
 
 const PetItem = styled.div<{ isSelected: boolean }>`
@@ -208,7 +333,7 @@ const PetImg = styled.img`
   border-radius: 50px;
 `;
 
-const Container = styled.div`
+const ContentContainer = styled.div`
   width: 100%; /* 전체 화면 너비 적용 */
   padding: 16px 25px; /* 좌우 패딩 조정 */
   display: flex;

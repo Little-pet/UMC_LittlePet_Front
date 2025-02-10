@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import TagButton from '#/components/Community/AddPage/TagButton';
+import TagButton from '#/components/Community/AddPage/tagButton';
 import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';

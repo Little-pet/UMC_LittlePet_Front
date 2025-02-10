@@ -47,9 +47,10 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   justify-content: center;
-  width: 100%;
+  max-width: 100%;
   height: calc(100vh - 50px - 45px);
   padding: 0;
+  margin: 0;
   box-sizing: border-box;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */

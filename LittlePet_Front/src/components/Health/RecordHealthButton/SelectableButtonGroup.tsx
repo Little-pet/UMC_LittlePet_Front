@@ -34,16 +34,18 @@ export default SelectableButtonGroup;
 // 스타일 컴포넌트
 const ButtonGroup = styled.div`
   display: flex;
-
   gap: 8px;
   height: 18px;
 `;
 
-const Button = styled.button<{ selected: boolean }>`
+const Button = styled.div<{ selected: boolean }>`
   padding: 4px 12px;
   font-size: 10px;
   font-weight: 600;
   font-family: 'Pretendard';
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
   width: 42px;
   color: #737373;
   border-radius: 30px;
