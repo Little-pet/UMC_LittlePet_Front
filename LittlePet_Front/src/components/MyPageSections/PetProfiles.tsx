@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePetStore } from '#/context/petStore';
 import styled, { keyframes } from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
-import { useQuery } from '@tanstack/react-query';
 
-const PetProfiles: React.FC = () => {
-  const { pets, fetchPets } = usePetStore();
+const PetProfiles: React.FC = ({ pets }) => {
+  //const { pets, fetchPets } = usePetStore();
   const navigate = useNavigate();
 
   const handlePetClick = (petId: number) => {
     navigate(`/edit-pet/${petId}`);
   };
-  const userId = 4;
 
-  const { isLoading } = useQuery({
+  /* const { isLoading } = useQuery({
     queryKey: ['pets', userId],
     queryFn: () => fetchPets(userId),
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
-  });
-  if (true) {
+  }); */
+  /*  if (true) {
     return (
       <Container>
         {Array.from({ length: 3 }).map((_, idx) => (
@@ -31,7 +28,7 @@ const PetProfiles: React.FC = () => {
         ))}
       </Container>
     );
-  }
+  } */
   return (
     <Container>
       {pets.map((pet) => (

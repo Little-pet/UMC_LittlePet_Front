@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import axios from 'axios';
 
 interface User {
   name: string;
   profilePhoto?: string;
+  introduction?: string;
 }
 interface Stats {
   postCount: number;
@@ -34,6 +34,7 @@ interface UserStore {
   updateUserData: (data: {
     name: string;
     profilePhoto: string;
+    introduction: string;
     userPet: Pet[];
     postCount: number;
     commentCount: number;
@@ -50,7 +51,7 @@ interface UserStore {
   getPetName: (petId: number) => string;
 }
 
-export const usePetStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
   pets: [],
   stats: null,
@@ -61,16 +62,17 @@ export const usePetStore = create<UserStore>((set, get) => ({
   updateUserData: (data) => {
     set({
       user: {
-        name: data.name,
-        profilePhoto: data.profilePhoto,
+        name: data.name || '기본이름',
+        profilePhoto: data.profilePhoto || 'defaultPhoto',
+        introduction: data.introduction,
       },
       pets: data.userPet,
       stats: {
-        postCount: data.postCount,
-        commentCount: data.commentCount,
-        likeCount: data.likeCount,
-        reviewCount: data.reviewCount,
-        scrapCount: data.scrapCount,
+        postCount: data.postCount ?? 0,
+        commentCount: data.commentCount ?? 0,
+        likeCount: data.likeCount ?? 0,
+        reviewCount: data.reviewCount ?? 0,
+        scrapCount: data.scrapCount ?? 0,
       },
       badges: data.userBadge,
     });

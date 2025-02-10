@@ -30,6 +30,7 @@ const StatItem: React.FC<StatItemProps> = ({ label, value }) => {
 };
 
 const StatsComponent: React.FC<StatsProps> = ({ user }) => {
+  if (!user) return <div>Loading...</div>;
   // user 데이터를 활용하여 statsData 구성
   const statsData = [
     { label: '글', value: user.postCount },

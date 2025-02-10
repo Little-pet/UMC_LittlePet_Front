@@ -56,18 +56,20 @@ const PetRegistrationPage: React.FC = () => {
       name,
       birthDay: birthDate,
       gender: tagSelected,
-      categoryName: categoryText,
+      categorySpecies: categoryText,
     };
     const formData = new FormData();
     formData.append(
-      'petProfileRequest',
+      'request',
       new Blob([JSON.stringify(petProfileRequest)], {
         type: 'application/json',
       })
     );
     if (profileImage instanceof File) {
-      formData.append('profileImage', profileImage);
+      formData.append('file', profileImage);
     }
+    console.log(petProfileRequest);
+    console.log(profileImage);
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + endpoint,
@@ -84,7 +86,6 @@ const PetRegistrationPage: React.FC = () => {
     } catch (error) {
       console.error('반려동물 프로필 등록 실패:', error);
     }
-    console.log(formData);
   };
 
   return (

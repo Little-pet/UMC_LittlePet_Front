@@ -11,15 +11,11 @@ import DeleteModal from '#/components/DeleteModal';
 interface Pet {
   name: string;
   profilePhoto: string;
-  categoryName: string;
+  categorySpecies: string;
   gender: string;
   birthDay: string;
 }
-// 서버에 post할 객체
-interface ContextPet extends Pet {
-  petId: number;
-  categoryName: string;
-}
+
 const EditPetPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { petId } = useParams<{ petId: string }>();
@@ -27,7 +23,8 @@ const EditPetPage: React.FC = () => {
   const navigate = useNavigate();
   const [tagSelected, setTagSelected] = useState<string>(''); // ✅ 빈 문자열로 초기화
   // 반려동물 정보 상태 관리
-  const [profileImage, setProfileImage] = useState<string | File>('');
+  const [profileImage, setProfileImage] = useState<File>();
+  const [previewImage, setPreviewImage] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number>();
@@ -37,7 +34,10 @@ const EditPetPage: React.FC = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('이미지 변경');
     if (e.target.files && e.target.files[0]) {
-      setProfileImage(e.target.files[0]);
+      const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setPreviewImage(fileUrl);
+      setProfileImage(file);
     }
   };
 
@@ -64,8 +64,7 @@ const EditPetPage: React.FC = () => {
     const fetchPets = async () => {
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BACKEND_URL +
-            `/users/{userId}/pets/${petId}?userId=4`
+          import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
         );
         console.log('반려동물 단일 조회 성공:', response.data);
         setInfo(response.data.result); // 초기상태
@@ -83,8 +82,8 @@ const EditPetPage: React.FC = () => {
     if (info) {
       setName(info.name);
       setBirthDate(info.birthDay);
-      setCategoryText(info.categoryName);
-      setProfileImage(info.profilePhoto);
+      setCategoryText(info.categorySpecies);
+      setPreviewImage(info.profilePhoto);
       setTagSelected(info.gender);
     }
   }, [info]);
@@ -94,8 +93,8 @@ const EditPetPage: React.FC = () => {
     const hasChanges =
       name !== info.name ||
       birthDate !== info.birthDay ||
-      categoryText !== info.categoryName ||
-      profileImage !== info.profilePhoto ||
+      categoryText !== info.categorySpecies ||
+      previewImage !== info.profilePhoto ||
       tagSelected !== info.gender;
 
     setIsModified(hasChanges);
@@ -107,21 +106,22 @@ const EditPetPage: React.FC = () => {
       name,
       birthDay: birthDate,
       gender: tagSelected,
-      categoryName: categoryText,
+      categorySpecies: categoryText,
     };
+    console.log(petProfileRequest);
     const formData = new FormData();
     formData.append(
-      'petProfileRequest',
+      'request',
       new Blob([JSON.stringify(petProfileRequest)], {
         type: 'application/json',
       })
     );
     if (profileImage instanceof File) {
-      formData.append('profileImage', profileImage);
+      formData.append('file', profileImage);
     }
     try {
       const response = await axios.put(
-        import.meta.env.VITE_BACKEND_URL + `/users/4/pets/${petId}`,
+        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`,
         formData,
         {
           headers: {
@@ -142,7 +142,7 @@ const EditPetPage: React.FC = () => {
     try {
       console.log('petId: ', petId);
       const response = await axios.delete(
-        import.meta.env.VITE_BACKEND_URL + `/users/4/pets/${petId}`
+        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
       );
       console.log('반려동물 프로필 삭제 성공', response.data);
       navigate('/mypage');
@@ -165,13 +165,7 @@ const EditPetPage: React.FC = () => {
             onChange={handleImageUpload}
             id='fileInput'
           />
-          <ProfileImg
-            src={
-              profileImage instanceof File
-                ? URL.createObjectURL(profileImage)
-                : profileImage
-            }
-          />
+          <ProfileImg src={previewImage} />
         </ProfileImgContainer>
         <EditIcon src={EditIconImg} alt='편집' />
       </ProfileWrapper>

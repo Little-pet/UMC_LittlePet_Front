@@ -1,34 +1,49 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { usePets } from '#/context/PetContext';
-import { useUser } from '#/context/UserContext';
 import Edit from '@assets/Edit.svg';
-import animalIcon from '@assets/동물 아이콘.svg';
+import defaultPhoto from '#/assets/기본 프로필.svg';
+import hamsterIcon from '#/assets/hamster.svg';
+import rabbitIcon from '#/assets/rabbit.svg';
+import hedgehogIcon from '#/assets/hedgehog.svg';
 
-const ProfileSection: React.FC = ({ isLoading }) => {
-  const { pets } = usePets();
-  const { user } = useUser();
+const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
+  if (!user) return <div>Loading...</div>;
+  const getAnimalIcon = (category: string) => {
+    switch (category) {
+      case '햄스터':
+        return hamsterIcon;
+      case '토끼':
+        return rabbitIcon;
+      case '고슴도치':
+        return hedgehogIcon;
+    }
+  };
+  // pets 배열에서 중복되지 않는 petCategory 값을 추출
+  const distinctCategories = Array.from(
+    new Set(pets.map((pet: Pet) => pet.petCategory))
+  ) as string[];
+
   const navigate = useNavigate();
   const handleEditProfile = () => {
     navigate('/edit-profile'); // 프로필 수정 페이지로 이동
   };
-
+  //console.log('펫', pets);
+  //console.log(user);
   return (
     <ProfileContainer>
-      <ProfileImg src={user.profileImg} alt='ProfileImg' />
+      <ProfileImg
+        src={user.profilePhoto === 'default' ? defaultPhoto : user.profilePhoto}
+        alt='ProfileImg'
+      />
       <UserDetailsBox>
         <Nickname>{user.name}</Nickname>
         {/* 반려동물 등록 정보 */}
         <PetList>
-          {pets.map((pet, index) => (
-            <PetItem key={pet.petId}>
-              <AnimalIcon src={animalIcon} alt={pet.categoryName} />
-              {pet.categoryName}
-              <GenderIcon gender={pet.gender}>
-                {pet.gender === 'female' ? '♀' : '♂'}
-              </GenderIcon>
-              {index < pets.length - 1 && <Separator>·</Separator>}
+          {distinctCategories.map((category: string) => (
+            <PetItem key={category}>
+              <AnimalIcon src={getAnimalIcon(category)} alt={category} />
+              {category}
             </PetItem>
           ))}
         </PetList>
@@ -70,8 +85,8 @@ const Nickname = styled.p`
 `;
 
 const AnimalIcon = styled.img`
-  height: 15px;
-  width: 15px;
+  height: 20px;
+  width: 20px;
 `;
 const PetList = styled.div`
   display: flex;

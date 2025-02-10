@@ -6,21 +6,24 @@ import Menu from '@components/MyPageSections/Menu';
 import PetProfiles from '@components/MyPageSections/PetProfiles';
 import ProfileSection from '@components/MyPageSections/ProfileSection';
 import { useGetUserData } from '#/hooks/useGetUserData';
-import { usePetStore } from '#/context/UserStore';
+import { useUserStore } from '#/context/UserStore';
 
 const MyPage: React.FC = () => {
   const userId = 4;
   const { isLoading, error } = useGetUserData(userId);
-  const stats = usePetStore((state) => state.stats);
+  const stats = useUserStore((state) => state.stats);
+  const badges = useUserStore((state) => state.badges);
+  const user = useUserStore((state) => state.user);
+  const pets = useUserStore((state) => state.pets);
 
   return (
     <Container>
       <Title>마이페이지</Title>
       <ProfileContainer>
-        <ProfileSection isLoading={isLoading} />
+        <ProfileSection user={user} pets={pets} isLoading={isLoading} />
         <StatsComponent user={stats} isLoading={isLoading} />
-        <PetProfiles isLoading={isLoading} />
-        <BadgeComponent user={stats} isLoading={isLoading} />
+        <PetProfiles pets={pets} isLoading={isLoading} />
+        <BadgeComponent badges={badges} isLoading={isLoading} />
       </ProfileContainer>
       <Menu></Menu>
     </Container>

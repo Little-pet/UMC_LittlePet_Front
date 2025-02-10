@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { usePetStore } from '#/context/UserStore';
+import { useUserStore } from '#/context/UserStore';
 
 interface ApiResponse {
   isSuccess: boolean;
   result: {
     name: string;
     profilePhoto: string;
+    introduction: string;
     userPet: any[]; // 필요에 따라 Pet[]로 변경
     postCount: number;
     commentCount: number;
@@ -18,23 +19,27 @@ interface ApiResponse {
 }
 
 export const useGetUserData = (userId: number) => {
-  return useQuery<ApiResponse>({
+  return useQuery<ApiResponse, Error, [string, number]>({
     queryKey: ['user', userId],
     queryFn: async () => {
       const response = await axios.get(
         `https://umclittlepet.shop/api/users/${userId}`,
         { withCredentials: true }
       );
-      return response.data;
-    },
-    onSuccess: (data) => {
+
+      const data = response.data;
       if (data.isSuccess) {
+        console.log('사용자 프로필 조회 성공', data);
         const result = data.result;
         // 스토어 업데이트
-        usePetStore.setState({
+        useUserStore.setState({
           user: {
             name: result.name,
-            profilePhoto: result.profilePhoto,
+            profilePhoto:
+              result.profilePhoto == null || result.profilePhoto === 'null'
+                ? 'default'
+                : result.profilePhoto,
+            introduction: result.introduction,
           },
           pets: result.userPet,
           stats: {
@@ -47,6 +52,7 @@ export const useGetUserData = (userId: number) => {
           badges: result.userBadge,
         });
       }
+      return data;
     },
   });
 };
