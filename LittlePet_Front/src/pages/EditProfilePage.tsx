@@ -1,41 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '#/context/UserContext';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
-
+import defaultPhoto from '#/assets/기본 프로필.svg';
+interface User {
+  nickname: string;
+  profilePhoto: string;
+  phone: string;
+  introduction: string;
+  userId: string;
+}
 const EditProfilePage: React.FC = () => {
-  const { user, updateUser } = useUser();
   const navigate = useNavigate();
 
   // 사용자 상태 관리
-  const [name, setName] = useState(user.name);
-  const [phone, setPhone] = useState(user.phone);
-  const [bio, setBio] = useState(user.bio);
-  const [profileImage, setProfileImage] = useState<string | File>(
-    user.profileImg
-  );
+  const [name, setName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [bio, setBio] = useState<string>('');
+  const [profileImage, setProfileImage] = useState<File>();
+  const [previewImage, setPreviewImage] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
+  const [info, setInfo] = useState<User>([]);
+  const userId = 4;
 
-  // 초기 사용자 정보 설정
+  const { data, isLoading } = useQuery({
+    queryKey: ['userProfile', userId],
+    queryFn: async () => {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/users/update/${userId}`,
+        { withCredentials: true }
+      );
+
+      return response.data;
+    },
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+  // data가 변경될 때만 info 업데이트
   useEffect(() => {
-    setName(user.name);
-    setPhone(user.phone);
-    setBio(user.bio);
-    setProfileImage(user.profileImg);
-  }, [user]);
+    if (data?.result) {
+      setInfo(data.result);
+    }
+  }, [data]);
 
+  useEffect(() => {
+    if (info) {
+      setName(info.nickname);
+      setPhone(info.phone);
+      setBio(info.introduction);
+      setPreviewImage(info.profilePhoto);
+    }
+  }, [info]);
   // 변경 사항 감지
   useEffect(() => {
     setIsModified(
-      name.trim() !== user.name.trim() ||
-        phone.trim() !== user.phone.trim() ||
-        bio.trim() !== user.bio.trim() ||
-        (profileImage instanceof File
-          ? URL.createObjectURL(profileImage) !== user.profileImg
-          : profileImage !== user.profileImg)
+      name !== info.nickname ||
+        phone !== info.phone ||
+        bio !== info.introduction ||
+        previewImage !== info.profilePhoto
     );
-  }, [name, phone, bio, profileImage, user]);
+  }, [name, phone, bio, profileImage]);
 
   // 입력값 핸들링 함수
   const handleInputChange =
@@ -47,13 +73,15 @@ const EditProfilePage: React.FC = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      setPreviewImage(fileUrl);
       setProfileImage(file);
     }
   };
 
-    // 전화번호 입력 핸들러 (자동 '-' 추가)
+  // 전화번호 입력 핸들러 (자동 '-' 추가)
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
+    const numericValue = e.target.value.replace(/\D/g, ''); // 숫자가 아닌 문자 제거
 
     // 010-1234-5678 형식 적용
     if (numericValue.length <= 3) {
@@ -61,37 +89,61 @@ const EditProfilePage: React.FC = () => {
     } else if (numericValue.length <= 7) {
       setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3)}`);
     } else {
-      setPhone(`${numericValue.slice(0, 3)}-${numericValue.slice(3, 7)}-${numericValue.slice(7, 11)}`);
+      setPhone(
+        `${numericValue.slice(0, 3)}-${numericValue.slice(3, 7)}-${numericValue.slice(7, 11)}`
+      );
     }
   };
-
 
   <Input type='text' value={phone} onChange={handlePhoneChange} />;
 
   // 저장 버튼 클릭 시 사용자 정보 업데이트
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedUser = {
-      name,
+      nickname: name,
       phone,
-      profileImg:
-        profileImage instanceof File
-          ? URL.createObjectURL(profileImage)
-          : profileImage,
-      bio,
+      introduction: bio,
     };
-
-    updateUser(updatedUser);
-    navigate('/mypage');
+    const formData = new FormData();
+    formData.append(
+      'request',
+      new Blob([JSON.stringify(updatedUser)], {
+        type: 'application/json',
+      })
+    );
+    if (profileImage instanceof File) {
+      formData.append('file', profileImage);
+      //console.log('사진 보내짐!!');
+    }
+    /*  for (const x of formData) {
+      console.log(x);
+    } */
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + `/users/${info.userId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true,
+        }
+      );
+      console.log('반려동물 프로필 수정 성공', response.data);
+      navigate('/mypage');
+    } catch (error) {
+      console.error('반려동물 프로필 수정 실패:', error);
+    }
   };
 
   return (
     <Container>
       <Title>프로필 수정</Title>
 
-      <ProfileWrapper>
-        <ProfileImgContainer
-          onClick={() => document.getElementById('fileInput')?.click()}
-        >
+      <ProfileWrapper
+        onClick={() => document.getElementById('fileInput')?.click()}
+      >
+        <ProfileImgContainer>
           <HiddenInput
             type='file'
             accept='image/*'
@@ -99,11 +151,7 @@ const EditProfilePage: React.FC = () => {
             id='fileInput'
           />
           <ProfileImg
-            src={
-              profileImage instanceof File
-                ? URL.createObjectURL(profileImage)
-                : profileImage
-            }
+            src={previewImage === null ? defaultPhoto : previewImage}
           />
         </ProfileImgContainer>
         <EditIcon src={EditIconImg} alt='편집' />
@@ -137,7 +185,7 @@ const EditProfilePage: React.FC = () => {
             />
           </InputContainer>
           <CharacterCount>
-            {bio.length}/<MaxCount>50</MaxCount>
+            {(bio || '').length}/<MaxCount>50</MaxCount>
           </CharacterCount>
         </BioContainer>
       </Form>
@@ -160,7 +208,6 @@ const Container = styled.div`
   gap: 24px;
   padding: 20px;
   font-family: 'Pretendard';
-  margin-top: -45px;
 `;
 
 const Title = styled.h1`
