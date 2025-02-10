@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
-import AnimalItem from '#/components/Community/AddPage/AnimalItem';
+import AnimalItem from '#/components/Community/AddPage/animalItem';
 import hamsterIcon from '@assets/animaldropdown/hamster.svg';
 import rabbitIcon from '@assets/animaldropdown/rabbit.svg';
 import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';

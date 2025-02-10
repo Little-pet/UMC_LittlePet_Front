@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { UserProvider } from './context/UserContext'; // UserProvider 추가
-import { PetProvider } from './context/PetContext'; // PetProvider 추가
 import '#/font.css';
 import CommunityRootLayout from '#/layout/CommunityRootLayout';
 import QnaPage from '#/pages/QnaPage';
@@ -26,17 +25,14 @@ import HomePage from '#/pages/HomePage';
 import MyPage from '#/pages/MyPage';
 import SplashScreen from '#/pages/SplashScreen';
 import EditProfilePage from '#/pages/EditProfilePage';
-import PetRegistration from '#/pages/PetRegistrationPage';
-import EditPetPage from '#/pages/EditPetPage';
+
 import HealthRootLayout from '#/layout/HealthRootLayout';
 import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
 import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
 import CalendarPage from '#/pages/Health/Record/CalenderPage';
 import CareMethodPage from '#/pages/CareMethod/CareMethod';
-import HamsterDetailPage from '#/pages/CareMethod/HamsterDetailPage';
-import RabbitDetailPage from '#/pages/CareMethod/RabbitDetailPage';
-import HedgehogDetailPage from '#/pages/CareMethod/HedgehogDetailPage';
+import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
 
 // 라우터 설정
@@ -51,8 +47,7 @@ const router = createBrowserRouter([
       { path: 'onboarding', element: <OnBoardingPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'edit-profile', element: <EditProfilePage /> },
-      { path: 'pet-register', element: <PetRegistration /> },
-      { path: 'edit-pet/:petId', element: <EditPetPage /> },
+
       { path: 'caremethod', element: <CareMethodPage /> },
 
       {
@@ -103,12 +98,11 @@ const router = createBrowserRouter([
         element: <AddPage />,
       },
       {
+        //추후 백에서 db로 주는 link에 맞춰서 수정 예정
         path: 'caremethod',
         element: <CareDetailRootLayout />,
         children: [
-          { path: 'detail/hamster', element: <HamsterDetailPage /> },
-          { path: 'detail/rabbit', element: <RabbitDetailPage /> },
-          { path: 'detail/hedgehog', element: <HedgehogDetailPage /> },
+          { path: 'pet-detail/:speciesId', element: <PetDetailPage /> },
         ],
       },
       {
@@ -141,12 +135,10 @@ const App: React.FC = () => {
   const queryClient = new QueryClient();
   return (
     <UserProvider>
-      <PetProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </PetProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </UserProvider>
   );
 };

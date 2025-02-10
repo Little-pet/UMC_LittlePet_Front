@@ -2,9 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
-
 const PetProfiles: React.FC = ({ pets }) => {
   //const { pets, fetchPets } = usePetStore();
+
   const navigate = useNavigate();
 
   const handlePetClick = (petId: number) => {

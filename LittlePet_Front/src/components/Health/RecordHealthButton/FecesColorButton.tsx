@@ -8,11 +8,11 @@ interface SelectableButtonProps {
     label: string;
     color: string;
   }[];
-  selectedOption: number | null;
-  onSelect: (name: string, value: number) => void;
+  selectedOption: string | null;
+  onSelect: (name: string, value: string) => void;
 }
 
-const SelectableButton: React.FC<SelectableButtonProps> = ({
+const FecesColorButton: React.FC<SelectableButtonProps> = ({
   name,
   options,
   selectedOption,
@@ -20,24 +20,32 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({
 }) => {
   return (
     <ButtonGroup>
-      {options.map((option) => (
-        <Item key={option.id} onClick={() => onSelect(name, option.id)}>
-          {option.color && (
-            <ColorBox
-              color={option.color}
-              isSelected={selectedOption === option.id}
-            />
-          )}
-          <Label isSelected={selectedOption === option.id}>
-            {option.label}
-          </Label>
-        </Item>
-      ))}
+      {options.map((option) => {
+        return (
+          <Item key={option.id} onClick={() => onSelect(name, option.label)}>
+            {option.color && (
+              <ColorBox
+                color={option.color || '#CCCCCC'}
+                isSelected={
+                  selectedOption !== null && selectedOption === option.label
+                }
+              />
+            )}
+            <Label
+              isSelected={
+                selectedOption !== null && selectedOption === option.label
+              }
+            >
+              {option.label}
+            </Label>
+          </Item>
+        );
+      })}
     </ButtonGroup>
   );
 };
 
-export default SelectableButton;
+export default FecesColorButton;
 
 // 스타일 컴포넌트
 const ButtonGroup = styled.div`

@@ -40,10 +40,13 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
         <Nickname>{user.name}</Nickname>
         {/* 반려동물 등록 정보 */}
         <PetList>
-          {distinctCategories.map((category: string) => (
+          {distinctCategories.map((category: string, index) => (
             <PetItem key={category}>
               <AnimalIcon src={getAnimalIcon(category)} alt={category} />
               {category}
+              {index < distinctCategories.length - 1 && (
+                <Separator>·</Separator>
+              )}
             </PetItem>
           ))}
         </PetList>
@@ -104,12 +107,6 @@ const PetItem = styled.div`
   font-size: 14px;
   align-items: center;
   white-space: nowrap;
-`;
-
-const GenderIcon = styled.span<{ gender: 'female' | 'male' }>`
-  font-weight: 700;
-  font-size: 14px;
-  color: ${({ gender }) => (gender === 'female' ? '#C76B6B' : '#6EA8FE')};
 `;
 
 const Separator = styled.span`

@@ -6,6 +6,7 @@ import mapIcon from '#/assets/map.svg';
 import HospitalItem from '#/components/Hospital/HospitalItem';
 import AreaModal from '#/components/Hospital/AreaModal';
 import HospitalImg from '#/assets/image.png';
+import banner from '@assets/banner/banner-health.svg';
 
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,93 +42,107 @@ const HospitalPage: React.FC = () => {
     setView(false);
   };
   return (
-    <MainContainer>
-      <TopActions>
-        <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
-          <AreaText>서울시 {selectedArea}</AreaText>
-          <ArrowIcon src={arrowIcon} />
-        </AreaModalButton>
-        <MapButton
-          to='/health/hospital/map'
-          state={{ locationData: selectedArea }}
-        >
-          <img src={mapIcon} />
-          <MapText>지도보기</MapText>
-        </MapButton>
-      </TopActions>
-      <MiddleActions>
-        <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
-          <AreaText color='#6EA8FE'>
-            {timeText === '' ? '영업중' : timeText}
-          </AreaText>
-        </AreaModalButton>
-
-        <DropdownContainer
-          onClick={() => {
-            setView(!view);
-          }}
-        >
-          {timeText === '' ? (
-            <MapText>진료 시간 변경</MapText>
-          ) : (
-            <DropDownText>{timeText}</DropDownText>
-          )}
-          <ArrowIcon src={arrowIcon} view={view} />
-          {view && (
-            <DropdownMenu>
-              {times.map((time, index) => (
-                <DropDownText onClick={() => handleTimeClick(time)} key={index}>
-                  {time}
-                </DropDownText>
-              ))}
-            </DropdownMenu>
-          )}
-        </DropdownContainer>
-      </MiddleActions>
-      <FilterContainer>
-        {filters.map((filter, idx) => (
-          <FilterButton
-            key={idx}
-            onClick={() => handleClick(filter.type)}
-            isActive={selected === filter.type}
+    <>
+      <Banner src={banner} />
+      <MainContainer>
+        <TopActions>
+          <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
+            <AreaText>서울시 {selectedArea}</AreaText>
+            <ArrowIcon src={arrowIcon} />
+          </AreaModalButton>
+          <MapButton
+            to='/health/hospital/map'
+            state={{ locationData: selectedArea }}
           >
-            {filter.title}
-          </FilterButton>
-        ))}
-      </FilterContainer>
-      <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
-        <HospitalItem
-          imageSrc={HospitalImg}
-          name='로얄동물메디컬센터'
-          hospitalId='1'
-          distance={512}
-          rating={4.5}
-          comments={188}
-          openStatus='24시간 영업'
-        />
-        <HospitalItem
-          imageSrc={HospitalImg}
-          name='디아크 동물병원'
-          hospitalId='2'
-          distance={120}
-          rating={5.0}
-          comments={1}
-          openStatus='오전 11:00 ~ 오후 10:00'
-        />
-      </div>
-      {isModalOpen && (
-        <Overlay>
-          <AreaModal
-            onClose={() => setIsModalOpen(false)}
-            onSelect={handleAreaSelect}
+            <img src={mapIcon} />
+            <MapText>지도보기</MapText>
+          </MapButton>
+        </TopActions>
+        <MiddleActions>
+          <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
+            <AreaText color='#6EA8FE'>
+              {timeText === '' ? '영업중' : timeText}
+            </AreaText>
+          </AreaModalButton>
+
+          <DropdownContainer
+            onClick={() => {
+              setView(!view);
+            }}
+          >
+            {timeText === '' ? (
+              <MapText>진료 시간 변경</MapText>
+            ) : (
+              <DropDownText>{timeText}</DropDownText>
+            )}
+            <ArrowIcon src={arrowIcon} view={view} />
+            {view && (
+              <DropdownMenu>
+                {times.map((time, index) => (
+                  <DropDownText
+                    onClick={() => handleTimeClick(time)}
+                    key={index}
+                  >
+                    {time}
+                  </DropDownText>
+                ))}
+              </DropdownMenu>
+            )}
+          </DropdownContainer>
+        </MiddleActions>
+        <FilterContainer>
+          {filters.map((filter, idx) => (
+            <FilterButton
+              key={idx}
+              onClick={() => handleClick(filter.type)}
+              isActive={selected === filter.type}
+            >
+              {filter.title}
+            </FilterButton>
+          ))}
+        </FilterContainer>
+        <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
+          <HospitalItem
+            imageSrc={HospitalImg}
+            name='로얄동물메디컬센터'
+            hospitalId='1'
+            distance={512}
+            rating={4.5}
+            comments={188}
+            openStatus='24시간 영업'
           />
-        </Overlay>
-      )}
-    </MainContainer>
+          <HospitalItem
+            imageSrc={HospitalImg}
+            name='디아크 동물병원'
+            hospitalId='2'
+            distance={120}
+            rating={5.0}
+            comments={1}
+            openStatus='오전 11:00 ~ 오후 10:00'
+          />
+        </div>
+        {isModalOpen && (
+          <Overlay>
+            <AreaModal
+              onClose={() => setIsModalOpen(false)}
+              onSelect={handleAreaSelect}
+            />
+          </Overlay>
+        )}
+      </MainContainer>
+    </>
   );
 };
 
 export default HospitalPage;
+
+const Banner = styled.img`
+  width: 100%;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
 const MainContainer = styled.div`
   position: relative;
   overflow-y: hidden;
