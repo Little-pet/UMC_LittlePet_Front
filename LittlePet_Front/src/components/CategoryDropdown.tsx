@@ -2,38 +2,40 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
 import AnimalItem from '#/components/Community/AddPage/animalItem';
-import hamsterIcon from '@assets/animaldropdown/hamster.svg';
-import rabbitIcon from '@assets/animaldropdown/rabbit.svg';
-import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';
-
+import { AnimalIcons } from '#/components/icon';
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
-  onIdSelect: (id: number) => void;
 }
 
 //  동물별 아이콘을 매칭하는 객체 생성
 const animalIcons: { [key: string]: string } = {
-  햄스터: hamsterIcon,
-  토끼: rabbitIcon,
-  고슴도치: hedgehogIcon,
+  햄스터: AnimalIcons.hamster,
+  토끼: AnimalIcons.rabbit,
+  고슴도치: AnimalIcons.hedgehog,
+  페럿: AnimalIcons.ferret,
+  앵무새: AnimalIcons.parrot,
+  거북이: AnimalIcons.turtle,
+  뱀: AnimalIcons.snake,
 };
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   selectedCategory,
   onCategorySelect,
-  onIdSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const animals = [
     { id: 0, title: '햄스터' },
     { id: 1, title: '토끼' },
     { id: 2, title: '고슴도치' },
+    { id: 3, title: '페럿' },
+    { id: 4, title: '앵무새' },
+    { id: 5, title: '거북이' },
+    { id: 6, title: '뱀' },
   ];
 
-  const handleCategoryClick = (name: string, id: number) => {
+  const handleCategoryClick = (name: string) => {
     onCategorySelect(name); // 부모 컴포넌트로 선택한 카테고리 전달
-    onIdSelect(id);
     setIsOpen(false); // 드롭다운 닫기
   };
 
@@ -97,7 +99,7 @@ const DropdownMenu = styled.ul`
   position: absolute;
   top: 25px;
   left: 0;
-  width: auto;
+  width: 117px;
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 5px;
@@ -107,6 +109,7 @@ const DropdownMenu = styled.ul`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 15px;
 `;
 

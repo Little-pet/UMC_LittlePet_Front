@@ -3,20 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Edit from '@assets/Edit.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
-import hamsterIcon from '#/assets/hamster.svg';
-import rabbitIcon from '#/assets/rabbit.svg';
-import hedgehogIcon from '#/assets/hedgehog.svg';
+import { AnimalIcons } from '#/components/icon';
 
 const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
   if (!user) return <div>Loading...</div>;
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
-        return hamsterIcon;
+        return AnimalIcons.hamster;
       case '토끼':
-        return rabbitIcon;
+        return AnimalIcons.rabbit;
       case '고슴도치':
-        return hedgehogIcon;
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
     }
   };
   // pets 배열에서 중복되지 않는 petCategory 값을 추출
@@ -33,11 +39,16 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
   return (
     <ProfileContainer>
       <ProfileImg
-        src={user.profilePhoto === 'default' ? defaultPhoto : user.profilePhoto}
+        src={user.profilePhoto === null ? defaultPhoto : user.profilePhoto}
         alt='ProfileImg'
       />
-      <UserDetailsBox>
-        <Nickname>{user.name}</Nickname>
+      <ProfileBox>
+        <UserDetailsBox>
+          <Nickname>{user.name}</Nickname>
+          <EditButton onClick={handleEditProfile}>
+            <img src={Edit} alt='EditButton' width={16} height={16} />
+          </EditButton>
+        </UserDetailsBox>
         {/* 반려동물 등록 정보 */}
         <PetList>
           {distinctCategories.map((category: string, index) => (
@@ -50,10 +61,7 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
             </PetItem>
           ))}
         </PetList>
-      </UserDetailsBox>
-      <EditButton onClick={handleEditProfile}>
-        <img src={Edit} alt='EditButton' width={16} height={16} />
-      </EditButton>
+      </ProfileBox>
     </ProfileContainer>
   );
 };
@@ -62,24 +70,32 @@ export default ProfileSection;
 
 const ProfileContainer = styled.div`
   width: 100%;
-  height: 50px;
+  //height: 50px;
   display: flex;
   gap: 15px;
   position: relative;
   //overflow: hidden;
+  @media only screen and (min-width: 800px) {
+    margin-top: 50px;
+  }
 `;
 const ProfileImg = styled.img`
   height: 50px;
   width: 50px;
   border-radius: 50%;
 `;
-
-const UserDetailsBox = styled.div`
+const ProfileBox = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  height: 49px;
-  overflow: hidden;
+`;
+const UserDetailsBox = styled.div`
+  display: flex;
+align-items: center;
+  width: 100%
+  height: 27px;
+  justify-content: space-between;
 `;
 
 const Nickname = styled.p`
@@ -93,10 +109,8 @@ const AnimalIcon = styled.img`
 `;
 const PetList = styled.div`
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto; /* 내용이 많을 경우 스크롤 */
-  width: 100%;
 `;
 
 const PetItem = styled.div`

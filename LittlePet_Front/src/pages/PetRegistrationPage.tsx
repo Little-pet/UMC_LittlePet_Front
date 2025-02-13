@@ -35,7 +35,7 @@ const PetRegistrationPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'ELSE',
+      gender: 'OTHER',
       title: '기타',
       icon: null,
     },
@@ -54,7 +54,7 @@ const PetRegistrationPage: React.FC = () => {
     const endpoint = '/users/4/pets';
     const petProfileRequest = {
       name,
-      birthDay: birthDate,
+      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
       gender: tagSelected,
       categorySpecies: categoryText,
     };

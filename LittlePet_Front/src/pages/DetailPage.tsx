@@ -1,34 +1,26 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import PostContent from '#/components/Community/Post/postContent';
 import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-const DetailPage: React.FC = () => {
-  const { postId } = useParams<{ postId: string }>();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['post', postId],
-    queryFn: async () => {
-      const response = await axios.get(
-        `https://umclittlepet.shop/api/post/${postId}?deviceType=pc`,
-        { withCredentials: true }
-      );
+import { useCommunityStore } from '#/context/CommunityStore';
+import { useUserStore } from '#/context/UserStore';
 
-      const data = response.data;
-      if (data.isSuccess) {
-        console.log('커뮤니티 특정 글 조회 성공', data);
-        const result = data.result;
-      }
-      return data.result;
-    },
-  });
+const DetailPage: React.FC = () => {
+  const { postId } = useParams<{ postId: number }>();
+  const { fetchPost, isLoading, currentPost } = useCommunityStore();
+  const { user, pets } = useUserStore();
+  const { state } = useLocation();
+  const { category, type } = state || {};
+  useEffect(() => {
+    fetchPost(postId);
+  }, [postId]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>데이터를 불러오는 중 오류 발생</div>;
-
+  if (!currentPost) return <div>No data available</div>;
+  const data = currentPost;
   return (
     <Container>
       <PostContent
@@ -41,6 +33,9 @@ const DetailPage: React.FC = () => {
         footerData={[data.views, data.likes, data.commentNum]}
         contents={data.contents}
         likeCount={data.likes}
+        id={data.id}
+        category={category}
+        categoryType={type}
       />
       <CommentHeader>
         <Title>전체 댓글&nbsp;</Title>
@@ -74,9 +69,9 @@ const DetailPage: React.FC = () => {
         <Title>댓글 쓰기</Title>
       </CommentHeader>
       <CommentWriteBox
-        author={data.userName}
-        animal={data.petCategory}
-        gender='female'
+        author={user?.name}
+        animal={pets[0]?.petCategory}
+        postId={data.id}
       />
     </Container>
   );

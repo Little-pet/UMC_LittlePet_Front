@@ -5,7 +5,7 @@ import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton'
 import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useCommunityStore } from '#/context/CommunityStore';
 import {
   Container,
   ContentWrapper,
@@ -14,31 +14,15 @@ import {
   ItemList,
 } from '#/components/Community/styles/common';
 const QnaPage: React.FC = () => {
-  const [selected, setSelected] = useState<'popular' | 'new'>('popular');
-  const [posts, setPosts] = useState([]);
-  const handleClick = (filter: 'popular' | 'new') => {
+  const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
+  const handleClick = (filter: '인기순' | '최신순') => {
     setSelected(filter);
   };
-  const current = '%EC%B5%9C%EC%8B%A0%EC%88%9C';
-  const popular = '%EC%9D%B8%EA%B8%B0%EC%88%9C';
-
+  const { posts, fetchPosts, isLoading } = useCommunityStore();
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const sortParam = selected === 'popular' ? popular : current;
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/post?category=Q%26A&pageNum=0&size=10&sort=${sortParam}deviceType=pc`,
-          { withCredentials: true }
-        );
-        console.log('Q&A 글 목록 조회 성공', response.data);
-        setPosts(response.data.result);
-      } catch (error) {
-        console.error('Q&A 글 목록 조회 실패:', error);
-      }
-    };
-
-    fetchPosts(); // 함수를 정의한 후 바로 호출합니다.
-  }, []);
+    fetchPosts('Q&A', selected);
+  }, [fetchPosts, selected]);
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Container>
@@ -57,14 +41,14 @@ const QnaPage: React.FC = () => {
         >
           <Header>
             <HeaderFilter
-              onClick={() => handleClick('popular')}
-              isActive={selected === 'popular'}
+              onClick={() => handleClick('인기순')}
+              isActive={selected === '인기순'}
             >
               인기순
             </HeaderFilter>
             <HeaderFilter
-              onClick={() => handleClick('new')}
-              isActive={selected === 'new'}
+              onClick={() => handleClick('최신순')}
+              isActive={selected === '최신순'}
             >
               최신순
             </HeaderFilter>
@@ -75,6 +59,7 @@ const QnaPage: React.FC = () => {
           {posts.map((post, id) => (
             <Item
               title='Q&A'
+              type='qna'
               postId={post.id}
               subText={post.petCategory}
               description={post.title}

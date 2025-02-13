@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import ChallengeCard from '#/components/Community/challengeCard';
-
+import { useCommunityStore } from '#/context/CommunityStore';
 const ChallengeSection: React.FC = () => {
   const navigate = useNavigate();
   const handleNavigate = (): void => {
     navigate('/community/add');
   };
+  const { posts, fetchPosts, isLoading } = useCommunityStore();
+  useEffect(() => {
+    fetchPosts('챌린지', '인기순');
+  }, [fetchPosts]);
+  if (isLoading) return <div>Loading...</div>;
+  const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <ChallengeContainer>
       <ChallengeTitle>금주의 챌린저👑</ChallengeTitle>
@@ -16,33 +22,16 @@ const ChallengeSection: React.FC = () => {
       </ChallengeSubTitle>
 
       <ChallengeWrapper>
-        <ChallengeCard
-          name='천혜향'
-          postId={9}
-          animal='햄스터'
-          gender='male'
-          badges={[{ type: 'challenge' }, { type: 'popular' }]}
-          descriptionTitle='조규현 닮은 푸들 아니고...'
-          descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-        />
-        <ChallengeCard
-          name='천혜향'
-          postId={9}
-          animal='햄스터'
-          gender='male'
-          badges={[{ type: 'challenge' }, { type: 'popular' }]}
-          descriptionTitle='조규현 닮은 푸들 아니고...'
-          descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-        />
-        <ChallengeCard
-          name='천혜향'
-          postId={9}
-          animal='햄스터'
-          gender='male'
-          badges={[{ type: 'challenge' }, { type: 'popular' }]}
-          descriptionTitle='조규현 닮은 푸들 아니고...'
-          descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-        />
+        {topPosts.map((post) => (
+          <ChallengeCard
+            name={post.userName}
+            postId={post.id}
+            animal={post.petCategory}
+            badges={[{ type: 'challenge' }, { type: 'popular' }]}
+            descriptionTitle={post.title}
+            contents={post.contents}
+          />
+        ))}
       </ChallengeWrapper>
 
       <ChallengeBanner>

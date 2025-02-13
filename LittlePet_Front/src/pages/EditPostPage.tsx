@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import TagButton from '#/components/Community/AddPage/tagButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -25,12 +25,26 @@ interface ImageData {
   base64: string;
 }
 
-const AddPage: React.FC = () => {
+const EditPostPage: React.FC = () => {
   const navigate = useNavigate();
-  const [tagSelected, setTagSelected] = useState<Tag>({ type: '', title: '' });
-  const [categoryText, setCategoryText] = useState<string>('');
+  const location = useLocation();
+  const {
+    category = '',
+    categoryType = '',
+    id = '',
+    initialTitle = '',
+    animal = '',
+    contents = '',
+  } = location.state || {};
+  console.log(location.state);
+  const [tagSelected, setTagSelected] = useState<Tag>({
+    type: categoryType,
+    title: category,
+  });
+
+  const [categoryText, setCategoryText] = useState<string>(animal);
   const [postImgs, setPostImgs] = useState<ImageData[]>([]);
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>(initialTitle);
   const [textCount, setTextCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
   const [imgCount, setImgCount] = useState<number>(0);
@@ -56,6 +70,37 @@ const AddPage: React.FC = () => {
       title: '챌린지',
     },
   ];
+  useEffect(() => {
+    if (contents && Array.isArray(contents)) {
+      // 텍스트와 이미지 데이터를 순서대로 HTML로 변환
+      const formattedContent = contents
+        .map((item) => {
+          if (item.content.startsWith('http')) {
+            return `<img src="${item.content}" alt="uploaded image"/>`;
+          }
+          return `<p>${item.content}</p>`;
+        })
+        .join('');
+
+      setContent(formattedContent);
+    }
+  }, [contents]);
+
+  const initialState = {
+    title: initialTitle,
+    categoryText: animal,
+    tagSelected: { type: categoryType, title: category },
+    content: contents
+      ? contents
+          .map((item) =>
+            item.content.startsWith('http')
+              ? `<img src="${item.content}" alt="uploaded image"/>`
+              : `<p>${item.content}</p>`
+          )
+          .join('')
+      : '',
+  };
+
   // 태그 클릭
   const handleTagClick = (tag: Tag) => {
     setTagSelected(tag);
@@ -172,14 +217,7 @@ const AddPage: React.FC = () => {
   }, [content]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (categoryText === '') {
-      alert('종 카테고리를 선택해주세요!');
-      return;
-    }
-    if (tagSelected.title === '') {
-      alert('글 카테고리를 선택해주세요!');
-      return;
-    }
+
     if (!isTitleValid) {
       alert('제목을 입력해주세요!');
       return;
@@ -188,17 +226,31 @@ const AddPage: React.FC = () => {
       alert('내용을 입력해주세요!');
       return;
     }
-    const endpoint = '/post/4';
+    const endpoint = `/post/${id}`;
     const parsedContents = parseContent(content);
-    let imageCounter = 0;
+
+    const getFileNameFromUrl = (url: string): string => {
+      return url.split('/').pop() || url;
+    };
+
     const updatedContents = parsedContents.map((item) => {
       if (item.type === 'image') {
-        const fileName = postImgs[imageCounter]?.name || item.value;
-        imageCounter++;
-        return { ...item, value: fileName };
+        if (item.value.startsWith('data:image')) {
+          // 새로 추가된 이미지 (Base64 → 파일 저장 필요)
+          const fileIndex = postImgs.findIndex(
+            (img) => img.base64 === item.value
+          );
+          if (fileIndex !== -1) {
+            return { ...item, value: postImgs[fileIndex].file.name }; // 파일 이름 저장
+          }
+        } else {
+          // 기존 이미지 (URL → 파일명 추출)
+          return { ...item, value: getFileNameFromUrl(item.value) };
+        }
       }
       return item;
     });
+
     const postForm = {
       title,
       smallPetCategory: categoryText,
@@ -231,10 +283,10 @@ const AddPage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log('커뮤니티 게시물 생성 성공', response.data);
+      console.log('커뮤니티 게시물 수정 성공', response.data);
       navigate(`/community/${tagSelected.type}`);
     } catch (error) {
-      console.error('커뮤니티 게시물 생성 실패:', error);
+      console.error('커뮤니티 게시물 수정 실패:', error);
     }
   };
   useEffect(() => {
@@ -245,17 +297,35 @@ const AddPage: React.FC = () => {
     // 상태 업데이트
     setTextCount(textCount);
     setImgCount(getImageCount(content));
+    const parseHTML = (html: string) => {
+      const parser = new DOMParser();
+      return parser.parseFromString(html, 'text/html').body.innerHTML;
+    };
+    const hasContent = plainText.length > 0;
 
-    if (
-      plainText.length > 0 &&
-      isTitleValid &&
-      categoryText !== '' &&
-      tagSelected.title !== ''
-    ) {
-      setValid(true);
-    } else {
-      setValid(false);
-    }
+    /* const isChanged =
+      title !== initialState.title ||
+      categoryText !== initialState.categoryText ||
+      tagSelected.title !== initialState.tagSelected.title ||
+      content !== initialState.content; */
+    const isTitleChanged = title !== initialState.title;
+    const isCategoryChanged = categoryText !== initialState.categoryText;
+    const isTagChanged = tagSelected.title !== initialState.tagSelected.title;
+    const isContentChanged =
+      parseHTML(initialState.content) !== parseHTML(content);
+    //const isContentChanged = content !== initialState.content;
+
+    /*  console.log('isTitleChanged:', isTitleChanged);
+    console.log('isCategoryChanged:', isCategoryChanged);
+    console.log('isTagChanged:', isTagChanged);
+    console.log('isContentChanged:', isContentChanged);
+    console.log('initial', initialState.content);
+    console.log(content); */
+
+    const isChanged =
+      isTitleChanged || isCategoryChanged || isTagChanged || isContentChanged;
+
+    setValid(hasContent && isTitleValid && isChanged);
   }, [title, content, categoryText, tagSelected]);
 
   const modules = useMemo(() => {
@@ -318,7 +388,7 @@ const AddPage: React.FC = () => {
         {valid === true ? (
           <ButtonWrapper>
             <SubmitButton type='submit'>
-              <ButtonText>등록하기</ButtonText>
+              <ButtonText>수정하기</ButtonText>
             </SubmitButton>
           </ButtonWrapper>
         ) : (
@@ -328,7 +398,7 @@ const AddPage: React.FC = () => {
               type='submit'
               value='제출'
             >
-              <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
+              <ButtonText style={{ color: '#737373' }}>수정하기</ButtonText>
             </SubmitButton>
           </ButtonWrapper>
         )}
@@ -336,7 +406,7 @@ const AddPage: React.FC = () => {
     </Container>
   );
 };
-export default AddPage;
+export default EditPostPage;
 const Container = styled.div`
   width: 100%;
   display: flex;

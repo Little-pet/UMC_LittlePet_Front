@@ -1,15 +1,17 @@
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
-import hamsterIcon from '#/assets/hamster.svg';
-import rabbitIcon from '#/assets/rabbit.svg';
-import hedgehogIcon from '#/assets/hedgehog.svg';
+import { AnimalIcons } from '#/components/icon';
 import vectorIcon from '#/assets/Vector.svg';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DeleteModal from '#/components/DeleteModal';
 import ChallengerBadge from '@assets/챌린저.svg';
 import LikeBadge from '@assets/소셜응원왕.svg';
 import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
+import { useCommunityStore } from '#/context/CommunityStore';
+import { useUserStore } from '#/context/UserStore';
+
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,
@@ -29,6 +31,9 @@ interface PostContentProps {
   footerData: string[];
   contents: Content[];
   likeCount: number;
+  id: number;
+  category: string;
+  categoryType: string;
 }
 const PostContent: React.FC<PostContentProps> = ({
   title,
@@ -39,8 +44,12 @@ const PostContent: React.FC<PostContentProps> = ({
   footerData,
   contents,
   likeCount,
+  id,
+  category,
+  categoryType,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const icon = badgeIconMapping[badgeType[0]];
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
@@ -49,13 +58,32 @@ const PostContent: React.FC<PostContentProps> = ({
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
-        return hamsterIcon;
+        return AnimalIcons.hamster;
       case '토끼':
-        return rabbitIcon;
+        return AnimalIcons.rabbit;
       case '고슴도치':
-        return hedgehogIcon;
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
     }
   };
+  const { deletePost, isLoading } = useCommunityStore();
+  const { user, fetchUser } = useUserStore();
+
+  const handleDelete = async () => {
+    await deletePost(id);
+    navigate(-1);
+  };
+  useEffect(() => {
+    fetchUser(4);
+  }, [fetchUser]);
+
   return (
     <ContentBox>
       <PostContentWrapper>
@@ -102,18 +130,42 @@ const PostContent: React.FC<PostContentProps> = ({
         )}
       </PostContentWrapper>
       <Container>
-        <LikeButton count={likeCount} />
-        <ActionGroup>
-          <ActionText isClickable>수정</ActionText>
-          <Divider>|</Divider>
-          <ActionText isClickable onClick={() => setIsModalOpen(!isModalOpen)}>
-            삭제
-          </ActionText>
-        </ActionGroup>
+        <LikeButton count={likeCount} postId={id} />
+        {user?.name == author ? (
+          <ActionGroup>
+            <ActionText
+              isClickable
+              onClick={() =>
+                navigate(`/community/${categoryType}/${id}/edit-post`, {
+                  state: {
+                    category,
+                    categoryType,
+                    id,
+                    initialTitle: title,
+                    animal,
+                    contents,
+                  },
+                })
+              }
+            >
+              수정
+            </ActionText>
+            <Divider>|</Divider>
+            <ActionText
+              isClickable
+              onClick={() => setIsModalOpen(!isModalOpen)}
+            >
+              삭제
+            </ActionText>
+          </ActionGroup>
+        ) : null}
       </Container>
       {isModalOpen && (
         <Overlay>
-          <DeleteModal onClose={() => setIsModalOpen(false)} />
+          <DeleteModal
+            onClose={() => setIsModalOpen(false)}
+            onDelete={handleDelete}
+          />
         </Overlay>
       )}
     </ContentBox>

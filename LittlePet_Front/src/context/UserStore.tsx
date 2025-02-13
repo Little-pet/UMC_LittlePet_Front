@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import axios from 'axios';
 
 interface User {
   name: string;
@@ -22,33 +23,14 @@ interface Pet {
 interface Badge {
   name: string;
 }
-
 interface UserStore {
   user: User | null;
   pets: Pet[];
   stats: Stats | null;
   badges: Badge[];
-  selectedPet: Pet | null;
+  // 사용자 프로필 조회: API로부터 사용자 데이터를 받아와 상태에 저장
+  fetchUser: (userId: number) => Promise<void>;
   isLoading: boolean;
-  setLoading: (value: boolean) => void;
-  updateUserData: (data: {
-    name: string;
-    profilePhoto: string;
-    introduction: string;
-    userPet: Pet[];
-    postCount: number;
-    commentCount: number;
-    likeCount: number;
-    reviewCount: number;
-    scrapCount: number;
-    userBadge: Badge[];
-  }) => void;
-  selectPet: (pet: Pet) => void;
-  getUser: () => User | null;
-  getPets: () => Pet[];
-  getStats: () => Stats | null;
-  getBadges: () => Badge[];
-  getPetName: (petId: number) => string;
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -56,32 +38,38 @@ export const useUserStore = create<UserStore>((set, get) => ({
   pets: [],
   stats: null,
   badges: [],
-  selectedPet: null,
   isLoading: false,
-  setLoading: (value: boolean) => set({ isLoading: value }),
-  updateUserData: (data) => {
-    set({
-      user: {
-        name: data.name || '기본이름',
-        profilePhoto: data.profilePhoto || 'defaultPhoto',
-        introduction: data.introduction,
-      },
-      pets: data.userPet,
-      stats: {
-        postCount: data.postCount ?? 0,
-        commentCount: data.commentCount ?? 0,
-        likeCount: data.likeCount ?? 0,
-        reviewCount: data.reviewCount ?? 0,
-        scrapCount: data.scrapCount ?? 0,
-      },
-      badges: data.userBadge,
-    });
+  fetchUser: async (userId: number) => {
+    set({ isLoading: true });
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/users/${userId}`,
+        { withCredentials: true }
+      );
+      if (response.data.isSuccess) {
+        console.log('사용자 프로필 조회 성공', response.data);
+        const result = response.data.result;
+        set({
+          user: {
+            name: result.name,
+            profilePhoto: result.profilePhoto,
+            introduction: result.introduction,
+          },
+          pets: result.userPet || [],
+          stats: {
+            postCount: result.postCount ?? 0,
+            commentCount: result.commentCount ?? 0,
+            likeCount: result.likeCount ?? 0,
+            reviewCount: result.reviewCount ?? 0,
+            scrapCount: result.scrapCount ?? 0,
+          },
+          badges: result.userBadge || [],
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error('사용자 프로필 조회 실패:', error);
+      set({ isLoading: false });
+    }
   },
-  selectPet: (pet: Pet) => set({ selectedPet: pet }),
-  getUser: () => get().user,
-  getPets: () => get().pets,
-  getStats: () => get().stats,
-  getBadges: () => get().badges,
-  getPetName: (petId: number) =>
-    get().pets.find((pet) => pet.petId === petId)?.name || '알 수 없음',
 }));

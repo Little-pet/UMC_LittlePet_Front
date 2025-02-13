@@ -5,38 +5,24 @@ import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
-import axios from 'axios';
+import { useCommunityStore } from '#/context/CommunityStore';
 const ChallengePage: React.FC = () => {
-  const [selected, setSelected] = useState<'popular' | 'new'>('popular');
+  const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
+  const handleClick = (filter: '인기순' | '최신순') => {
+    setSelected(filter);
+  };
   const navigate = useNavigate();
 
   const handleNavigate = (): void => {
     navigate('/community/add');
   };
-  const handleClick = (filter: 'popular' | 'new') => {
-    setSelected(filter);
-  };
-  const [posts, setPosts] = useState([]);
-  const current = '%EC%B5%9C%EC%8B%A0%EC%88%9C';
-  const popular = '%EC%9D%B8%EA%B8%B0%EC%88%9C';
 
+  const { posts, fetchPosts, isLoading } = useCommunityStore();
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const sortParam = selected === 'popular' ? popular : current;
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/post?category=%EC%B1%8C%EB%A6%B0%EC%A7%80&pageNum=0&size=10&sort=${sortParam}&deviceType=pc`,
-          { withCredentials: true }
-        );
-        console.log('챌린지 글 목록 조회 성공', response.data);
-        setPosts(response.data.result);
-      } catch (error) {
-        console.error('챌린지 글 목록 조회 실패:', error);
-      }
-    };
-
-    fetchPosts(); // 함수를 정의한 후 바로 호출합니다.
-  }, []);
+    fetchPosts('챌린지', selected);
+  }, [fetchPosts, selected]);
+  if (isLoading) return <div>Loading...</div>;
+  const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <Container>
       <Banner src={banner} />
@@ -48,33 +34,18 @@ const ChallengePage: React.FC = () => {
           </Subtitle>
         </HeaderWrapper>
         <ChallengeWrapper>
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
+          {topPosts.map((post) => (
+            <ChallengeCard
+              category='챌린지'
+              type='challenge'
+              name={post.userName}
+              postId={post.id}
+              animal={post.petCategory}
+              badges={[{ type: 'challenge' }, { type: 'popular' }]}
+              descriptionTitle={post.title}
+              contents={post.contents}
+            />
+          ))}
         </ChallengeWrapper>
       </ContentWrapper>
       <BannerContainer>
@@ -95,14 +66,14 @@ const ChallengePage: React.FC = () => {
         </HeaderWrapper>
         <Header>
           <HeaderFilter
-            onClick={() => handleClick('popular')}
-            isActive={selected === 'popular'}
+            onClick={() => handleClick('인기순')}
+            isActive={selected === '인기순'}
           >
             인기순
           </HeaderFilter>
           <HeaderFilter
-            onClick={() => handleClick('new')}
-            isActive={selected === 'new'}
+            onClick={() => handleClick('최신순')}
+            isActive={selected === '최신순'}
           >
             최신순
           </HeaderFilter>
@@ -110,12 +81,15 @@ const ChallengePage: React.FC = () => {
         <ItemList>
           {posts.map((post, id) => (
             <ChallengeItem
+              type='challenge'
               title={post.title}
               name={post.userName}
               postId={post.id}
               views={post.views}
               likes={post.likes}
               comments={post.comments}
+              contents={post.contents}
+              category='챌린지'
             />
           ))}
         </ItemList>

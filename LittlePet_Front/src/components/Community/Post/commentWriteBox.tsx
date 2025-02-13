@@ -1,13 +1,11 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import styled from 'styled-components';
-import maleIcon from '#/assets/성별남자.svg';
-import femaleIcon from '#/assets/성별여자.svg';
 import hamsterIcon from '#/assets/hamster.svg';
 import rabbitIcon from '#/assets/rabbit.svg';
 import hedgehogIcon from '#/assets/hedgehog.svg';
 import axios from 'axios';
 // 실제 댓글 작성 컴포넌트
-const CommentWriteBox: React.FC = ({ author, animal, gender }) => {
+const CommentWriteBox: React.FC = ({ author, animal, postId }) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
   const isTextValid =
@@ -25,7 +23,7 @@ const CommentWriteBox: React.FC = ({ author, animal, gender }) => {
         return hedgehogIcon;
     }
   };
-  const postId = 1;
+
   const userId = 4;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,11 +68,6 @@ const CommentWriteBox: React.FC = ({ author, animal, gender }) => {
                 />
                 <IconText>{animal}</IconText>
               </IconGroup>
-              {gender == 'female' ? (
-                <img src={femaleIcon} style={{ width: '8px' }} />
-              ) : (
-                <img src={maleIcon} style={{ width: '10px' }} />
-              )}
             </UserInfo>
           )}
         </Header>

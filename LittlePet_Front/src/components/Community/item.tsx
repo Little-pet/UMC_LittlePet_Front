@@ -2,9 +2,7 @@ import styled, { keyframes } from 'styled-components';
 import React from 'react';
 import vectorIcon from '#/assets/Vector.svg';
 import { Link } from 'react-router-dom';
-import hamsterIcon from '#/assets/hamster.svg';
-import rabbitIcon from '#/assets/rabbit.svg';
-import hedgehogIcon from '#/assets/hedgehog.svg';
+import { AnimalIcons } from '#/components/icon';
 // Props 타입 정의
 interface Content {
   content: string;
@@ -15,9 +13,9 @@ interface ItemProps {
   postId: string | number;
   subText: string;
   description: string;
-  content: string;
   footerData: string[];
   contents: Content[];
+  type: string;
 }
 // 카테고리를 들어가자마자 볼 수 있는 미리보기 글들의 컴포넌트
 const Item: React.FC<ItemProps> = ({
@@ -25,9 +23,9 @@ const Item: React.FC<ItemProps> = ({
   postId,
   subText,
   description,
-  content,
   footerData,
   contents,
+  type,
 }) => {
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
@@ -44,15 +42,27 @@ const Item: React.FC<ItemProps> = ({
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
-        return hamsterIcon;
+        return AnimalIcons.hamster;
       case '토끼':
-        return rabbitIcon;
+        return AnimalIcons.rabbit;
       case '고슴도치':
-        return hedgehogIcon;
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
     }
   };
+
   return (
-    <ContainerLink to={`/community/${postId}`}>
+    <ContainerLink
+      to={`/community/${type}/${postId}`}
+      state={{ category: title, type }}
+    >
       <Header>
         <Title>{title}</Title>
         <SubHeader>
@@ -64,19 +74,27 @@ const Item: React.FC<ItemProps> = ({
         <Wrapper>
           <TextWrapper>
             <Description>{description}</Description>
+            <div style={{ height: '36px', overflow: 'hidden' }}>
+              {contents
+                .filter((item) => !isImageUrl(item.content))
+                .map((item, idx) => (
+                  <Content key={idx}>{item.content}</Content>
+                ))}
+            </div>
+          </TextWrapper>
+          <Image src={imageContent.content} />
+        </Wrapper>
+      ) : (
+        <TextWrapper>
+          <Description>{description}</Description>
+          <div style={{ height: '36px', overflow: 'hidden' }}>
             {contents
               .filter((item) => !isImageUrl(item.content))
               .map((item, idx) => (
                 <Content key={idx}>{item.content}</Content>
               ))}
-          </TextWrapper>
-          <Image src={imageContent.content} />
-        </Wrapper>
-      ) : (
-        <>
-          <Description>{description}</Description>
-          <Content>{content}</Content>
-        </>
+          </div>
+        </TextWrapper>
       )}
       <Footer>
         {footerData.map((item: string, index: number) => {
@@ -248,6 +266,6 @@ const ScrollingUsername = styled.div`
 const NameContainer = styled.div`
   display: flex;
   align-items: center;
-  max-width: 75px;
+  max-width: 70px;
   overflow: hidden;
 `;

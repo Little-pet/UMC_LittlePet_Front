@@ -4,13 +4,12 @@ import { useState } from 'react';
 import axios from 'axios';
 interface LikeButtonProps {
   count: number; // 초기 좋아요 개수
+  postId: number;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ count }) => {
+const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
   const [likeCount, setLikeCount] = useState<number>(count);
   const userId = 4;
-  const postId = 1;
-
   const handleLike = async () => {
     try {
       const response = await axios.post(
