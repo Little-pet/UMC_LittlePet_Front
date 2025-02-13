@@ -2,9 +2,10 @@ import ChallengeCard from '#/components/Community/challengeCard';
 import ChallengeItem from '#/components/Community/challengeItem';
 import styled from 'styled-components';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
+import axios from 'axios';
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
   const navigate = useNavigate();
@@ -15,6 +16,27 @@ const ChallengePage: React.FC = () => {
   const handleClick = (filter: 'popular' | 'new') => {
     setSelected(filter);
   };
+  const [posts, setPosts] = useState([]);
+  const current = '%EC%B5%9C%EC%8B%A0%EC%88%9C';
+  const popular = '%EC%9D%B8%EA%B8%B0%EC%88%9C';
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const sortParam = selected === 'popular' ? popular : current;
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/post?category=%EC%B1%8C%EB%A6%B0%EC%A7%80&pageNum=0&size=10&sort=${sortParam}&deviceType=pc`,
+          { withCredentials: true }
+        );
+        console.log('챌린지 글 목록 조회 성공', response.data);
+        setPosts(response.data.result);
+      } catch (error) {
+        console.error('챌린지 글 목록 조회 실패:', error);
+      }
+    };
+
+    fetchPosts(); // 함수를 정의한 후 바로 호출합니다.
+  }, []);
   return (
     <Container>
       <Banner src={banner} />
@@ -86,38 +108,16 @@ const ChallengePage: React.FC = () => {
           </HeaderFilter>
         </Header>
         <ItemList>
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
+          {posts.map((post, id) => (
+            <ChallengeItem
+              title={post.title}
+              name={post.userName}
+              postId={post.id}
+              views={post.views}
+              likes={post.likes}
+              comments={post.comments}
+            />
+          ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

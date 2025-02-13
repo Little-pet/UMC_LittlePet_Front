@@ -66,7 +66,7 @@ const ProfileContainer = styled.div`
   display: flex;
   gap: 15px;
   position: relative;
-  overflow: hidden;
+  //overflow: hidden;
 `;
 const ProfileImg = styled.img`
   height: 50px;
@@ -79,7 +79,7 @@ const UserDetailsBox = styled.div`
   flex-direction: column;
   gap: 5px;
   height: 49px;
-  flex: 1;
+  overflow: hidden;
 `;
 
 const Nickname = styled.p`
@@ -96,7 +96,7 @@ const PetList = styled.div`
   flex-wrap: nowrap;
   gap: 8px;
   overflow-x: auto; /* 내용이 많을 경우 스크롤 */
-  max-width: 100%;
+  width: 100%;
 `;
 
 const PetItem = styled.div`

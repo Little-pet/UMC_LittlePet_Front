@@ -2,10 +2,11 @@ import SearchBar from '#/components/SearchBar';
 import Item from '#/components/Community/Item';
 import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
 import banner from '#/assets/banner/일상 배너.svg';
 import styled from 'styled-components';
+import axios from 'axios';
 import {
   Container,
   ContentWrapper,
@@ -15,9 +16,29 @@ import {
 } from '#/components/Community/styles/common';
 const DailyPage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
+  const [posts, setPosts] = useState([]);
   const handleClick = (filter: 'popular' | 'new') => {
     setSelected(filter);
   };
+  const current = '%EC%B5%9C%EC%8B%A0%EC%88%9C';
+  const popular = '%EC%9D%B8%EA%B8%B0%EC%88%9C';
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const sortParam = selected === 'popular' ? popular : current;
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/post?category=%EC%9D%BC%EC%83%81&pageNum=0&size=10&sort=${sortParam}&deviceType=pc`,
+          { withCredentials: true }
+        );
+        console.log('일상 글 목록 조회 성공', response.data);
+        setPosts(response.data.result);
+      } catch (error) {
+        console.error('일상 글 목록 조회 실패:', error);
+      }
+    };
+
+    fetchPosts(); // 함수를 정의한 후 바로 호출합니다.
+  }, []);
   return (
     <Container>
       <Banner src={banner} />
@@ -50,24 +71,22 @@ const DailyPage: React.FC = () => {
           <DesktopAddButton />
         </div>
         <ItemList>
-          <Item
-            title='Q&A'
-            postId='5'
-            subText='토끼'
-            description='토끼가 어느 순간부터 사료를 먹지 않아요...'
-            content='원래 매우 잘 먹던 아이가 한 일주일 정도 지났나.. 사료를 안 먹네요.이렇게 두다가는 굶을까봐 간식을 줬는데 간식은 또 잘 먹더라구요...'
-            footerData={['천혜향', '12.23', '919', '11', '29']}
-          />
-
-          <Item
-            title='일상'
-            postId='6'
-            subText='고슴도치'
-            description='저희 고슴도치가 새끼를 낳았어요!'
-            content='새끼때부터 키우던게 엊그제 같은데 벌써 이렇게나세 쌍둥이를 낳았어요! 이름은 뭐로 할지 고민이...'
-            footerData={['감초', '12.25', '896', '8', '17']}
-            img={고슴도치}
-          />
+          {posts.map((post, id) => (
+            <Item
+              title='일상'
+              postId={post.id}
+              subText={post.petCategory}
+              description={post.title}
+              contents={post.contents}
+              footerData={[
+                post.userName,
+                post.createdTime.substring(5, 10),
+                post.views,
+                post.likes,
+                post.comments,
+              ]}
+            />
+          ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

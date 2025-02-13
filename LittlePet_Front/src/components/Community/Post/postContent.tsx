@@ -1,23 +1,33 @@
-import BadgeComponent from '#/components/Community/Badge'; // 실제 컴포넌트 경로로 수정
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
-import animalIcon from '#/assets/동물 아이콘.svg';
+import hamsterIcon from '#/assets/hamster.svg';
+import rabbitIcon from '#/assets/rabbit.svg';
+import hedgehogIcon from '#/assets/hedgehog.svg';
 import vectorIcon from '#/assets/Vector.svg';
-import femaleIcon from '#/assets/성별여자.svg';
-import maleIcon from '#/assets/성별남자.svg';
 import React, { useState, useEffect } from 'react';
 import DeleteModal from '#/components/DeleteModal';
-
+import ChallengerBadge from '@assets/챌린저.svg';
+import LikeBadge from '@assets/소셜응원왕.svg';
+import MasterWriterBadge from '@assets/글쓰기마스터.svg';
+import CommentBadge from '@assets/소통천재.svg';
+const badgeIconMapping: { [key: string]: string } = {
+  글쓰기마스터: MasterWriterBadge,
+  소셜응원왕: LikeBadge,
+  소통천재: CommentBadge,
+  챌린저: ChallengerBadge,
+};
+interface Content {
+  content: string;
+  sequence: number;
+}
 interface PostContentProps {
   title: string;
   author: string;
-  badgeType: 'challenge' | 'popular';
+  badgeType: string[];
   animal: string;
-  gender: string;
-  date: string;
   time: string;
   footerData: string[];
-  description: string;
+  contents: Content[];
   likeCount: number;
 }
 const PostContent: React.FC<PostContentProps> = ({
@@ -25,14 +35,27 @@ const PostContent: React.FC<PostContentProps> = ({
   author,
   badgeType,
   animal,
-  gender,
-  date,
   time,
   footerData,
-  description,
+  contents,
   likeCount,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const icon = badgeIconMapping[badgeType[0]];
+  function isImageUrl(url: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  }
+
+  const getAnimalIcon = (category: string) => {
+    switch (category) {
+      case '햄스터':
+        return hamsterIcon;
+      case '토끼':
+        return rabbitIcon;
+      case '고슴도치':
+        return hedgehogIcon;
+    }
+  };
   return (
     <ContentBox>
       <PostContentWrapper>
@@ -40,22 +63,18 @@ const PostContent: React.FC<PostContentProps> = ({
         <InfoWrapper>
           <InfoSection>
             <Text>{author}</Text>
-            <BadgeComponent type={badgeType} />
+            <BadgeIcon src={icon} />
           </InfoSection>
           <InfoSection>
             <AnimalInfo>
-              <img src={animalIcon} style={{ width: '18px', height: '18px' }} />
+              <img
+                src={getAnimalIcon(animal)}
+                style={{ width: '20px', height: '20px' }}
+              />
               <Text>{animal}</Text>
             </AnimalInfo>
-            {gender == 'female' ? (
-              <img src={femaleIcon} style={{ width: '9px' }} />
-            ) : (
-              <img src={maleIcon} style={{ width: '11px' }} />
-            )}
           </InfoSection>
-          <TimeText>
-            {date}&nbsp;&nbsp;{time}
-          </TimeText>
+          <TimeText>{time.split(':').slice(0, 2).join(':')}</TimeText>
         </InfoWrapper>
         <Footer>
           {footerData.map((item, index) => (
@@ -74,8 +93,13 @@ const PostContent: React.FC<PostContentProps> = ({
             </FooterContainer>
           ))}
         </Footer>
-
-        <DescriptionText>{description}</DescriptionText>
+        {contents.map((item, idx) =>
+          isImageUrl(item.content) ? (
+            <img key={idx} src={item.content} alt={`content-${idx}`} />
+          ) : (
+            <DescriptionText key={idx}>{item.content}</DescriptionText>
+          )
+        )}
       </PostContentWrapper>
       <Container>
         <LikeButton count={likeCount} />
@@ -200,4 +224,8 @@ const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 999;
+`;
+const BadgeIcon = styled.img`
+  height: 15px;
+  width: auto;
 `;
