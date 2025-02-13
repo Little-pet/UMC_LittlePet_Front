@@ -1,0 +1,112 @@
+import { create } from 'zustand';
+import axios from 'axios';
+
+export interface Hospital {
+  id: number;
+  name: string;
+  address: string;
+  closedDay: string;
+  latitude?: number;
+  longitude?: number;
+}
+interface HospitalStore {
+  scrappedHospitals: Hospital[]; // 스크랩한 병원 목록
+  hospitalDetail: Hospital | null; // 선택한 병원 상세 정보
+  hospitalsByRegion: Hospital[]; // 특정 지역의 병원 목록
+
+  // API 호출 함수들
+  fetchHospitalDetail: (hospitalId: number) => Promise<void>;
+  scrapHospital: (hospitalId: number) => Promise<void>;
+  unscriptHospital: (hospitalId: number) => Promise<void>;
+  fetchScrappedHospitals: (userId: number) => Promise<void>;
+  fetchHospitalsByRegion: (region: string) => Promise<void>;
+}
+
+export const useHospitalStore = create<HospitalStore>((set, get) => ({
+  scrappedHospitals: [],
+  hospitalDetail: null,
+  hospitalsByRegion: [],
+
+  // 병원 상세 조회
+  fetchHospitalDetail: async (hospitalId: number) => {
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/hospitals/${hospitalId}`,
+        { withCredentials: true }
+      );
+      console.error('병원 상세 조회 성공:', response.data);
+      if (response.data.isSuccess) {
+        set({ hospitalDetail: response.data.result });
+      }
+    } catch (error) {
+      console.error('병원 상세 조회 실패:', error);
+    }
+  },
+
+  // 병원 스크랩 (즐겨찾기)
+  scrapHospital: async (hospitalId: number, userId: number) => {
+    try {
+      const response = await axios.post(
+        `https://umclittlepet.shop/api/hospitals/${hospitalId}?userId=${userId}`,
+        null,
+        { withCredentials: true }
+      );
+      console.log('병원 스크랩 성공:', response.data);
+      // 필요하다면 스크랩한 병원 목록을 다시 불러오거나,
+      // store 업데이트 로직을 추가합니다.
+    } catch (error) {
+      console.error('병원 스크랩 실패:', error);
+    }
+  },
+
+  // 병원 스크랩 취소
+  unscriptHospital: async (hospitalId: number, userId: number) => {
+    try {
+      const response = await axios.delete(
+        `https://umclittlepet.shop/api/hospitals/${hospitalId}?userId=${userId}`,
+        { withCredentials: true }
+      );
+      console.log('병원 스크랩 취소 성공:', response.data);
+      // 스크랩한 병원 목록에서 해당 병원을 제거합니다.
+      set((state) => ({
+        scrappedHospitals: state.scrappedHospitals.filter(
+          (hospital) => hospital.id !== hospitalId
+        ),
+      }));
+    } catch (error) {
+      console.error('병원 스크랩 취소 실패:', error);
+    }
+  },
+
+  // 스크랩한 병원 조회
+  fetchScrappedHospitals: async (userId: number) => {
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/hospitals/users/{userId}?userId=${userId}`,
+        { withCredentials: true }
+      );
+      console.error('스크랩한 병원 조회 성공:', response.data);
+      if (response.data.isSuccess) {
+        set({ scrappedHospitals: response.data.result });
+      }
+    } catch (error) {
+      console.error('스크랩한 병원 조회 실패:', error);
+    }
+  },
+
+  // 지역별 병원 조회
+  fetchHospitalsByRegion: async (areaId: number) => {
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/hospitals/search/{placeId}?placeId=${areaId}`,
+        { withCredentials: true }
+      );
+      console.error('지역별 병원 조회 성공:', response.data);
+      if (response.data.isSuccess) {
+        set({ hospitalsByRegion: response.data.result });
+      }
+    } catch (error) {
+      console.error('지역별 병원 조회 실패:', error);
+    }
+  },
+}));

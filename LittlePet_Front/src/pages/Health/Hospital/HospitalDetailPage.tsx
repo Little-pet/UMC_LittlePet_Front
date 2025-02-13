@@ -6,6 +6,7 @@ import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import commentIcon from '#/assets/댓글.svg';
 import hospitalImg from '#/assets/image 35.png';
+import { useHospitalStore } from '#/context/hospitalStore';
 // 타입 정의
 interface Category {
   type: string;
@@ -45,18 +46,28 @@ const HospitalDetailPage = () => {
       setSelected('info');
       localStorage.setItem('hospitalCategory', 'info');
     }
-    console.log(localStorage.getItem('hospitalCategory'));
   }, [location.pathname]);
+
+  const { hospitalDetail, fetchHospitalDetail, scrappedHospitals } =
+    useHospitalStore();
+
+  useEffect(() => {
+    fetchHospitalDetail(hospitalId);
+  }, [hospitalId, fetchHospitalDetail]);
+  if (!hospitalDetail) return <div>Loading...</div>;
+  const isFavorited = scrappedHospitals.some(
+    (hospital) => hospital.name === hospitalDetail.name
+  );
   return (
     <div>
       <Img src={hospitalImg} />
       <DetailBox>
         <Details>
           <Header>
-            <HospitalName>로얄동물메디컬센터 본원</HospitalName>
+            <HospitalName>{hospitalDetail.name}</HospitalName>
             <Distance>512m</Distance>
           </Header>
-          <OpenStatus>서울특별시 중랑구 면목동 146-75</OpenStatus>
+          <OpenStatus>{hospitalDetail.address}</OpenStatus>
           <RatingsWrapper>
             <Rating>
               <StarIcon src={starIcon} alt='Star' />
@@ -64,11 +75,11 @@ const HospitalDetailPage = () => {
             </Rating>
             <Comments>
               <CommentIcon src={commentIcon} alt='Comments' />
-              <CommentText>163</CommentText>
+              <CommentText>0</CommentText>
             </Comments>
           </RatingsWrapper>
         </Details>
-        <FavoriteButton />
+        <FavoriteButton isSelected={isFavorited} hospitalId={hospitalId} />
       </DetailBox>
       <ItemHeader>
         <ItemContainer>
@@ -78,6 +89,7 @@ const HospitalDetailPage = () => {
               to={category.path}
               onClick={() => handleClick(category.type)}
               isActive={selected === category.type}
+              state={{ info: hospitalDetail }}
             >
               {category.title}
             </MenuItem>

@@ -6,42 +6,43 @@ import currentIcon from '#/assets/현재 위치 아이콘.svg';
 import { motion } from 'framer-motion';
 interface AreaModalProps {
   onClose: () => void;
-  onSelect: (area: string) => void;
+  onSelect: (area: string, code: number) => void;
 }
 const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect }) => {
   const seoulDistricts = [
-    '강남구',
-    '강동구',
-    '강북구',
-    '강서구',
-    '관악구',
-    '광진구',
-    '구로구',
-    '금천구',
-    '노원구',
-    '도봉구',
-    '동대문구',
-    '동작구',
-    '마포구',
-    '서대문구',
-    '서초구',
-    '성동구',
-    '성북구',
-    '송파구',
-    '양천구',
-    '영등포구',
-    '용산구',
-    '은평구',
-    '종로구',
-    '중구',
-    '중랑구',
+    { name: '강남구', code: 23 },
+    { name: '강동구', code: 25 },
+    { name: '강북구', code: 9 },
+    { name: '강서구', code: 16 },
+    { name: '관악구', code: 21 },
+    { name: '광진구', code: 5 },
+    { name: '구로구', code: 17 },
+    { name: '금천구', code: 18 },
+    { name: '노원구', code: 11 },
+    { name: '도봉구', code: 10 },
+    { name: '동대문구', code: 6 },
+    { name: '동작구', code: 20 },
+    { name: '마포구', code: 14 },
+    { name: '서대문구', code: 13 },
+    { name: '서초구', code: 22 },
+    { name: '성동구', code: 4 },
+    { name: '성북구', code: 8 },
+    { name: '송파구', code: 24 },
+    { name: '양천구', code: 15 },
+    { name: '영등포구', code: 19 },
+    { name: '용산구', code: 3 },
+    { name: '은평구', code: 12 },
+    { name: '종로구', code: 1 },
+    { name: '중구', code: 2 },
+    { name: '중랑구', code: 7 },
   ];
+
   // 선택된 지역 상태 관리
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
 
-  const handleSelect = (area: string) => {
+  const handleSelect = (area: string, code: number) => {
     setSelectedArea(area); // 선택된 지역 업데이트
-    onSelect(area);
+    onSelect(area, code);
   };
 
   const handleCurrentLocation = () => {
@@ -83,10 +84,11 @@ const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect }) => {
           {seoulDistricts.map((area, idx) => (
             <Item
               key={idx}
-              isSelected={selectedArea === area}
-              onClick={() => handleSelect(area)}
+              isSelected={selectedArea === area.name}
+              onClick={() => handleSelect(area.name, area.code)}
             >
-              {area} {selectedArea === area && <img src={checkIcon} />}
+              {area.name}{' '}
+              {selectedArea === area.name && <img src={checkIcon} />}
             </Item>
           ))}
         </ItemList>

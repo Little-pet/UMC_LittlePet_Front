@@ -5,7 +5,7 @@ import styled from 'styled-components';
 interface LocationModalProps {
   onClose: () => void; // 모달 닫기 콜백 함수
 }
-const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
+const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
   const openKakaoMap = (la: number, lo: number): void => {
     const kakaoUrl = `kakaomap://route?ep=${la},${lo}&by=CAR`;
 
@@ -24,14 +24,12 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
       </Header>
       <ContentContainer>
         <LocationHeader>
-          <LocationName>로얄동물메디컬센터 본원</LocationName>
+          <LocationName>{info.name}</LocationName>
           <Distance>512m</Distance>
         </LocationHeader>
-        <Address>서울 특별시 중랑구 면목동 146-34</Address>
+        <Address>{info.address}</Address>
       </ContentContainer>
-      <RouteButton
-        onClick={() => openKakaoMap(37.587512175916, 127.080244082268)}
-      >
+      <RouteButton onClick={() => openKakaoMap(info.latitude, info.longitude)}>
         길찾기
       </RouteButton>
     </Container>
