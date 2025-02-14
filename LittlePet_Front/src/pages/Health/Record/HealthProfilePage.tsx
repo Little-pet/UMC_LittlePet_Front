@@ -38,7 +38,6 @@ const HealthProfile: React.FC = () => {
   } | null>(null);
 
   const userId = 4;
-  //const recordDate = dayjs().format('YYYY-MM-DD');
 
   useEffect(() => {
     fetchPets(userId);
@@ -150,7 +149,7 @@ const HealthProfile: React.FC = () => {
                     {selectedPetDetails?.petCategory || '정보 없음'}
 
                     <GenderIcon gender={selectedPetDetails?.gender}>
-                      {selectedPetDetails?.gender === 'female' ? '♀' : '♂'}
+                      {selectedPetDetails?.gender === 'FEMALE' ? '♀' : '♂'}
                     </GenderIcon>
 
                     <PetBirthDate>
@@ -401,10 +400,11 @@ const AnimalIcon = styled.img`
   width: 12px;
 `;
 
-const GenderIcon = styled.span<{ gender: 'female' | 'male' }>`
+const GenderIcon = styled.span<{ gender: 'FEMALE' | 'MALE' | 'OTHER' }>`
   font-weight: 600;
   font-size: 12px;
-  color: ${({ gender }) => (gender === 'female' ? '#C76B6B' : '#6EA8FE')};
+  color: ${({ gender }) => (gender === 'FEMALE' ? '#C76B6B' : '#6EA8FE')};
+  display: ${({ gender }) => (gender === 'OTHER' ? 'none' : 'inline')};
 `;
 
 const RecentUpdate = styled.p`
