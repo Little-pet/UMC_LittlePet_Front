@@ -38,7 +38,7 @@ import HamsterDetailPage from '#/pages/CareMethod/HamsterDetailPage';
 import RabbitDetailPage from '#/pages/CareMethod/RabbitDetailPage';
 import HedgehogDetailPage from '#/pages/CareMethod/HedgehogDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
-
+import { useAuthStore } from '#/context/AuthStore';
 // 라우터 설정
 const router = createBrowserRouter([
   {
@@ -120,6 +120,7 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
+  const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
   const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
@@ -132,6 +133,7 @@ const App: React.FC = () => {
         setShowSplash(false);
       }, 3000);
     }
+    checkLoginStatus();
   }, []);
 
   if (showSplash) {

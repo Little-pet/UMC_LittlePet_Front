@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuthStore } from '#/context/AuthStore';
 
 interface ResponsiveMenuProps {
   open: boolean;
@@ -10,6 +11,7 @@ interface ResponsiveMenuProps {
 
 const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
   const navigate = useNavigate();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : 'auto';
@@ -18,7 +20,10 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
     };
   }, [open]);
 
-  const handleLoginClick = () => navigate('/login');
+  const handleLoginOrMyPageClick = () => {
+    navigate(isLoggedIn ? '/mypage' : '/login');
+  };
+
   const handleOnBoarding = () => navigate('/onboarding');
 
   return createPortal(
@@ -30,8 +35,8 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
           exit={{ opacity: 0, x: '100%' }}
         >
           <MenuContainer>
-            <MenuButton onClick={handleLoginClick}>
-              로그인 / 회원가입
+            <MenuButton onClick={handleLoginOrMyPageClick}>
+              {isLoggedIn ? '마이페이지' : '로그인 / 회원가입'}
             </MenuButton>
             <MenuItem onClick={handleOnBoarding}>ABOUT</MenuItem>
             <MenuItem>CONTACT</MenuItem>
