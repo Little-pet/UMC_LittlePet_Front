@@ -3,7 +3,7 @@ import React from 'react';
 // Props 타입 정의
 interface DeleteModalProps {
   onClose: () => void; // onClose는 함수이며 반환값은 없습니다.
-  onDelete: () => Promise<void>;
+  onDelete?: () => Promise<void>;
 }
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, onDelete }) => {
   return (

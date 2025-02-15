@@ -60,6 +60,10 @@ const HealthProfile: React.FC = () => {
     gcTime: 5 * 60 * 1000,
   });
 
+  if (recordLoading) {
+    return <LoadingContainer>로딩 중...</LoadingContainer>;
+  }
+
   const latestRecord = healthRecord?.latestRecord || {};
 
   useEffect(() => {
@@ -148,7 +152,14 @@ const HealthProfile: React.FC = () => {
                     <AnimalIcon src={animalIcon} />
                     {selectedPetDetails?.petCategory || '정보 없음'}
 
-                    <GenderIcon gender={selectedPetDetails?.gender}>
+                    <GenderIcon
+                      gender={
+                        selectedPetDetails?.gender as
+                          | 'FEMALE'
+                          | 'MALE'
+                          | 'OTHER'
+                      }
+                    >
                       {selectedPetDetails?.gender === 'FEMALE' ? '♀' : '♂'}
                     </GenderIcon>
 
@@ -498,4 +509,10 @@ const RecordText = styled.p`
   font-weight: 600;
   font-size: 14px;
   color: #262627;
+`;
+
+const LoadingContainer = styled.p`
+  font-size: 18px;
+  text-align: center;
+  margin-top: 50px;
 `;

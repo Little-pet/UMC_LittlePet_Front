@@ -10,17 +10,17 @@ import { useUserStore } from '#/context/UserStore';
 
 const MyPage: React.FC = () => {
   const userId = 4;
-  const { isLoading, error } = useGetUserData(userId);
+  const { isLoading /*, error */ } = useGetUserData(userId);
   const stats = useUserStore((state) => state.stats);
   const badges = useUserStore((state) => state.badges);
-  const user = useUserStore((state) => state.user);
+  //const user = useUserStore((state) => state.user);
   const pets = useUserStore((state) => state.pets);
 
   return (
     <Container>
       <Title>마이페이지</Title>
       <ProfileContainer>
-        <ProfileSection user={user} pets={pets} isLoading={isLoading} />
+        <ProfileSection /*user={user} pets={pets} isLoading={isLoading}*/ />
         <StatsComponent user={stats} isLoading={isLoading} />
         <PetProfiles pets={pets} isLoading={isLoading} />
         <BadgeComponent badges={badges} isLoading={isLoading} />
