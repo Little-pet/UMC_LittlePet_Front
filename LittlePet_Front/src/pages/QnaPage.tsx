@@ -60,7 +60,7 @@ const QnaPage: React.FC = () => {
             <Item
               title='Q&A'
               type='qna'
-              postId={post.id}
+              postId={post.postId}
               subText={post.petCategory}
               description={post.title}
               contents={post.contents}

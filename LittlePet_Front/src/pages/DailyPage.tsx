@@ -60,7 +60,7 @@ const DailyPage: React.FC = () => {
             <Item
               title='일상'
               type='daily'
-              postId={post.id}
+              postId={post.postId}
               subText={post.petCategory}
               description={post.title}
               contents={post.contents}

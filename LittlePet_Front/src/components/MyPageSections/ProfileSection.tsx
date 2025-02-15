@@ -138,4 +138,5 @@ const EditButton = styled.button`
   justify-content: center;
   background-color: #fff;
   align-items: center;
+  cursor: pointer;
 `;

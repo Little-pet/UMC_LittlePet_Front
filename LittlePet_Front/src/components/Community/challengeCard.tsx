@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import profileIcon from '#/assets/프로필.svg';
-import BadgeComponent from '#/components/Community/Badge';
+import profileIcon from '#/assets/기본 프로필.svg';
 import { AnimalIcons } from '#/components/icon';
+import ChallengerBadge from '@assets/챌린저.svg';
+import LikeBadge from '@assets/소셜응원왕.svg';
+import MasterWriterBadge from '@assets/글쓰기마스터.svg';
+import CommentBadge from '@assets/소통천재.svg';
+import PopularBadge from '@assets/인기스타.svg';
+import axios from 'axios';
 interface Badge {
-  type: 'challenge' | 'popular'; // Badge type 제한
+  name: string;
 }
 interface Content {
   content: string;
@@ -15,26 +20,35 @@ interface ChallengeCardProps {
   name: string; // 유저 이름
   postId: number; // 게시물 ID
   animal: string; // 동물 이름
-  badges: Badge[]; // Badge 배열
   descriptionTitle: string; // 설명 제목
   contents: Content[]; // 설명 내용
   category: string;
   type: string;
+  userId: number;
 }
+const badgeIconMapping: { [key: string]: string } = {
+  글쓰기마스터: MasterWriterBadge,
+  소셜응원왕: LikeBadge,
+  소통천재: CommentBadge,
+  챌린저: ChallengerBadge,
+  인기스타: PopularBadge,
+};
 const ChallengeCard: React.FC<ChallengeCardProps> = ({
   name,
   postId,
   animal,
-  badges,
   descriptionTitle,
   contents,
   category,
   type,
+  userId,
 }) => {
+  const [profilePhoto, setProfilePhoto] = useState<string>();
+  const [badges, setBadges] = useState<Badge[]>();
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
   }
-  const getFirstImageContent = (contents) => {
+  const getFirstImageContent = (contents: Content[]) => {
     for (const item of contents) {
       if (isImageUrl(item.content)) {
         return item;
@@ -61,6 +75,26 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
         return AnimalIcons.snake;
     }
   };
+  const userFetch = async () => {
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/users/${userId}`,
+        { withCredentials: true }
+      );
+      if (response.data.isSuccess) {
+        console.log('사용자 프로필 조회 성공', response.data);
+        const result = response.data.result;
+        setProfilePhoto(result.profilePhoto);
+        setBadges(result.userBadge);
+      }
+    } catch (error) {
+      console.error('사용자 프로필 조회 실패:', error);
+    }
+  };
+  useEffect(() => {
+    userFetch(userId);
+  }, []);
+
   return (
     <CardContainer
       to={`/community/${type}/${postId}`}
@@ -69,7 +103,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     >
       <ContentWrapper>
         <ProfileWrapper>
-          <ProfileImg src={profileIcon} />
+          <ProfileImg
+            src={profilePhoto === null ? profileIcon : profilePhoto}
+          />
           <div>
             <UserInfoWrapper>
               <UserName>{name}</UserName>
@@ -79,9 +115,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </AnimalWrapper>
             </UserInfoWrapper>
             <div style={{ display: 'flex', gap: '4px' }}>
-              {badges.map((badge, index) => (
-                <BadgeComponent key={index} type={badge.type} />
-              ))}
+              {badges?.map((badge, idx) => {
+                const icon = badgeIconMapping[badge.name];
+                if (!icon) return null;
+                return <BadgeIcon key={idx} src={icon} alt={badge.name} />;
+              })}
             </div>
           </div>
         </ProfileWrapper>
@@ -136,7 +174,7 @@ const CardContainer = styled(Link)<{ bgImage?: string }>`
     background: rgba(0, 0, 0, 0.5); /* 30% 까맣게, 필요에 따라 조정 */
     z-index: -1;
   }
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     width: 400px;
     height: 480px;
   }
@@ -149,12 +187,12 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   gap: 4px;
   position: absolute;
-  top: 120px;
+  bottom: 7px;
   left: 18px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     width: 342px;
     height: 142px;
-    top: 317px;
+    bottom: 0px;
     left: 26px;
     gap: 8px;
   }
@@ -178,6 +216,7 @@ const UserInfoWrapper = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
+  height: 35px;
 `;
 
 const AnimalWrapper = styled.div`
@@ -197,7 +236,7 @@ const AnimalImg = styled.img`
 const UserName = styled.div`
   font-size: 12px;
   font-family: 'Pretendard-SemiBold';
-  line-height: 35px;
+  //line-height: 35px;
   color: #ffffff;
   @media (min-width: 768px) {
     font-size: 16px;
@@ -237,4 +276,10 @@ const DescriptionText = styled.div`
     font-size: 16px;
     line-height: 35px;
   }
+`;
+const BadgeIcon = styled.img`
+  height: 15px;
+  width: auto;
+  /* background-color: white;
+  border-radius: 15px; */
 `;

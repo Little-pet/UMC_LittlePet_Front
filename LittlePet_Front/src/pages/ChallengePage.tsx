@@ -34,16 +34,17 @@ const ChallengePage: React.FC = () => {
           </Subtitle>
         </HeaderWrapper>
         <ChallengeWrapper>
-          {topPosts.map((post) => (
+          {topPosts.map((post, idx) => (
             <ChallengeCard
+              key={idx}
               category='챌린지'
               type='challenge'
               name={post.userName}
-              postId={post.id}
+              postId={post.postId}
               animal={post.petCategory}
-              badges={[{ type: 'challenge' }, { type: 'popular' }]}
               descriptionTitle={post.title}
               contents={post.contents}
+              userId={post.userId}
             />
           ))}
         </ChallengeWrapper>
@@ -81,10 +82,11 @@ const ChallengePage: React.FC = () => {
         <ItemList>
           {posts.map((post, id) => (
             <ChallengeItem
+              key={id}
               type='challenge'
               title={post.title}
               name={post.userName}
-              postId={post.id}
+              postId={post.postId}
               views={post.views}
               likes={post.likes}
               comments={post.comments}

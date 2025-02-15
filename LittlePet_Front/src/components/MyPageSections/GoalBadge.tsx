@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ChallengerBadge from '@assets/챌린저.svg';
 import LikeBadge from '@assets/소셜응원왕.svg';
@@ -6,18 +6,64 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
 import arrowIcon from '#/assets/arrow.svg';
-
-const badges = [
-  { name: '글쓰기마스터', component: MasterWriterBadge },
-  { name: '소통천재', component: CommentBadge },
-  { name: '소셜응원왕', component: LikeBadge },
-  { name: '인기스타', component: PopularBadge },
-  { name: '챌린저', component: ChallengerBadge },
-];
-
+import axios from 'axios';
+const badgeIconMapping: { [key: string]: string } = {
+  글쓰기마스터: MasterWriterBadge,
+  소셜응원왕: LikeBadge,
+  소통천재: CommentBadge,
+  챌린저: ChallengerBadge,
+  인기스타: PopularBadge,
+};
+const userId = 4;
 const GoalBadgeComponent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [badges, setBadges] = useState();
+  const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const remainingPosts = 3;
+  useEffect(() => {
+    const fetchMissingBadge = async () => {
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/badge/${userId}/missingbadge`,
+          { withCredentials: true }
+        );
+        console.log('획득하지 못한 뱃지 조회 성공', response.data);
+        setBadges(response.data.result);
+      } catch (error) {
+        console.error('획득하지 못한 뱃지 조회 실패:', error);
+      }
+    };
+    fetchMissingBadge();
+  }, []);
+  const fetchProgress = async (type: string) => {
+    try {
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/badge/${userId}/${type}/progress`,
+        { withCredentials: true }
+      );
+      console.log(type, '목표 뱃지 조회 성공', response.data);
+      return response.data.result;
+    } catch (error) {
+      console.error(type, '목표 뱃지 조회 실패:', error);
+    }
+  };
+  useEffect(() => {
+    const fetchAllProgress = async () => {
+      const progressData: { [key: string]: number } = {};
+      // badges 배열에 있는 각 badge에 대해 진행 상태를 가져옵니다.
+      for (const badge of badges) {
+        try {
+          const result = await fetchProgress(badge);
+          progressData[badge] = result || 0;
+        } catch (error) {
+          progressData[badge] = 0;
+        }
+      }
+      setProgress(progressData);
+    };
+
+    fetchAllProgress();
+  }, [badges]);
   return (
     <BadgeContainer isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       <Title>목표 뱃지</Title>
@@ -37,42 +83,22 @@ const GoalBadgeComponent: React.FC = () => {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            <BadgeBox>
-              <img src={MasterWriterBadge} />
-              <Text>
-                다음 목표까지 게시글 작성{' '}
-                <HighlightedText>{remainingPosts}</HighlightedText>개 남았어요!
-              </Text>
-            </BadgeBox>
-            <BadgeBox>
-              <img src={CommentBadge} />
-              <Text>
-                다음 목표까지 댓글{' '}
-                <HighlightedText>{remainingPosts}</HighlightedText>개 남았어요!
-              </Text>
-            </BadgeBox>
-            <BadgeBox>
-              <img src={LikeBadge} />
-              <Text>
-                다음 목표까지 좋아요 클릭{' '}
-                <HighlightedText>{remainingPosts}</HighlightedText>개 남았어요!
-              </Text>
-            </BadgeBox>
-            <BadgeBox>
-              <img src={PopularBadge} />
-              <Text>
-                다음 목표까지 좋아요 획득{' '}
-                <HighlightedText>{remainingPosts}</HighlightedText>개 남았어요!
-              </Text>
-            </BadgeBox>
-            <BadgeBox>
-              <img src={ChallengerBadge} />
-              <Text>
-                다음 목표를 위해{' '}
-                <HighlightedText>챌린지 랭킹{remainingPosts}인</HighlightedText>
-                에 도전해보세요!
-              </Text>
-            </BadgeBox>
+            {badges.map((badge, idx) => {
+              const icon = badgeIconMapping[badge];
+              const word = String(progress[badge] ?? 0);
+              const match = word.match(/(.*?)(\d+)(.*)/);
+
+              return (
+                <BadgeBox key={idx}>
+                  <img src={icon} />
+                  <Text>
+                    {match[1]}
+                    <HighlightedText>{match[2]}</HighlightedText>
+                    {match[3]}
+                  </Text>
+                </BadgeBox>
+              );
+            })}
           </div>
         )}
       </div>
@@ -86,7 +112,7 @@ const BadgeContainer = styled.div<{ isOpen: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
-  height: ${(props) => (props.isOpen ? '177px' : '50px')}; // 높이 변경
+  height: ${(props) => (props.isOpen ? '' : '50px')}; // 높이 변경
   width: 100%;
   background-color: #fafafa;
   padding: 12px 18px;
@@ -116,6 +142,7 @@ const ArrowIcon = styled(({ isOpen, ...rest }) => <img {...rest} />)`
 const BadgeBox = styled.div`
   display: flex;
   gap: 12px;
+  align-items: center;
 `;
 const Text = styled.div`
   font-size: 8px;

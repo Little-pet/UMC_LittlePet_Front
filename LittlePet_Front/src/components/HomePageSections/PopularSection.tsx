@@ -26,7 +26,7 @@ const PopularSection: React.FC = () => {
           {popularPosts.map((post, id) => (
             <Item
               title={post.category}
-              postId={post.id}
+              postId={post.postId}
               subText={post.petCategory}
               description={post.title}
               contents={post.contents}
