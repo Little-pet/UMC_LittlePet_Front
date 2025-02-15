@@ -7,10 +7,6 @@ import axios from 'axios';
 import logo from '@assets/Logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
-<<<<<<< HEAD
-//import good from '@assets/양호.svg';
-//import bad from '@assets/악화.svg';
-=======
 import good from '@assets/양호.svg';
 import bad from '@assets/악화.svg';
 import rabbit from '@assets/animaldropdown/rabbit.svg';
@@ -29,7 +25,6 @@ const fetchHealthRecord = async (petId: number) => {
   console.log('최신건강기록', response.data.result);
   return response.data.result;
 };
->>>>>>> develop
 
 const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -150,23 +145,11 @@ const HealthProfile: React.FC = () => {
                     {selectedPet?.name || '등록된 반려동물 없음'}
                   </PetName>
                   <PetDetail>
-<<<<<<< HEAD
-                    <AnimalIcon
-                      src={animalIcon}
-                      alt={selectedPet?.category || ''}
-                    />
-                    {selectedPet?.category}
-                    <GenderIcon
-                      gender={selectedPet?.gender as 'female' | 'male'}
-                    >
-                      {selectedPet?.gender === 'female' ? '♀' : '♂'}
-=======
                     <AnimalIcon src={animalIcon} />
                     {selectedPetDetails?.petCategory || '정보 없음'}
 
                     <GenderIcon gender={selectedPetDetails?.gender}>
                       {selectedPetDetails?.gender === 'FEMALE' ? '♀' : '♂'}
->>>>>>> develop
                     </GenderIcon>
 
                     <PetBirthDate>

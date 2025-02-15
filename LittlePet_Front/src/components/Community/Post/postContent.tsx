@@ -1,17 +1,12 @@
-import BadgeComponent from '#/components/Community/Badge'; // 실제 컴포넌트 경로로 수정
+import BadgeComponent from '#/components/Community/badge'; // 실제 컴포넌트 경로로 수정
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
 import animalIcon from '#/assets/동물 아이콘.svg';
 import vectorIcon from '#/assets/Vector.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
-<<<<<<< HEAD
 import React, { useState } from 'react';
-import DeleteModal from './DeleteModal';
-=======
-import React, { useState, useEffect } from 'react';
 import DeleteModal from '#/components/DeleteModal';
->>>>>>> develop
 
 interface PostContentProps {
   title: string;
