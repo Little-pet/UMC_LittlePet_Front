@@ -2,7 +2,7 @@ import React from 'react';
 import Kakao from '#/assets/Kakao.svg';
 import Naver from '#/assets/Naver.svg';
 import Google from '#/assets/Google.svg';
-import logo from '#/assets/Logo.svg';
+import logo from '#/assets/logo.svg';
 import back from '#/assets/back.svg';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';

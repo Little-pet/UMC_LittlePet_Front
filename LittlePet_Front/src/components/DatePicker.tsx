@@ -24,10 +24,6 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   // 날짜 변경 핸들러 (배열 체크 추가)
   const handleDateChange = (date: Date | Date[] | null) => {
     if (date && !Array.isArray(date)) {
-<<<<<<< HEAD
-      // ✅ 배열인지 체크
-=======
->>>>>>> develop
       const formattedDate = format(date, 'yyyy.MM.dd (EEE)', {
         locale: koLocale,
       });
