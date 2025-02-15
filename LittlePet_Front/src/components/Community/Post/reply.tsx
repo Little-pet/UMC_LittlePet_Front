@@ -41,7 +41,6 @@ const Reply: React.FC<ReplyProps> = ({
       <TimeStamp>
         {date}&nbsp;&nbsp;{time}
       </TimeStamp>
-      <ReplyButton>답글 쓰기</ReplyButton>
     </Footer>
   </CommentContainer>
 );
@@ -99,24 +98,11 @@ const Footer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  height: 15px;
 `;
 
 const TimeStamp = styled.div`
   font-size: 10px;
   font-family: Pretendard-Medium;
   color: #737373;
-`;
-
-const ReplyButton = styled.div`
-  width: 56px;
-  height: 22px;
-  border-radius: 5px;
-  border: 1px solid #e6e6e6;
-  font-size: 10px;
-  font-family: Pretendard-Medium;
-  color: #737373;
-  line-height: 22px;
-  text-align: center;
-  cursor: pointer;
-  background-color: #ffffff;
 `;

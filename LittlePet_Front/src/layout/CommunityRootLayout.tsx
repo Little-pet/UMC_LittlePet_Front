@@ -42,7 +42,6 @@ const CommunityRootLayout: React.FC = () => {
       setSelected('qna');
       localStorage.setItem('selectedCategory', 'qna');
     }
-    console.log(localStorage.getItem('selectedCategory'));
   }, [location.pathname]);
 
   const [totalHeight] = useState<number>(
@@ -50,10 +49,6 @@ const CommunityRootLayout: React.FC = () => {
       ? window.innerHeight - 50 - 45 - 42
       : window.innerHeight - 50 - 42
   );
-
-  useEffect(() => {
-    console.log(`📏 계산된 높이: ${totalHeight}px`);
-  }, [window.innerHeight, window.innerWidth]);
 
   return (
     <Container>
@@ -97,6 +92,9 @@ const Header = styled.div`
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
+  @media (min-width: 800px) {
+    min-height: 70px;
+  }
 `;
 const ItemContainer = styled.div`
   display: flex;
@@ -108,10 +106,15 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   font-size: 14px;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+  @media (min-width: 800px) {
+    font-size: 22px;
+    line-height: 35px;
+    font-weight: 600;
+  }
 `;
 const MainContent = styled.main<{ totalHeight: number }>`
   height: ${({ totalHeight }) => `${totalHeight}px`};
   position: relative;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
   }
 `;

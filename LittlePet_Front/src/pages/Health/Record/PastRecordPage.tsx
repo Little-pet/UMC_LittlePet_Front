@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import { usePets } from '#/context/PetContext';
 import calendarIcon from '@assets/Calender.svg';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import normal from '@assets/정상.svg';
-//import abnormal from '@assets/이상.svg';
+import { usePetStore } from '#/context/petStore';
+import abnormal from '@assets/이상.svg';
+import axios from 'axios';
+import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';
+import banner from '@assets/banner/banner-health.svg';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
@@ -17,17 +20,25 @@ const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
 
 const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
-  const { pets } = usePets();
+  const location = useLocation();
   const navigate = useNavigate();
-  const selectedPet = pets.find((pet) => pet.id.toString() === petId);
+  const { getPetName } = usePetStore();
 
-  // 기본값을 오늘로 설정
-  const [selectedDate, setSelectedDate] = useState(dayjs());
+  //petId에 해당하는 petName찾기
+  const petName = getPetName(Number(petId));
+
+  // 기본값 설정
+  const initialDate = location.state?.selectedDate
+    ? dayjs(location.state.selectedDate) // 캘린더에서 선택한 날짜
+    : dayjs(); // 기본값: 오늘 날짜
+
+  const [selectedDate, setSelectedDate] = useState(initialDate);
   const calendarRef = useRef<HTMLDivElement>(null);
   const dateRange = 3; // 중앙을 포함해 양옆으로 3일 표시
 
   // 선택된 날짜를 기준으로 범위 내 날짜 가져오기
   const weekDates = getSurroundingDates(selectedDate, dateRange);
+  const [loading, setLoading] = useState(false);
 
   // 선택한 날짜를 중앙에 위치시키는 함수
   const scrollToCenter = () => {
@@ -52,126 +63,222 @@ const PastRecordPage: React.FC = () => {
   }, [selectedDate]);
 
   // 건강 기록 데이터 (예시)
-  const [recordData, setRecordData] = useState({
-    weight: '',
-    foodIntake: '',
-    bowel: '',
-    symptoms: '',
-    healthStatus: '',
-    diagnosis: '',
-    treatment: '',
-  });
+  const [recordData, setRecordData] = useState<{
+    recordDate: string;
+    weight: number;
+    mealAmount: string;
+    fecesStatus: string;
+    fecesColorStatus: string;
+    healthStatus: string;
+    atypicalSymptom: string;
+    diagnosisName: string;
+    prescription: string;
+    weightDifference: number;
+  } | null>(null);
+
+  //몸무게 차이
+  const roundedWeightDiff =
+    recordData && recordData.weightDifference !== undefined
+      ? Math.round(recordData.weightDifference * 10) / 10
+      : null;
+
+  const weightChangeText =
+    recordData && roundedWeightDiff
+      ? recordData.weightDifference === 0
+        ? '유지'
+        : recordData.weightDifference > 0
+          ? `${roundedWeightDiff}kg 증가`
+          : `${Math.abs(roundedWeightDiff)}kg 감소`
+      : '데이터 없음';
+
+  //대변 상태 뱃지
+
+  const fecesBadgeMap: { [key: string]: string } = {
+    '적당한 무르기': normal,
+  };
+  const fecesStatus = recordData?.fecesStatus?.trim() || null;
+
+  const fecesBadgeImage = fecesStatus
+    ? fecesBadgeMap[fecesStatus] || abnormal
+    : null;
 
   useEffect(() => {
-    // 여기에서 API 요청을 통해 해당 날짜의 기록을 가져옴 (가정)
-    // 실제 API 호출로 변경 가능
     const fetchHealthData = async () => {
-      // 예시 데이터: 실제 API 호출로 대체
-      const data = {
-        weight: '20g',
-        foodIntake: '정상',
-        bowel: '적당한 무르기 · 갈색',
-        symptoms: '기침',
-        healthStatus: '양호',
-        diagnosis: '일반 감기',
-        treatment: '약 처방, 3일 뒤 재방문',
-      };
+      if (!petId) {
+        return;
+      }
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/pets/${petId}/health-records?localDate=${selectedDate.format(
+            'YYYY-MM-DD'
+          )}`,
+          { withCredentials: true }
+        );
 
-      setRecordData(data);
+        if (response.data.isSuccess && response.data.result) {
+          setRecordData(response.data.result); // 응답 그대로 저장
+        } else {
+          setRecordData(null);
+        }
+      } catch (error) {
+        console.error('건강 기록 불러오기 실패:', error);
+        setRecordData(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchHealthData();
-  }, [selectedDate]);
+  }, [selectedDate, petId]);
+
+  //삭제 핸들러
+  const handleDelete = async () => {
+    if (!petId || !selectedDate) {
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        `https://umclittlepet.shop/api/pets/${petId}/health-records`,
+        {
+          withCredentials: true,
+          params: { localDate: selectedDate.format('YYYY-MM-DD') },
+        }
+      );
+      if (response.data.isSuccess) {
+        alert('건강 기록이 삭제되었습니다!');
+        setRecordData(null);
+      } else {
+        alert('삭제 실패! 다시 시도해주세요.');
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
 
   return (
-    <Container>
-      <Title>{selectedPet?.name}의 건강 기록</Title>
-      <Line />
+    <ContainerWrapper>
+      <Banner src={banner} />
+      <Container>
+        <Title>{petName}의 건강 기록</Title>
+        <Line />
 
-      <SelectedDateContainer>
-        <SelectedDate>{selectedDate.format('YYYY년 MM월 DD일')}</SelectedDate>
-        <WholeCalender
-          onClick={() =>
-            navigate(`/health/record/calendar/${petId}`, {
-              state: {
-                selectedDate: dayjs().format('YYYY-MM-DD'),
-                petName: selectedPet?.name,
-              },
-            })
-          }
-        >
-          <img src={calendarIcon} alt='달력 아이콘' />
-          전체보기
-        </WholeCalender>
-      </SelectedDateContainer>
-
-      <CalendarScroll>
-        {weekDates.map((date) => (
-          <DateItem
-            key={date.toString()}
-            isSelected={dayjs(selectedDate).isSame(date, 'day')}
-            onClick={() => setSelectedDate(date)}
+        <SelectedDateContainer>
+          <SelectedDate>{selectedDate.format('YYYY년 MM월 DD일')}</SelectedDate>
+          <WholeCalender
+            onClick={() =>
+              navigate(`/health/record/calendar/${petId}`, {
+                state: {
+                  selectedDate: selectedDate.format('YYYY-MM-DD'),
+                  petName: petName,
+                  petId: petId,
+                },
+              })
+            }
           >
-            <DayLabel>{date.format('ddd').toUpperCase()}</DayLabel>
-            <DateNumber isSelected={dayjs(selectedDate).isSame(date, 'day')}>
-              {date.date()}
-            </DateNumber>
-          </DateItem>
-        ))}
-      </CalendarScroll>
+            <img src={calendarIcon} alt='달력 아이콘' />
+            전체보기
+          </WholeCalender>
+        </SelectedDateContainer>
 
-      {/* 추후에 건강 기록 내역 연동해 나타낼 예정 */}
-      <HealthRecord>
-        <RecordItem>
-          <Label>체중</Label>
-          <Value>
-            20g
-            <WeightChange>
-              지난 기록 대비 <span> 유지</span>
-            </WeightChange>
-          </Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>식사량</Label>
-          <MealValue>{recordData.foodIntake || '-'}</MealValue>
-        </RecordItem>
-        <RecordItem>
-          <Label>대변 상태</Label>
-          <Value>
-            {recordData.bowel || '-'}
-            <FecesBadge src={normal} alt={'정상'} />
-          </Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>특이 증상</Label>
-          <Value>{recordData.symptoms || '-'}</Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>건강 상태</Label>
-          <Value>{recordData.healthStatus || '-'}</Value>
-        </RecordItem>
-        <RecordItem>
-          <Label>진료 내역</Label>
-          <HospitalRecordValue>
-            <RecordRow>
-              <ListTitle>진단명</ListTitle>
-              <RecordText>{recordData.diagnosis || '-'}</RecordText>
-            </RecordRow>
-            <RecordRow>
-              <ListTitle>검사 및 처방 내역</ListTitle>
-              <RecordText>{recordData.treatment || '-'}</RecordText>
-            </RecordRow>
-          </HospitalRecordValue>
-        </RecordItem>
-      </HealthRecord>
-      <MobileAddButton selectedDate={selectedDate} />
-    </Container>
+        <CalendarScroll>
+          {weekDates.map((date) => (
+            <DateItem
+              key={date.toString()}
+              isSelected={dayjs(selectedDate).isSame(date, 'day')}
+              onClick={() => setSelectedDate(date)}
+            >
+              <DayLabel>
+                {date.locale('en').format('ddd').toUpperCase()}
+              </DayLabel>
+
+              <DateNumber
+                isSelected={dayjs(selectedDate).isSame(date, 'day')}
+                isFuture={date.isAfter(dayjs(selectedDate), 'day')}
+              >
+                {date.date()}
+              </DateNumber>
+            </DateItem>
+          ))}
+        </CalendarScroll>
+
+        <HealthRecord>
+          <RecordItem>
+            <Label>체중</Label>
+            <Value>
+              {recordData?.weight !== null &&
+                recordData?.weight !== undefined && (
+                  <>
+                    {recordData.weight}kg
+                    <WeightChange>
+                      지난 기록 대비 <span>{weightChangeText} </span>
+                    </WeightChange>
+                  </>
+                )}
+            </Value>
+          </RecordItem>
+          <RecordItem>
+            <Label>식사량</Label>
+            <MealValue>{recordData?.mealAmount || ''}</MealValue>
+          </RecordItem>
+          <RecordItem>
+            <Label>대변 상태</Label>
+            <Value>
+              {recordData?.fecesStatus && recordData?.fecesColorStatus
+                ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
+                : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
+              <FecesBadge src={fecesBadgeImage || ''} alt={fecesStatus || ''} />
+            </Value>
+          </RecordItem>
+          <RecordItem>
+            <Label>특이 증상</Label>
+            <Value>{recordData?.atypicalSymptom || ''}</Value>
+          </RecordItem>
+          <RecordItem>
+            <Label>건강 상태</Label>
+            <Value>{recordData?.healthStatus || ''}</Value>
+          </RecordItem>
+          {recordData && recordData?.diagnosisName && (
+            <RecordItem>
+              <Label>진료 내역</Label>
+              <HospitalRecordValue>
+                <RecordRow>
+                  <ListTitle>진단명</ListTitle>
+                  <RecordText>{recordData?.diagnosisName || ''}</RecordText>
+                </RecordRow>
+                <RecordRow>
+                  <ListTitle>검사 및 처방 내역</ListTitle>
+                  <RecordText>{recordData?.prescription || ''}</RecordText>
+                </RecordRow>
+              </HospitalRecordValue>
+            </RecordItem>
+          )}
+          <ButtonContainer>
+            <DesktopAddButton selectedDate={selectedDate} />
+            <DeleteButton onClick={() => handleDelete()}>삭제하기</DeleteButton>
+          </ButtonContainer>
+        </HealthRecord>
+        <MobileAddButton selectedDate={selectedDate} />
+      </Container>
+    </ContainerWrapper>
   );
 };
 
 export default PastRecordPage;
 
 // Styled Components
+
+const Banner = styled.img`
+  width: 100vw;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
+const ContainerWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 const Container = styled.div`
   padding: 0 25px;
@@ -189,6 +296,9 @@ const Title = styled.h1`
   font-size: 22px;
   font-weight: 600;
   margin: 34px 0 36px;
+  @media only screen and (min-width: 800px) {
+    font-size: 26px;
+  }
 `;
 
 const Line = styled.hr`
@@ -259,13 +369,14 @@ const DayLabel = styled.div`
   padding: 8px;
 `;
 
-const DateNumber = styled.div<{ isSelected: boolean }>`
+const DateNumber = styled.div<{ isSelected: boolean; isFuture: boolean }>`
   width: 38px;
   height: 38px;
   line-height: 38px;
   border-radius: 50%;
   background: ${({ isSelected }) => (isSelected ? '#6EA8FE' : 'transparent')};
-  color: ${({ isSelected }) => (isSelected ? '#FFFFFF' : '#737373')};
+  color: ${({ isSelected, isFuture }) =>
+    isSelected ? '#fff' : isFuture ? '#6a6a6d' : '#D5D5D6'};
   text-align: center;
   position: relative;
 `;
@@ -356,4 +467,27 @@ const RecordText = styled.p`
   font-weight: 600;
   font-size: 14px;
   color: #262627;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+`;
+
+const DeleteButton = styled.button`
+  background-color: #c76b6b;
+  color: white;
+  height: 48px;
+  font-family: 'Pretendard';
+  font-weight: 600;
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  @media only screen and (min-width: 800px) {
+    width: 197px;
+  }
 `;

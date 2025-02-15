@@ -8,8 +8,8 @@ interface SelectableButtonProps {
     label: string;
     icon: string;
   }[];
-  selectedOption: number | null;
-  onSelect: (name: string, value: number) => void;
+  selectedOption: string | null;
+  onSelect: (name: string, value: string) => void;
 }
 
 const SelectableButton: React.FC<SelectableButtonProps> = ({
@@ -20,17 +20,18 @@ const SelectableButton: React.FC<SelectableButtonProps> = ({
 }) => {
   return (
     <ButtonGroup>
-      {options.map((option) => (
-        <Item key={option.id} onClick={() => onSelect(name, option.id)}>
-          <IconWrapper isSelected={selectedOption === option.id}>
-            <Icon src={option.icon} alt={option.label} />
-          </IconWrapper>
-
-          <Label isSelected={selectedOption === option.id}>
-            {option.label}
-          </Label>
-        </Item>
-      ))}
+      {options.map((option) => {
+        return (
+          <Item key={option.id} onClick={() => onSelect(name, option.label)}>
+            <IconWrapper isSelected={selectedOption === option.label}>
+              <Icon src={option.icon} alt={option.label} />
+            </IconWrapper>
+            <Label isSelected={selectedOption === option.label}>
+              {option.label}
+            </Label>
+          </Item>
+        );
+      })}
     </ButtonGroup>
   );
 };

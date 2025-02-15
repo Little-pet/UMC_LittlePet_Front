@@ -50,16 +50,17 @@ export default SettingsPage;
 // 스타일링
 const Container = styled.div`
   width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
   font-family: 'Pretendard';
+  display: flex;
+  flex-direction: column;
+  gap: 29px;
 `;
 
 const Section = styled.div`
-  margin-bottom: 32px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
 `;
 
 const SectionTitle = styled.div`
