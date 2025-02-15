@@ -1,19 +1,10 @@
-<<<<<<< HEAD
-import ChallengeCard from '@components/Community/challengeCard';
-import ChallengeItem from '@components/Community/challengeItem';
-=======
 import ChallengeCard from '#/components/Community/challengeCard';
 import ChallengeItem from '#/components/Community/challengeItem';
->>>>>>> develop
 import styled from 'styled-components';
 import MobileAddButton from '@components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import banner from '@assets/챌린지 배너.svg';
-=======
 import banner from '#/assets/banner/챌린지 배너.svg';
->>>>>>> develop
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'popular' | 'new'>('popular');
   const navigate = useNavigate();

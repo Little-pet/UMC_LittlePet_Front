@@ -31,7 +31,7 @@ import HealthRootLayout from '#/layout/HealthRootLayout';
 import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
 import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
-import CalendarPage from '#/pages/Health/Record/CalenderPage';
+import CalendarPage from '#/pages/Health/Record/CalendarPage';
 import CareMethodPage from '#/pages/CareMethod/CareMethod';
 import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';

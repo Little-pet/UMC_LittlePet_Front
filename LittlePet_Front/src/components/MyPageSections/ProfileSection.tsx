@@ -40,16 +40,6 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
         <Nickname>{user.name}</Nickname>
         {/* 반려동물 등록 정보 */}
         <PetList>
-<<<<<<< HEAD
-          {pets.map((pet, index) => (
-            <PetItem key={pet.id}>
-              <AnimalIcon src={animalIcon} alt={pet.category} />
-              {pet.category}
-              <GenderIcon gender={pet.gender as 'female' | 'male'}>
-                {pet.gender === 'female' ? '♀' : '♂'}
-              </GenderIcon>
-              {index < pets.length - 1 && <Separator>·</Separator>}
-=======
           {distinctCategories.map((category: string, index) => (
             <PetItem key={category}>
               <AnimalIcon src={getAnimalIcon(category)} alt={category} />
@@ -57,7 +47,6 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
               {index < distinctCategories.length - 1 && (
                 <Separator>·</Separator>
               )}
->>>>>>> develop
             </PetItem>
           ))}
         </PetList>
