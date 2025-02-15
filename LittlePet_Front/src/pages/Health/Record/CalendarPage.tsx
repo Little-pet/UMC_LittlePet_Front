@@ -83,26 +83,6 @@ const CalendarPage: React.FC = () => {
     });
   };
 
-<<<<<<< HEAD
-        <CalendarGrid>
-          {daysOfWeek.map((day, index) => (
-            <DayLabel key={index}>{day}</DayLabel>
-          ))}
-          {monthlyDates.map((date, index) => (
-            <DateItem
-              key={index}
-              isSelected={dayjs(selectedDate).isSame(date, 'day')}
-              isCurrentMonth={date.month() === currentMonth.month()}
-              onClick={() => setSelectedDate(date)}
-            >
-              <DateNumber>{date.date()}</DateNumber>
-            </DateItem>
-          ))}
-        </CalendarGrid>
-      </CalendarContainer>
-      <MobileAddButton selectedDate={selectedDate} />
-    </Container>
-=======
   return (
     <ContainerWrapper>
       <Banner src={banner} />
@@ -144,7 +124,6 @@ const CalendarPage: React.FC = () => {
         <MobileAddButton selectedDate={selectedDate} />
       </Container>
     </ContainerWrapper>
->>>>>>> develop
   );
 };
 
