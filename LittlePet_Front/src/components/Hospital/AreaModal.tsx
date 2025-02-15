@@ -51,6 +51,8 @@ const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect }) => {
         (position) => {
           const { latitude, longitude } = position.coords;
           console.log('User Location:', latitude, longitude);
+          setSelectedArea('서초구'); // 선택된 지역 업데이트
+          onSelect('서초구', 22);
         },
         (error) => {
           console.error('Error getting location:', error);

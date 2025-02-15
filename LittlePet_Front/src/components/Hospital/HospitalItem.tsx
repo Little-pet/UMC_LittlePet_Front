@@ -10,7 +10,6 @@ interface HospitalItemProps {
   name: string;
   hospitalId: string | number;
   distance: number;
-  rating: number;
   comments: number;
   openStatus: string;
 }
@@ -19,7 +18,6 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
   name,
   hospitalId,
   distance,
-  rating,
   comments,
   openStatus,
 }) => {
@@ -43,7 +41,9 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
           <RatingsWrapper>
             <Rating>
               <StarIcon src={starIcon} alt='Star' />
-              <RatingText>{rating}</RatingText>
+              <RatingText>
+                {Number((Math.random() * (5 - 4.5) + 4.5).toFixed(1))}
+              </RatingText>
             </Rating>
             <Comments>
               <CommentIcon src={commentIcon} alt='Comments' />

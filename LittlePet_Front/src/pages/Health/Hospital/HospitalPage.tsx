@@ -125,7 +125,6 @@ const HospitalPage: React.FC = () => {
               name={item.name}
               hospitalId={item.id}
               distance={512}
-              rating={Number((Math.random() * (5 - 4.5) + 4.5).toFixed(1))}
               comments={0}
               openStatus={item.closedDay}
             />
