@@ -37,19 +37,8 @@ const LoginPage: React.FC = () => {
 
   // 로그인 페이지 로드 시 로그인 상태 확인
   useEffect(() => {
-    console.log('useEffect 실행됨됨');
-
-    // 현재 URL에서 로그인 후 돌아온 URL인지 확인
-    const urlParams = new URLSearchParams(window.location.search);
-    const loginSuccess = urlParams.get('login_success');
-
-    if (loginSuccess) {
-      console.log('✅ 로그인 성공! 상태 확인 중...');
-      checkLoginStatus();
-    } else {
-      console.log('🔵 일반 로그인 상태 확인');
-      checkLoginStatus();
-    }
+    console.log(' useEffect 실행됨!');
+    checkLoginStatus(); // 항상 실행되도록 변경
   }, []);
 
   // 카카오 로그인 요청 핸들러
@@ -61,7 +50,7 @@ const LoginPage: React.FC = () => {
   // 네이버 로그인 요청 핸들러
   const handleNaverLogin = () => {
     // 백엔드의 네이버 로그인 엔드포인트로 리다이렉트
-    console.log('✅ 네이버 로그인 버튼 클릭됨!');
+
     window.location.href =
       'https://umclittlepet.shop/oauth2/authorization/naver';
   };
