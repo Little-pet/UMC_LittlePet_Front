@@ -27,6 +27,7 @@ jobs:
       # 3. Vite React 프로젝트 빌드
       - name: Install dependencies and build (Vite)
         run: |
+          cd LittlePet_Front
           corepack enable
           yarn install
           yarn build
