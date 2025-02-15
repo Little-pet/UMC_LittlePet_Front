@@ -9,7 +9,7 @@ import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
-  onIdSelect: (id: number) => void;
+  onIdSelect?: (id: number) => void;
 }
 
 //  동물별 아이콘을 매칭하는 객체 생성

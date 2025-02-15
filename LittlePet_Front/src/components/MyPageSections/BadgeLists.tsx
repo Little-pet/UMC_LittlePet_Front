@@ -11,6 +11,7 @@ interface Badge {
 
 interface BadgeProps {
   badges: Badge[];
+  isLoading: boolean;
 }
 
 const badgeIconMapping: { [key: string]: string } = {
@@ -20,7 +21,8 @@ const badgeIconMapping: { [key: string]: string } = {
   챌린저: ChallengerBadge,
 };
 
-const BadgeComponent: React.FC<BadgeProps> = ({ badges }) => {
+const BadgeComponent: React.FC<BadgeProps> = ({ badges, isLoading }) => {
+  if (isLoading) return <LoadingMessage>로딩 중...</LoadingMessage>;
   return (
     <BadgeContainer>
       <Title>나의 업적</Title>
@@ -62,4 +64,9 @@ const BadgeList = styled.div`
 const BadgeIcon = styled.img`
   height: 15px;
   width: auto;
+`;
+
+const LoadingMessage = styled.p`
+  font-size: 18px;
+  margin-top: 50px;
 `;
