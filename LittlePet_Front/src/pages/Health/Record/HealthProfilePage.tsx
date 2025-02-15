@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePetStore } from '#/context/petStore';
+import { useAuthStore } from '#/context/AuthStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -13,7 +14,6 @@ import rabbit from '@assets/animaldropdown/rabbit.svg';
 import hamster from '@assets/animaldropdown/hamster.svg';
 import hedgehog from '@assets/animaldropdown/hedgehog.svg';
 import banner from '@assets/banner/banner-health.svg';
-
 import { getFormattedDate } from '@utils/dateUtils';
 
 /* API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
@@ -30,6 +30,7 @@ const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
 
   const { pets, fetchPets, selectedPet, selectPet } = usePetStore();
+  const { isLoggedIn, userId, checkLoginStatus } = useAuthStore();
   const [loading, setLoading] = useState(true);
   const [selectedPetDetails, setSelectedPetDetails] = useState<{
     gender?: string;
@@ -37,9 +38,8 @@ const HealthProfile: React.FC = () => {
     petCategory?: string;
   } | null>(null);
 
-  const userId = 4;
-
   useEffect(() => {
+    checkLoginStatus();
     fetchPets(userId);
     console.log(usePetStore.getState().pets);
   }, [userId]);
@@ -222,7 +222,15 @@ const HealthProfile: React.FC = () => {
               <br />
               반려 소동물을 등록해볼까요?
             </EmptyText>
-            <RegisterButton onClick={() => navigate('/pet-register')}>
+            <RegisterButton
+              onClick={() => {
+                if (!isLoggedIn) {
+                  navigate('/login'); // 로그인 안한 유저는 로그인 페이지로 이동
+                } else {
+                  navigate('/pet-register');
+                } // 로그인한 유저는 반려동물 등록 페이지로 이동
+              }}
+            >
               나의 반려 소동물 등록하기
             </RegisterButton>
           </EmptyState>
