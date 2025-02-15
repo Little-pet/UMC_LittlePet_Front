@@ -4,7 +4,7 @@ import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import logo from '@assets/Logo.svg';
+import logo from '@assets/logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
