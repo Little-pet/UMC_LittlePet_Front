@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Banner from '@assets/이벤트-광고 배너.svg';
+import Banner from '@assets/banner/이벤트-광고 배너.svg';
 
 const Carousel: React.FC = () => {
   return <CarouselWrapper src={Banner} alt='광고배너' />;

@@ -4,7 +4,7 @@ import 고슴도치 from '#/assets/고슴도치.png';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState } from 'react';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
-import banner from '#/assets/일상 배너.svg';
+import banner from '#/assets/banner/일상 배너.svg';
 import styled from 'styled-components';
 import {
   Container,

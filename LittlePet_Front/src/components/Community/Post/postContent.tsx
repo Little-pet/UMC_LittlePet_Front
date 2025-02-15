@@ -5,8 +5,13 @@ import animalIcon from '#/assets/동물 아이콘.svg';
 import vectorIcon from '#/assets/Vector.svg';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import DeleteModal from './DeleteModal';
+=======
+import React, { useState, useEffect } from 'react';
+import DeleteModal from '#/components/DeleteModal';
+>>>>>>> develop
 
 interface PostContentProps {
   title: string;

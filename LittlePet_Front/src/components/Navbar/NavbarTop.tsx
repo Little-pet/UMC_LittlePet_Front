@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
-import logoBlack from '#/assets/logo.svg';
+import logoBlack from '#/assets/Logo.svg';
 import hamburger from '#/assets/hamburger.svg';
 import close from '#/assets/close.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
@@ -141,6 +141,7 @@ const MenuItem = styled.li`
   list-style: none;
   @media (min-width: 768px) {
     font-size: 22px;
+    font-weight: 600;
   }
 `;
 
@@ -150,7 +151,7 @@ const MenuLink = styled.a<{ isActive: boolean }>`
   cursor: pointer;
   font-family: 'Pretendard-Medium';
   text-decoration: none;
-  color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
+  color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
 `;
 
 /*  PC에서는 항상 보이고, 모바일에서는 open 상태일 때 숨김 */
