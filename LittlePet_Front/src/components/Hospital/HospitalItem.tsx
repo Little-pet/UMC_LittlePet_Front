@@ -1,28 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
 import commentIcon from '#/assets/댓글.svg';
 import { Link } from 'react-router-dom';
-
+import { useHospitalStore } from '#/context/hospitalStore';
 interface HospitalItemProps {
   imageSrc: string;
   name: string;
   hospitalId: string | number;
-  distance: number;
-  rating: number;
   comments: number;
   openStatus: string;
+  rating: number;
 }
 const HospitalItem: React.FC<HospitalItemProps> = ({
   imageSrc,
   name,
   hospitalId,
-  distance,
-  rating,
   comments,
   openStatus,
+  rating,
 }) => {
+  const { fetchScrappedHospitals, scrappedHospitals } = useHospitalStore();
+  useEffect(() => {
+    fetchScrappedHospitals(4);
+  }, [hospitalId, fetchScrappedHospitals]);
+  if (!scrappedHospitals) return <div>Loading...</div>;
+  const isFavorited = scrappedHospitals.some(
+    (hospital) => hospital.name === name
+  );
   return (
     <Container>
       <ContentWrapper to={`/health/hospital/${hospitalId}`}>
@@ -30,7 +36,6 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
         <Details>
           <Header>
             <HospitalName>{name}</HospitalName>
-            <Distance>{distance}m</Distance>
           </Header>
           <RatingsWrapper>
             <Rating>
@@ -45,7 +50,7 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
           <OpenStatus>{openStatus}</OpenStatus>
         </Details>
       </ContentWrapper>
-      <FavoriteButton />
+      <FavoriteButton isSelected={isFavorited} hospitalId={hospitalId} />
     </Container>
   );
 };
@@ -92,12 +97,6 @@ const HospitalName = styled.div`
   font-size: 18px;
   font-family: Pretendard-SemiBold;
   color: black;
-`;
-
-const Distance = styled.div`
-  font-size: 12px;
-  font-family: Pretendard-Medium;
-  color: #737373;
 `;
 
 const RatingsWrapper = styled.div`

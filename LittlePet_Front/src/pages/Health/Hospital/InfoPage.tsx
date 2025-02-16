@@ -2,8 +2,11 @@ import styled from 'styled-components';
 import clockIcon from '#/assets/진료시간 아이콘.svg';
 import callIcon from '#/assets/전화.svg';
 import boardIcon from '#/assets/연중무휴 아이콘.svg';
-
+import { useHospitalStore } from '#/context/hospitalStore';
 const InfoPage = () => {
+  const { hospitalDetail } = useHospitalStore();
+
+  if (!hospitalDetail) return <div>Loading...</div>;
   return (
     <Details>
       <Title>병원 정보</Title>
@@ -14,7 +17,7 @@ const InfoPage = () => {
       </Box>
       <Box>
         <img src={boardIcon} />
-        <Text>연중 무휴</Text>
+        <Text>{hospitalDetail.closedDay}</Text>
       </Box>
       <Box>
         <img src={callIcon} />

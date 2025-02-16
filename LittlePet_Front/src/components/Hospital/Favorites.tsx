@@ -2,14 +2,25 @@
 import styled from 'styled-components';
 import FavoriteBlankIcon from '#/assets/favorite_blank.svg';
 import FavoriteFullIcon from '#/assets/favorite_full.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useHospitalStore } from '#/context/hospitalStore';
 
 // 카테고리에 있는 검색 버튼
-const FavoriteButton = () => {
-  const [selected, setSelected] = useState(false);
+const FavoriteButton = ({ isSelected, hospitalId }) => {
+  const [selected, setSelected] = useState(isSelected);
+  const { scrapHospital, unscriptHospital } = useHospitalStore();
+  useEffect(() => {
+    setSelected(isSelected);
+  }, [isSelected]);
   const handleClick = () => {
+    if (selected === true) {
+      unscriptHospital(hospitalId, 4);
+    } else {
+      scrapHospital(hospitalId, 4);
+    }
     setSelected((prev) => !prev); // 상태를 토글
   };
+
   return (
     <Container onClick={handleClick}>
       <img

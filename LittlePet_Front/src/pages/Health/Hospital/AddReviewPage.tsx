@@ -46,11 +46,13 @@ const AddReviewPage = () => {
           </div>
           <img src={addIcon} />
         </AddContainer>
+
         <ReviewTextArea
           onChange={(e) => setContet(e.target.value)}
           value={content}
           placeholder='리뷰를 작성해 주세요'
         />
+
         {valid === true ? (
           <ButtonWrapper>
             <SubmitButton type='submit'>
@@ -81,6 +83,9 @@ const AddReviewPage = () => {
   );
 };
 export default AddReviewPage;
+const TextArea = styled.div`
+  width: 100%;
+`;
 const StarButton = styled.div`
   display: flex;
   gap: 5px;
@@ -104,6 +109,7 @@ const Container = styled.div`
 const ReviewTextArea = styled.textarea`
   border-radius: 15px;
   color: #737373;
+  width: 100%
   resize: none;
   font-size: 12px;
   font-family: Pretendard-Medium;

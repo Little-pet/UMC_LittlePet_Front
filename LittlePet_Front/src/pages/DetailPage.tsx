@@ -1,84 +1,79 @@
-import React from 'react';
-//import { useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import PostContent from '#/components/Community/Post/postContent';
 import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
+import { useCommunityStore } from '#/context/CommunityStore';
+import { useUserStore } from '#/context/UserStore';
 
-// CommentList의 높이를 어떻게 고정시킬껀지는 생각해봐야겠다..
 const DetailPage: React.FC = () => {
-  //const { postId } = useParams<{ postId: string }>();
-  // 추후 백엔드와 연결
-  /*  const { data, isLoading, isError } = useQuery({
-    queryFn: () => useGetDetail({ postId }),
-    queryKey: ['postDetail', postId],
-  }); */
+  const { postId } = useParams<{ postId: string }>();
+  const numericPostId = Number(postId);
+  const { fetchPost, isLoading, currentPost } = useCommunityStore();
+  const { user, pets } = useUserStore();
+  const { state } = useLocation();
+  const { category, type } = state || {};
+  useEffect(() => {
+    fetchPost(numericPostId);
+  }, [numericPostId]);
 
+  if (isLoading) return <div>Loading...</div>;
+  if (!currentPost) return <div>No data available</div>;
+  const data = currentPost;
   return (
     <Container>
       <PostContent
-        title='토끼가 어느 순간부터 사료를 먹지 않아요..'
-        author='천혜향'
-        badgeType='challenge'
-        animal='토끼'
+        title={data.postTitle}
+        author={data.userName}
+        badgeType={data.userBadges}
+        animal={data.petCategory}
         gender='male'
-        date='2024.12.23'
-        time='12:52'
-        footerData={['896', '8', '17']}
-        description='원래 매우 잘 먹던 아이가 한 일주일 정도 지났나.. 사료를 안 먹네요. 이렇게 두다가는 굶을까봐 간식을 줬는데 간식은 또 잘 먹더라구요...'
-        likeCount={11}
+        time={data.updatedTime}
+        footerData={[data.views, data.likes, data.commentNum]}
+        contents={data.contents}
+        likeCount={data.likes}
+        id={data.id}
+        category={category}
+        categoryType={type}
       />
       <CommentHeader>
         <Title>전체 댓글&nbsp;</Title>
-        <Count>[29]</Count>
+        <Count>{`[${data.commentNum}]`}</Count>
       </CommentHeader>
       <CommentList>
-        <Comment
-          userName='감초'
-          animal='햄스터'
-          gender='male'
-          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
-          date='2025.01.15'
-          time='13:01'
-        />
-        <Comment
-          userName='감초'
-          animal='햄스터'
-          gender='male'
-          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
-          date='2025.01.15'
-          time='13:01'
-        />
-        <Reply
-          userName='천혜향'
-          animal='토끼'
-          gender='female'
-          content='헉... 그런가요..ㅠㅠ 건초를 줘도 안 먹더라구요... 간식만 먹어요 오직 간식만....저도 어떻게 해야할지 모르겠네요.'
-          date='2025.01.15'
-          time='13:01'
-        />
-        <Comment
-          userName='감초'
-          animal='햄스터'
-          gender='male'
-          content='사료를 먹지 않는다고 간식을 계속 주는 건 좋지 않은 것 같아요... 건초는 주셨나요?'
-          date='2025.01.15'
-          time='13:01'
-        />
-        <Reply
-          userName='천혜향'
-          animal='토끼'
-          gender='female'
-          content='헉... 그런가요..ㅠㅠ 건초를 줘도 안 먹더라구요... 간식만 먹어요 오직 간식만....저도 어떻게 해야할지 모르겠네요.'
-          date='2025.01.15'
-          time='13:01'
-        />
+        {data.comments.map((comment, idx) => (
+          <React.Fragment key={idx}>
+            <Comment
+              key={idx}
+              parent={idx}
+              userName={comment.name}
+              animal={comment.userPets[0]}
+              gender='male'
+              content={comment.content}
+              time={comment.updatedTime}
+              postId={numericPostId}
+            />
+            {comment.replies.length > 0 &&
+              comment.replies.map((reply, replyIdx) => (
+                <Reply
+                  key={replyIdx}
+                  parent={idx}
+                  userName={reply.name}
+                  animal={reply.userPets[0]}
+                  gender='female'
+                  content={reply.content}
+                  time={reply.createdTime}
+                />
+              ))}
+          </React.Fragment>
+        ))}
       </CommentList>
       <CommentHeader>
         <Title>댓글 쓰기</Title>
       </CommentHeader>
-      <CommentWriteBox />
+      <CommentWriteBox postId={data.id} />
     </Container>
   );
 };

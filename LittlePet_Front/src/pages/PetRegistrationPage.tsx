@@ -36,7 +36,7 @@ const PetRegistrationPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'ELSE',
+      gender: 'OTHER',
       title: '기타',
       icon: null,
     },
@@ -53,10 +53,9 @@ const PetRegistrationPage: React.FC = () => {
   void {} as Pet;
 
   const handleSave = async () => {
-    const endpoint = '/users/4/pets';
     const petProfileRequest = {
       name,
-      birthDay: birthDate,
+      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
       gender: tagSelected,
       categorySpecies: categoryText,
     };
@@ -74,7 +73,7 @@ const PetRegistrationPage: React.FC = () => {
     console.log(profileImage);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + endpoint,
+        `https://umclittlepet.shop/api/users/4/pets`,
         formData,
         {
           headers: {
