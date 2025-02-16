@@ -161,7 +161,7 @@ const CardContainer = styled(Link)<{ bgImage?: string }>`
   background-image: url(${(props) => props.bgImage});
   background-size: cover;
   background-position: center;
-  z-index: -2;
+  z-index: 1;
   flex-shrink: 0; /* 카드가 축소되지 않도록 설정 */
   overflow: hidden;
   &::after {

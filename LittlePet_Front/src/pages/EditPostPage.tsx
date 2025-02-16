@@ -70,21 +70,21 @@ const EditPostPage: React.FC = () => {
       title: '챌린지',
     },
   ];
-  useEffect(() => {
-    if (contents && Array.isArray(contents)) {
-      // 텍스트와 이미지 데이터를 순서대로 HTML로 변환
-      const formattedContent = contents
-        .map((item) => {
-          if (item.content.startsWith('http')) {
-            return `<img src="${item.content}" alt="uploaded image"/>`;
-          }
-          return `<p>${item.content}</p>`;
-        })
-        .join('');
-
-      setContent(formattedContent);
+  // URL을 File로 변환하는 함수
+  const convertURLtoFile = async (url: string): Promise<File> => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const fileName = url.split('/').pop() || 'image.jpg';
+      return new File([blob], fileName, { type: blob.type });
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      throw error;
     }
-  }, [contents]);
+  };
 
   const initialState = {
     title: initialTitle,
@@ -99,8 +99,8 @@ const EditPostPage: React.FC = () => {
           )
           .join('')
       : '',
+    postImgs: [] as ImageData[],
   };
-
   // 태그 클릭
   const handleTagClick = (tag: Tag) => {
     setTagSelected(tag);
@@ -113,7 +113,37 @@ const EditPostPage: React.FC = () => {
       htmlContent.match(/<img [^>]*src=["'][^"']*["'][^>]*>/g) || [];
     return imgTags.length;
   };
+  useEffect(() => {
+    if (contents && Array.isArray(contents)) {
+      // 텍스트와 이미지 데이터를 순서대로 HTML로 변환
+      const formattedContent = contents
+        .map((item) => {
+          if (item.content.startsWith('http')) {
+            return `<img src="${item.content}" alt="uploaded image"/>`;
+          }
+          return `<p>${item.content}</p>`;
+        })
+        .join('');
 
+      setContent(formattedContent);
+    }
+    const convertImages = async () => {
+      if (contents && Array.isArray(contents)) {
+        const imageItems = contents.filter((item) =>
+          item.content.startsWith('http')
+        );
+        const images: ImageData[] = await Promise.all(
+          imageItems.map(async (item) => ({
+            base64: item.content,
+            file: await convertURLtoFile(item.content),
+          }))
+        );
+        setPostImgs(images);
+      }
+    };
+    convertImages();
+    console.log(postImgs);
+  }, [contents]);
   // 파일 선택 핸들러
   const handleFileChange = () => {
     //input type= file DOM을 만든다.

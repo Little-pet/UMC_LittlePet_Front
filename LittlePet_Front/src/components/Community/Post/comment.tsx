@@ -2,17 +2,23 @@ import styled from 'styled-components';
 import hamsterIcon from '#/assets/hamster.svg';
 import rabbitIcon from '#/assets/rabbit.svg';
 import hedgehogIcon from '#/assets/hedgehog.svg';
+import CommentWriteBox from './commentWriteBox';
+import react, { useState } from 'react';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
+  postId: number;
+  parent: number;
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
   animal,
   content,
   time,
+  postId,
+  parent,
 }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
@@ -24,6 +30,8 @@ const Comment: React.FC<CommentProps> = ({
         return hedgehogIcon;
     }
   };
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   return (
     <CommentContainer>
       <Header>
@@ -43,8 +51,9 @@ const Comment: React.FC<CommentProps> = ({
       <Content>{content}</Content>
       <Footer>
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
-        <ReplyButton>답글 쓰기</ReplyButton>
+        <ReplyButton onClick={() => setIsOpen(!isOpen)}>답글 쓰기</ReplyButton>
       </Footer>
+      {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
     </CommentContainer>
   );
 };

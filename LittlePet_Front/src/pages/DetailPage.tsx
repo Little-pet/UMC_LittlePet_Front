@@ -9,14 +9,15 @@ import { useCommunityStore } from '#/context/CommunityStore';
 import { useUserStore } from '#/context/UserStore';
 
 const DetailPage: React.FC = () => {
-  const { postId } = useParams<{ postId: number }>();
+  const { postId } = useParams<{ postId: string }>();
+  const numericPostId = Number(postId);
   const { fetchPost, isLoading, currentPost } = useCommunityStore();
   const { user, pets } = useUserStore();
   const { state } = useLocation();
   const { category, type } = state || {};
   useEffect(() => {
-    fetchPost(postId);
-  }, [postId]);
+    fetchPost(numericPostId);
+  }, [numericPostId]);
 
   if (isLoading) return <div>Loading...</div>;
   if (!currentPost) return <div>No data available</div>;
@@ -45,16 +46,20 @@ const DetailPage: React.FC = () => {
         {data.comments.map((comment, idx) => (
           <React.Fragment key={idx}>
             <Comment
+              key={idx}
+              parent={idx}
               userName={comment.name}
               animal={comment.userPets[0]}
               gender='male'
               content={comment.content}
               time={comment.updatedTime}
+              postId={numericPostId}
             />
             {comment.replies.length > 0 &&
               comment.replies.map((reply, replyIdx) => (
                 <Reply
                   key={replyIdx}
+                  parent={idx}
                   userName={reply.name}
                   animal={reply.userPets[0]}
                   gender='female'
@@ -68,11 +73,7 @@ const DetailPage: React.FC = () => {
       <CommentHeader>
         <Title>댓글 쓰기</Title>
       </CommentHeader>
-      <CommentWriteBox
-        author={user?.name}
-        animal={pets[0]?.petCategory}
-        postId={data.id}
-      />
+      <CommentWriteBox postId={data.id} />
     </Container>
   );
 };

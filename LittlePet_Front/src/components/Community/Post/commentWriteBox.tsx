@@ -4,8 +4,9 @@ import hamsterIcon from '#/assets/hamster.svg';
 import rabbitIcon from '#/assets/rabbit.svg';
 import hedgehogIcon from '#/assets/hedgehog.svg';
 import axios from 'axios';
+import { useUserStore } from '#/context/UserStore';
 // 실제 댓글 작성 컴포넌트
-const CommentWriteBox: React.FC = ({ author, animal, postId }) => {
+const CommentWriteBox: React.FC = ({ postId, parentId }) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
   const isTextValid =
@@ -23,7 +24,10 @@ const CommentWriteBox: React.FC = ({ author, animal, postId }) => {
         return hedgehogIcon;
     }
   };
-
+  const { user, pets, isLoading } = useUserStore();
+  console.log(parentId);
+  const author = user?.name;
+  const animal = pets[0]?.petCategory;
   const userId = 4;
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +39,7 @@ const CommentWriteBox: React.FC = ({ author, animal, postId }) => {
       content: commentText,
       userId: userId, // 실제 유저 ID
       postId: postId,
+      parentId: parentId || null,
     };
     console.log(requestBody);
     try {
@@ -49,7 +54,7 @@ const CommentWriteBox: React.FC = ({ author, animal, postId }) => {
         }
       );
       console.log('댓글 작성 성공', response.data);
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.error('댓글 작성 실패:', error);
     }

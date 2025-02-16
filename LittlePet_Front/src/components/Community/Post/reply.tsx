@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import animalIcon from '#/assets/동물 아이콘.svg';
+import { AnimalIcons } from '#/components/icon';
 import femaleIcon from '#/assets/성별여자.svg';
 import maleIcon from '#/assets/성별남자.svg';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
@@ -21,11 +21,19 @@ const Reply: React.FC<ReplyProps> = ({
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
-        return hamsterIcon;
+        return AnimalIcons.hamster;
       case '토끼':
-        return rabbitIcon;
+        return AnimalIcons.rabbit;
       case '고슴도치':
-        return hedgehogIcon;
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
     }
   };
   return (
