@@ -1,8 +1,6 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import styled from 'styled-components';
-import hamsterIcon from '#/assets/hamster.svg';
-import rabbitIcon from '#/assets/rabbit.svg';
-import hedgehogIcon from '#/assets/hedgehog.svg';
+import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/context/UserStore';
 // 실제 댓글 작성 컴포넌트
@@ -17,11 +15,19 @@ const CommentWriteBox: React.FC = ({ postId, parentId }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
-        return hamsterIcon;
+        return AnimalIcons.hamster;
       case '토끼':
-        return rabbitIcon;
+        return AnimalIcons.rabbit;
       case '고슴도치':
-        return hedgehogIcon;
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
     }
   };
   const { user, pets, isLoading } = useUserStore();

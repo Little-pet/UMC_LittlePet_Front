@@ -32,6 +32,7 @@ interface CommunityStore {
   fetchPost: (postId: number) => Promise<void>;
   // 커뮤니티 게시물 삭제
   deletePost: (postId: number) => Promise<void>;
+  fetchPopularPosts: () => Promise<void>;
 }
 
 export const useCommunityStore = create<CommunityStore>((set, get) => ({

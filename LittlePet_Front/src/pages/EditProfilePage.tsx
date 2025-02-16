@@ -52,21 +52,23 @@ const EditProfilePage: React.FC = () => {
 
   useEffect(() => {
     if (info) {
-      setName(info.nickname);
-      setPhone(info.phone);
-      setBio(info.introduction);
-      setPreviewImage(info.profilePhoto);
+      setName(info.nickname || '');
+      setPhone(info.phone || '');
+      setBio(info.introduction || '');
+      setPreviewImage(info.profilePhoto || '');
     }
   }, [info]);
   // 변경 사항 감지
   useEffect(() => {
+    if (!info) return; // info가 null이면 실행하지 않음
+
     setIsModified(
       name !== info.nickname ||
         phone !== info.phone ||
         bio !== info.introduction ||
-        previewImage !== info.profilePhoto
+        previewImage !== info.profilePhoto // profileImage 대신 previewImage 사용
     );
-  }, [name, phone, bio, profileImage]);
+  }, [name, phone, bio, previewImage, info]);
 
   // 입력값 핸들링 함수
   const handleInputChange =
