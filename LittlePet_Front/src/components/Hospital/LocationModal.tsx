@@ -25,7 +25,6 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
       <ContentContainer>
         <LocationHeader>
           <LocationName>{info.name}</LocationName>
-          <Distance>512m</Distance>
         </LocationHeader>
         <Address>{info.address}</Address>
       </ContentContainer>
@@ -83,12 +82,6 @@ const LocationHeader = styled.div`
 const LocationName = styled.div`
   font-size: 18px;
   font-family: 'Pretendard-SemiBold';
-`;
-
-const Distance = styled.div`
-  font-size: 12px;
-  font-family: 'Pretendard-Medium';
-  color: #737373;
 `;
 
 const Address = styled.div`
