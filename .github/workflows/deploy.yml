@@ -26,6 +26,7 @@ jobs:
 
       # 3. Vite React 프로젝트 빌드
       - name: Install dependencies and build (Vite)
+        working-directory: LittlePet_Front
         run: |
           corepack enable
           yarn install
@@ -42,8 +43,8 @@ jobs:
       - name: Docker Image Build & Push
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: Dockerfile
+          context: ./LittlePet_Front
+          file: ./LittlePet_Front/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/littlepet-frontend:latest
 

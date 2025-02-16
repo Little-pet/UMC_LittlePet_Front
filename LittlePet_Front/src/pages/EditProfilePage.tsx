@@ -22,7 +22,7 @@ const EditProfilePage: React.FC = () => {
   const [profileImage, setProfileImage] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
-  const [info, setInfo] = useState<User>([]);
+  const [info, setInfo] = useState<User | null>(null);
   const userId = 4;
 
   const { data, isLoading } = useQuery({
@@ -38,6 +38,11 @@ const EditProfilePage: React.FC = () => {
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
+
+  if (isLoading) {
+    return <LoadingContainer>로딩 중...</LoadingContainer>;
+  }
+
   // data가 변경될 때만 info 업데이트
   useEffect(() => {
     if (data?.result) {
@@ -357,4 +362,10 @@ const SaveButton = styled.button`
   border-radius: 5px;
   text-align: center;
   margin-top: 89px;
+`;
+
+const LoadingContainer = styled.div`
+  font-size: 18px;
+  text-align: center;
+  margin-top: 50px;
 `;

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 const LoginPage: React.FC = () => {
-  const [isLoggiedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
 
   //로그인 상태 확인
@@ -40,6 +40,11 @@ const LoginPage: React.FC = () => {
     console.log(' useEffect 실행됨!');
     checkLoginStatus(); // 항상 실행되도록 변경
   }, []);
+
+  useEffect(() => {
+    console.log(`현재 로그인 상태: ${isLoggedIn}`);
+    console.log('User 정보', userInfo);
+  }, [isLoggedIn]);
 
   // 카카오 로그인 요청 핸들러
   const handleKakaoLogin = () => {

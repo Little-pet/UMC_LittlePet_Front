@@ -30,7 +30,7 @@ const CareMethodPage: React.FC = () => {
           (category: any) => category.categoryName
         );
         setMainCategories(['전체', ...fetchedCategories]);
-        response.data.result.forEach((category: any) => {});
+        response.data.result.forEach(() => {});
         // 소분류 및 동물 리스트 변환
         const subCategoryMap: { [key: string]: number[] } = { 전체: [] };
         const animalList: {
