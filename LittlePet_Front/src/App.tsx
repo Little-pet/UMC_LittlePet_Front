@@ -35,6 +35,7 @@ import CalendarPage from '#/pages/Health/Record/CalenderPage';
 import CareMethodPage from '#/pages/CareMethod/CareMethod';
 import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
+import EditPostPage from './pages/EditPostPage';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -59,11 +60,16 @@ const router = createBrowserRouter([
           { index: true, element: <QnaPage /> }, // 기본 경로 설정
           { path: 'qna', element: <QnaPage /> },
           { path: 'daily', element: <DailyPage /> },
-          { path: ':postId', element: <DetailPage /> },
+          { path: ':category/:postId', element: <DetailPage /> },
+
           { path: 'challenge', element: <ChallengePage /> },
         ],
       },
       { path: 'community/add', element: <AddPage /> },
+      {
+        path: 'community/:category/:postId/edit-post',
+        element: <EditPostPage />,
+      },
       {
         path: 'health',
         element: <HealthRootLayout />,

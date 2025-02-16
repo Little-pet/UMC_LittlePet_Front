@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { usePets } from '#/context/PetContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
@@ -53,7 +52,7 @@ const EditPetPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'ELSE',
+      gender: 'OTHER',
       title: '기타',
       icon: null,
     },
@@ -104,7 +103,7 @@ const EditPetPage: React.FC = () => {
   const handleSave = async () => {
     const petProfileRequest = {
       name,
-      birthDay: birthDate,
+      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
       gender: tagSelected,
       categorySpecies: categoryText,
     };

@@ -1,23 +1,24 @@
 import styled from 'styled-components';
 import thumbIcon from '#/assets/thumb-up.svg';
 import { useState } from 'react';
-
+import axios from 'axios';
 interface LikeButtonProps {
   count: number; // 초기 좋아요 개수
+  postId: number;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ count }) => {
+const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
   const [likeCount, setLikeCount] = useState<number>(count);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
-  const handleLike = () => {
-    if (isLiked) {
-      // 이미 좋아요를 누른 상태라면 좋아요 해제 => -1
-      setLikeCount((prev) => prev - 1);
-      setIsLiked(false);
-    } else {
-      // 좋아요가 아닌 상태라면 좋아요 => +1
-      setLikeCount((prev) => prev + 1);
-      setIsLiked(true);
+  const userId = 4;
+  const handleLike = async () => {
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + `/like/${userId}/${postId}`
+      );
+      console.log('좋아요 등록/취소 성공:', response.data);
+      window.location.reload();
+    } catch (error) {
+      console.error('좋아요 등록/취소 실패:', error);
     }
   };
   return (

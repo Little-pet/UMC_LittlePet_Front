@@ -3,7 +3,10 @@ import viewIcon from '#/assets/조회수.svg';
 import commentIcon from '#/assets/댓글.svg';
 import heartIcon from '#/assets/좋아요.svg';
 import { Link } from 'react-router-dom';
-
+interface Content {
+  content: string;
+  sequence: number;
+}
 interface ChallengeItemProps {
   postId: number; // 게시물 ID
   title: string; // 게시물 제목
@@ -11,6 +14,9 @@ interface ChallengeItemProps {
   views: number; // 조회수
   likes: number; // 좋아요 수
   comments: number; // 댓글 수
+  contents: Content[];
+  category: string;
+  type: string;
 }
 const ChallengeItem: React.FC<ChallengeItemProps> = ({
   postId,
@@ -19,10 +25,27 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
   views,
   likes,
   comments,
+  contents,
+  category,
+  type,
 }) => {
+  function isImageUrl(url: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  }
+  const getFirstImageContent = (contents) => {
+    for (const item of contents) {
+      if (isImageUrl(item.content)) {
+        return item;
+      }
+    }
+    return null;
+  };
+  const imageContent = getFirstImageContent(contents);
   return (
-    <CardWrapper to={`/community/${postId}`}>
-      <CardBackground />
+    <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
+      <CardBackground
+        bgImage={imageContent ? imageContent.content : undefined}
+      />
       <CardContent>
         <CardTitle>{title}</CardTitle>
         <MetaData>
@@ -80,9 +103,12 @@ const CardWrapper = styled(Link)`
 `;
 
 // 상단 배경
-const CardBackground = styled.div`
+const CardBackground = styled.div<{ bgImage?: string }>`
   height: 61%;
   background-color: #d9d9d9;
+  background-image: url(${(props) => props.bgImage});
+  background-size: cover;
+  background-position: center;
   @media only screen and (min-width: 800px) {
     height: 63%;
   }
