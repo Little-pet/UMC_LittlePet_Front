@@ -13,7 +13,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
   const handleLike = async () => {
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + `/like/${userId}/${postId}`
+        `https://umclittlepet.shop/api/like/${userId}/${postId}`
       );
       console.log('좋아요 등록/취소 성공:', response.data);
       window.location.reload();

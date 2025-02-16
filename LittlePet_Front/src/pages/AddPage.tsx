@@ -188,7 +188,6 @@ const AddPage: React.FC = () => {
       alert('내용을 입력해주세요!');
       return;
     }
-    const endpoint = '/post/4';
     const parsedContents = parseContent(content);
     let imageCounter = 0;
     const updatedContents = parsedContents.map((item) => {
@@ -222,7 +221,7 @@ const AddPage: React.FC = () => {
     console.log(postImgs);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + endpoint,
+        `https://umclittlepet.shop/api/post/4`,
         formData,
         {
           headers: {

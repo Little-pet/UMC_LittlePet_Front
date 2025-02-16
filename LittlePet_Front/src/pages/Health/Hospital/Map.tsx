@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
 import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { useHospitalStore } from '#/context/hospitalStore';
 // 타입 정의
 interface Marker {
   id: number;
@@ -25,13 +26,16 @@ const MapPage: React.FC = () => {
   const [markers, setMarkers] = useState<Marker[]>([]); // 마커 배열
   const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
   const { locationData } = state || {};
+
+  const { hospitalsByRegion } = useHospitalStore();
+  console.log(hospitalsByRegion);
   // 마커의 위치로 지도의 중심 좌표 이동하기
-  const moveLatLng = (data: Marker) => {
-    console.log(data);
-    const newLatLng = new kakao.maps.LatLng(data.y, data.x);
+  const moveLatLng = (x, y) => {
+    const newLatLng = new kakao.maps.LatLng(x, y);
+    map?.setLevel(3);
     map?.panTo(newLatLng);
     const infowindow = new kakao.maps.InfoWindow({
-      position: new kakao.maps.LatLng(data.y, data.x),
+      position: new kakao.maps.LatLng(x, y),
       content: 'open me plz.',
     });
 
@@ -54,7 +58,7 @@ const MapPage: React.FC = () => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
-    ps.keywordSearch(`${locationData} 동물병원`, (data, status) => {
+    ps.keywordSearch(`${locationData}`, (data, status) => {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
@@ -126,19 +130,20 @@ const MapPage: React.FC = () => {
         level={3} // 지도의 확대 레벨
         onCreate={setMap}
       >
-        {markers.map((marker) => (
+        {hospitalsByRegion?.map((marker) => (
           <MapMarker
             key={marker.id}
-            position={{ lat: marker.y, lng: marker.x }}
+            position={{ lat: marker.latitude, lng: marker.longitude }}
             onClick={() => {
               setInfo(marker);
-              moveLatLng(marker);
+              moveLatLng(marker.latitude, marker.longitude);
             }}
           ></MapMarker>
         ))}
       </Map>
       {info && (
         <InfoModal
+          info={info}
           onClose={() => {
             setInfo(null); // 모달 닫을 때 info 초기화
             setIsModalOpen(false);

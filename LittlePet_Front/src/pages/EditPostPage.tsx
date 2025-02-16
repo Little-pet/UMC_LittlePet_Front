@@ -256,7 +256,6 @@ const EditPostPage: React.FC = () => {
       alert('내용을 입력해주세요!');
       return;
     }
-    const endpoint = `/post/${id}`;
     const parsedContents = parseContent(content);
 
     const getFileNameFromUrl = (url: string): string => {
@@ -304,7 +303,7 @@ const EditPostPage: React.FC = () => {
     console.log(postImgs);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + endpoint,
+        `https://umclittlepet.shop/api/post/${id}`,
         formData,
         {
           headers: {

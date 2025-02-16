@@ -75,7 +75,7 @@ export const useCommunityStore = create<CommunityStore>((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/post/${postId}?deviceType=pc`,
+        `https://umclittlepet.shop/api/post/${postId}?deviceType=pc`,
         { withCredentials: true }
       );
       if (response.data.isSuccess) {
@@ -92,7 +92,7 @@ export const useCommunityStore = create<CommunityStore>((set, get) => ({
     set({ isLoading: true });
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/post/${postId}`,
+        `https://umclittlepet.shop/api/post/${postId}`,
         { withCredentials: true }
       );
       if (response.data.isSuccess) {

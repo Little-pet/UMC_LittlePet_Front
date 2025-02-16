@@ -59,6 +59,7 @@ const DailyPage: React.FC = () => {
         <ItemList>
           {posts.map((post, id) => (
             <Item
+              key={id}
               title='일상'
               type='daily'
               postId={post.postId}

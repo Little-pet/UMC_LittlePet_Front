@@ -120,7 +120,7 @@ const EditProfilePage: React.FC = () => {
     } */
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + `/users/${info.userId}`,
+        `https://umclittlepet.shop/api/users/${info.userId}`,
         formData,
         {
           headers: {

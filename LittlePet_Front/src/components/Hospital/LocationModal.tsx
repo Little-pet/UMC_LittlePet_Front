@@ -6,11 +6,10 @@ interface LocationModalProps {
   onClose: () => void; // 모달 닫기 콜백 함수
 }
 const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
-  const openKakaoMap = (la: number, lo: number): void => {
-    const kakaoUrl = `kakaomap://route?ep=${la},${lo}&by=CAR`;
-
+  const openKakaoMap = (name: string, la: number, lo: number): void => {
+    const kakaoUrl = `https://map.kakao.com/link/to/${name},${la},${lo}`;
     // 카카오맵 앱 열기
-    window.location.href = kakaoUrl;
+    window.open(kakaoUrl, '_blank', 'noopener,noreferrer');
   };
   return (
     <Container
@@ -28,7 +27,9 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
         </LocationHeader>
         <Address>{info.address}</Address>
       </ContentContainer>
-      <RouteButton onClick={() => openKakaoMap(info.latitude, info.longitude)}>
+      <RouteButton
+        onClick={() => openKakaoMap(info.name, info.latitude, info.longitude)}
+      >
         길찾기
       </RouteButton>
     </Container>
