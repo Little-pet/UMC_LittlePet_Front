@@ -1,5 +1,5 @@
-import SearchBar from '#/components/SearchBar';
-import Item from '#/components/Community/Item';
+import SearchBar from '#/components/searchBar';
+import Item from '#/components/Community/item';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import React, { useState, useEffect } from 'react';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';

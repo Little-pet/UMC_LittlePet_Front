@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ContentWrapper, ItemList } from '#/components/Community/styles/common';
-import Item from '#/components/Community/Item';
+import Item from '#/components/Community/item';
 import { useCommunityStore } from '#/context/CommunityStore';
 
 const PopularSection: React.FC = () => {
