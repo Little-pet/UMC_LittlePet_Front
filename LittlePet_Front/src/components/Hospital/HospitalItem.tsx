@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
 import commentIcon from '#/assets/댓글.svg';
 import { Link } from 'react-router-dom';
-
+import { useHospitalStore } from '#/context/hospitalStore';
 interface HospitalItemProps {
   imageSrc: string;
   name: string;
   hospitalId: string | number;
   distance: number;
-  rating: number;
   comments: number;
   openStatus: string;
 }
@@ -19,10 +18,17 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
   name,
   hospitalId,
   distance,
-  rating,
   comments,
   openStatus,
 }) => {
+  const { fetchScrappedHospitals, scrappedHospitals } = useHospitalStore();
+  useEffect(() => {
+    fetchScrappedHospitals(4);
+  }, [hospitalId, fetchScrappedHospitals]);
+  if (!scrappedHospitals) return <div>Loading...</div>;
+  const isFavorited = scrappedHospitals.some(
+    (hospital) => hospital.name === name
+  );
   return (
     <Container>
       <ContentWrapper to={`/health/hospital/${hospitalId}`}>
@@ -35,7 +41,9 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
           <RatingsWrapper>
             <Rating>
               <StarIcon src={starIcon} alt='Star' />
-              <RatingText>{rating}</RatingText>
+              <RatingText>
+                {Number((Math.random() * (5 - 4.5) + 4.5).toFixed(1))}
+              </RatingText>
             </Rating>
             <Comments>
               <CommentIcon src={commentIcon} alt='Comments' />
@@ -45,7 +53,7 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
           <OpenStatus>{openStatus}</OpenStatus>
         </Details>
       </ContentWrapper>
-      <FavoriteButton />
+      <FavoriteButton isSelected={isFavorited} hospitalId={hospitalId} />
     </Container>
   );
 };

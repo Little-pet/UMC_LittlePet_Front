@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
@@ -7,12 +7,19 @@ import HospitalItem from '#/components/Hospital/HospitalItem';
 import AreaModal from '#/components/Hospital/AreaModal';
 import HospitalImg from '#/assets/image.png';
 import banner from '@assets/banner/banner-health.svg';
+import { useHospitalStore } from '#/context/hospitalStore';
 
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedArea, setSelectedArea] = useState<string | null>('동대문구');
+  const [selectedArea, setSelectedArea] = useState<string | null>(
+    localStorage.getItem('selectedArea') || '동대문구'
+  );
+  const [areaId, setAreaId] = useState<number>(
+    Number(localStorage.getItem('areaId')) || 6
+  );
   const [view, setView] = useState<boolean>(false);
   const [timeText, setTimeText] = useState<string>('');
+  const [hospitals, setHospitals] = useState();
 
   const times = ['영업중', '24시간', '주말'];
   const filters = [
@@ -33,14 +40,24 @@ const HospitalPage: React.FC = () => {
   const handleClick = (type: string) => {
     setSelected(type);
   };
-  const handleAreaSelect = (area: string) => {
+  const handleAreaSelect = (area: string, code: number) => {
     setSelectedArea(area); // 선택된 지역을 상태로 저장
+    setAreaId(code);
+    localStorage.setItem('selectedArea', area);
+    localStorage.setItem('areaId', code.toString());
   };
 
   const handleTimeClick = (name: string) => {
     setTimeText(name);
     setView(false);
   };
+  const { hospitalsByRegion, fetchHospitalsByRegion } = useHospitalStore();
+
+  useEffect(() => {
+    fetchHospitalsByRegion(areaId);
+  }, [areaId, fetchHospitalsByRegion]);
+
+  if (!hospitalsByRegion) return <div>Loading...</div>;
   return (
     <>
       <Banner src={banner} />
@@ -102,24 +119,16 @@ const HospitalPage: React.FC = () => {
           ))}
         </FilterContainer>
         <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
-          <HospitalItem
-            imageSrc={HospitalImg}
-            name='로얄동물메디컬센터'
-            hospitalId='1'
-            distance={512}
-            rating={4.5}
-            comments={188}
-            openStatus='24시간 영업'
-          />
-          <HospitalItem
-            imageSrc={HospitalImg}
-            name='디아크 동물병원'
-            hospitalId='2'
-            distance={120}
-            rating={5.0}
-            comments={1}
-            openStatus='오전 11:00 ~ 오후 10:00'
-          />
+          {hospitalsByRegion.map((item, idx) => (
+            <HospitalItem
+              imageSrc={HospitalImg}
+              name={item.name}
+              hospitalId={item.id}
+              distance={512}
+              comments={0}
+              openStatus={item.closedDay}
+            />
+          ))}
         </div>
         {isModalOpen && (
           <Overlay>
