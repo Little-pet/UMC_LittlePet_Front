@@ -1,36 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Kakao from '#/assets/Kakao.svg';
 import Naver from '#/assets/Naver.svg';
 import Google from '#/assets/Google.svg';
-import logo from '#/assets/Logo.svg';
+import logo from '#/assets/logo.svg';
 import back from '#/assets/back.svg';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import axios from 'axios';
 const LoginPage: React.FC = () => {
-  console.log(
-    '✅ NAVER Redirect URL:',
-    import.meta.env.VITE_NAVER_REDIRECT_URI
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState<any>(null);
+
+  //로그인 상태 확인
+  const checkLoginStatus = async () => {
+    try {
+      const response = await axios.get(
+        'https://umclittlepet.shop/api/auth/status',
+        {
+          withCredentials: true, // 쿠키 포함하여 요청
+        }
+      );
+      console.log('로그인 상태', response.data);
+
+      if (response.data.loggedIn) {
+        setIsLoggedIn(true);
+        setUserInfo(response.data.user);
+      } else {
+        setIsLoggedIn(false);
+        setUserInfo(null);
+      }
+    } catch (error) {
+      console.error('로그인 상태 확인 중 오류 발생:', error);
+      setIsLoggedIn(false);
+    }
+  };
+
+  // 로그인 페이지 로드 시 로그인 상태 확인
+  useEffect(() => {
+    console.log(' useEffect 실행됨!');
+    checkLoginStatus(); // 항상 실행되도록 변경
+  }, []);
+
+  useEffect(() => {
+    console.log(`현재 로그인 상태: ${isLoggedIn}`);
+    console.log('User 정보', userInfo);
+  }, [isLoggedIn]);
 
   // 카카오 로그인 요청 핸들러
   const handleKakaoLogin = () => {
     // 백엔드의 카카오 로그인 엔드포인트로 리다이렉트
-    //window.location.href =
+    window.location.href =
+      'https://umclittlepet.shop/oauth2/authorization/kakao';
   };
   // 네이버 로그인 요청 핸들러
   const handleNaverLogin = () => {
     // 백엔드의 네이버 로그인 엔드포인트로 리다이렉트
 
     window.location.href =
-      'http://54.180.205.177:8080/oauth2/authorization/naver';
+      'https://umclittlepet.shop/oauth2/authorization/naver';
   };
   // 구글 로그인 요청 핸들러
   const handleGoogleLogin = () => {
     // 백엔드의 구글 로그인 엔드포인트로 리다이렉트
-    const GOOGLE_REDIRECT_URI: string =
-      import.meta.env.VITE_GOOGLE_REDIRECT_URI || '';
-    window.location.href = GOOGLE_REDIRECT_URI;
+    window.location.href =
+      'https://umclittlepet.shop/oauth2/authorization/google';
   };
 
   //뒤로가기 핸들러
@@ -69,7 +102,6 @@ const LoginPage: React.FC = () => {
     </>
   );
 };
-
 export default LoginPage;
 
 const BackButton = styled.button`

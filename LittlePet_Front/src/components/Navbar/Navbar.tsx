@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -15,7 +15,7 @@ interface NavbarProps {
 const Navbar: FC<NavbarProps> = ({ menuItems }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const handleMenuClick = (id: number, link: string) => {
+  const handleMenuClick = (link: string) => {
     navigate(link); // 페이지 이동
   };
 
@@ -26,7 +26,7 @@ const Navbar: FC<NavbarProps> = ({ menuItems }) => {
           {menuItems.map((item) => (
             <MenuItem key={item.id}>
               <MenuLink
-                onClick={() => handleMenuClick(item.id, item.link)} // 페이지 이동 및 활성화 처리
+                onClick={() => handleMenuClick(item.link)} // 페이지 이동 및 활성화 처리
                 isActive={
                   location.pathname === '/'
                     ? item.link === '/home'
@@ -78,7 +78,7 @@ const MenuItem = styled.li`
   list-style: none;
 `;
 
-const MenuLink = styled.a<{ isActive: boolean }>`
+const MenuLink = styled.div<{ isActive: boolean }>`
   display: inline-block;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
   text-decoration: none;

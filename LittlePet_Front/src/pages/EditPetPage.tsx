@@ -28,7 +28,7 @@ const EditPetPage: React.FC = () => {
   const [categoryText, setCategoryText] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number>();
   const [birthDate, setBirthDate] = useState<string>('');
-
+  void categoryId;
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('이미지 변경');
@@ -58,7 +58,8 @@ const EditPetPage: React.FC = () => {
     },
   ];
 
-  const [info, setInfo] = useState<Pet>([]);
+  const [info, setInfo] = useState<Pet | null>(null);
+
   useEffect(() => {
     const fetchPets = async () => {
       try {
@@ -72,7 +73,7 @@ const EditPetPage: React.FC = () => {
       }
     };
 
-    fetchPets(); // ✅ 선언한 async 함수 실행
+    fetchPets(); // 선언한 async 함수 실행
   }, []);
 
   const [isModified, setIsModified] = useState(false);
@@ -87,7 +88,7 @@ const EditPetPage: React.FC = () => {
     }
   }, [info]);
 
-  // ✅ 변경 감지하여 버튼 활성화
+  //  변경 감지하여 버튼 활성화
   useEffect(() => {
     const hasChanges =
       name !== info.name ||

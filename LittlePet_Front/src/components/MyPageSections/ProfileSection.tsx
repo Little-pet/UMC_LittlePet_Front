@@ -4,8 +4,12 @@ import styled from 'styled-components';
 import Edit from '@assets/Edit.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
 import { AnimalIcons } from '#/components/icon';
+import { useUserStore } from '#/context/UserStore';
 
-const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
+
+const ProfileSection: React.FC = () => {
+  const { user, pets = [], isLoading } = useUserStore();
+  if (isLoading) return <div>Loading...</div>;
   if (!user) return <div>Loading...</div>;
   const getAnimalIcon = (category: string) => {
     switch (category) {
@@ -27,7 +31,7 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
   };
   // pets 배열에서 중복되지 않는 petCategory 값을 추출
   const distinctCategories = Array.from(
-    new Set(pets.map((pet: Pet) => pet.petCategory))
+    new Set((pets ?? []).map((pet) => pet.petCategory))
   ) as string[];
 
   const navigate = useNavigate();
@@ -56,9 +60,8 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
             <PetItem key={category}>
               <AnimalIcon src={getAnimalIcon(category)} alt={category} />
               {category}
-              {index < distinctCategories.length - 1 && (
-                <Separator>·</Separator>
-              )}
+              {index < distinctCategories.length - 1 &&
+                distinctCategories.length > 0 && <Separator>·</Separator>}
             </PetItem>
           ))}
         </PetList>
