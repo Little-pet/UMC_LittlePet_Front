@@ -6,6 +6,7 @@ import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { useCommunityStore } from '#/context/CommunityStore';
+import CommunityPost from '#/components/SkeletonUI/CommunityPost';
 import {
   Container,
   ContentWrapper,
@@ -22,8 +23,7 @@ const QnaPage: React.FC = () => {
   useEffect(() => {
     fetchPosts('Q&A', selected);
   }, [fetchPosts, selected]);
-  if (isLoading) return <div>Loading...</div>;
-
+  if (isLoading) return <CommunityPost />;
   return (
     <Container>
       <Banner src={banner} />

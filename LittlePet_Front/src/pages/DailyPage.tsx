@@ -6,6 +6,7 @@ import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton'
 import banner from '#/assets/banner/일상 배너.svg';
 import styled from 'styled-components';
 import { useCommunityStore } from '#/context/CommunityStore';
+import CommunityPost from '#/components/SkeletonUI/CommunityPost';
 import {
   Container,
   ContentWrapper,
@@ -22,7 +23,7 @@ const DailyPage: React.FC = () => {
   useEffect(() => {
     fetchPosts('일상', selected);
   }, [fetchPosts, selected]);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <CommunityPost />;
 
   return (
     <Container>
