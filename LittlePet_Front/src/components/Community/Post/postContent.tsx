@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-=======
-import BadgeComponent from '#/components/Community/badge'; // 실제 컴포넌트 경로로 수정
->>>>>>> 1261dbb791daa3a819e0b7c5bacc1cd17f582cf7
 import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴포넌트 경로로 수정
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import vectorIcon from '#/assets/Vector.svg';
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '#/components/DeleteModal';
@@ -16,12 +11,6 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import { useCommunityStore } from '#/context/CommunityStore';
 import { useUserStore } from '#/context/UserStore';
-=======
-import femaleIcon from '#/assets/성별여자.svg';
-import maleIcon from '#/assets/성별남자.svg';
-import React, { useState } from 'react';
-import DeleteModal from '#/components/DeleteModal';
->>>>>>> 1261dbb791daa3a819e0b7c5bacc1cd17f582cf7
 
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,

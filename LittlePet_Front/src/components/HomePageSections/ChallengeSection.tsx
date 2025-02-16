@@ -23,8 +23,9 @@ const ChallengeSection: React.FC = () => {
       </ChallengeSubTitle>
 
       <ChallengeWrapper>
-        {topPosts.map((post) => (
+        {topPosts.map((post, id) => (
           <ChallengeCard
+            key={id}
             userId={post.userId}
             name={post.userName}
             postId={post.postId}
