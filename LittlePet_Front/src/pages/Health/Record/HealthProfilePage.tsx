@@ -22,7 +22,9 @@ const fetchHealthRecord = async (petId: number) => {
     `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
     { withCredentials: true }
   );
+
   console.log('최신건강기록', response.data.result);
+
   return response.data.result;
 };
 
@@ -184,11 +186,13 @@ const HealthProfile: React.FC = () => {
                 </RecordItem>
                 <RecordItem>
                   <Label>식사량</Label>
+
                   <MealValue>{latestRecord.mealAmount}</MealValue>
                 </RecordItem>
 
                 <RecordItem>
                   <Label>특이 증상</Label>
+
                   <Value>{latestRecord.atypicalSymptom || '없음'}</Value>
                 </RecordItem>
 

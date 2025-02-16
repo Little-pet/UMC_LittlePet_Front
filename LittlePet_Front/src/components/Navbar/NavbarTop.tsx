@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { NavbarMainMenu } from '#/mockData/data';
 import logo from '#/assets/logo_blue.svg';
-import logoBlack from '#/assets/logo.svg';
+import logoBlack from '#/assets/Logo.svg';
 import hamburger from '#/assets/hamburger.svg';
 import close from '#/assets/close.svg';
 //import notifications from '#/assets/notifications.svg';

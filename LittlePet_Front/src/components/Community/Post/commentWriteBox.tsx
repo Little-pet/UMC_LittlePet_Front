@@ -1,10 +1,12 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import styled from 'styled-components';
-import animalIcon from '#/assets/동물 아이콘.svg';
-import femaleIcon from '#/assets/성별여자.svg';
-
+import hamsterIcon from '#/assets/hamster.svg';
+import rabbitIcon from '#/assets/rabbit.svg';
+import hedgehogIcon from '#/assets/hedgehog.svg';
+import axios from 'axios';
+import { useUserStore } from '#/context/UserStore';
 // 실제 댓글 작성 컴포넌트
-const CommentWriteBox: React.FC = () => {
+const CommentWriteBox: React.FC = ({ postId, parentId }) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
   const isTextValid =
@@ -12,25 +14,67 @@ const CommentWriteBox: React.FC = () => {
   useEffect(() => {
     setCommentCount(commentText.length);
   }, [commentText]);
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const getAnimalIcon = (category: string) => {
+    switch (category) {
+      case '햄스터':
+        return hamsterIcon;
+      case '토끼':
+        return rabbitIcon;
+      case '고슴도치':
+        return hedgehogIcon;
+    }
+  };
+  const { user, pets, isLoading } = useUserStore();
+  console.log(parentId);
+  const author = user?.name;
+  const animal = pets[0]?.petCategory;
+  const userId = 4;
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isTextValid) {
       alert('댓글을 입력해주세요!');
       return;
+    }
+    const requestBody = {
+      content: commentText,
+      userId: userId, // 실제 유저 ID
+      postId: postId,
+      parentId: parentId || null,
+    };
+    console.log(requestBody);
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + `/community/${postId}/comments`,
+        requestBody,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      );
+      console.log('댓글 작성 성공', response.data);
+      //window.location.reload();
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
     }
   };
   return (
     <CommentForm onSubmit={handleSubmit}>
       <HeaderWrapper>
         <Header>
-          <UserName>감초</UserName>
-          <UserInfo>
-            <IconGroup>
-              <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
-              <IconText>햄스터</IconText>
-            </IconGroup>
-            <img src={femaleIcon} style={{ width: '8px' }} />
-          </UserInfo>
+          <UserName>{author}</UserName>
+          {animal && (
+            <UserInfo>
+              <IconGroup>
+                <img
+                  src={getAnimalIcon(animal)}
+                  style={{ width: '20px', height: '20px' }}
+                />
+                <IconText>{animal}</IconText>
+              </IconGroup>
+            </UserInfo>
+          )}
         </Header>
         <InputSection>
           <CommentInput

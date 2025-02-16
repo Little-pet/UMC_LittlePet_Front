@@ -27,15 +27,11 @@ export const usePetStore = create<PetStore>((set, get) => ({
         { withCredentials: true }
       );
 
-      console.log(' API 응답 데이터:', response.data);
-
       if (response.data.isSuccess) {
         set({
           pets: response.data.result,
           selectedPet: response.data.result[0],
         });
-        console.log('✅ Zustand 상태 업데이트됨:', usePetStore.getState().pets);
-        console.log(usePetStore.getState().selectedPet);
       }
     } catch (error) {
       console.error('반려동물 목록 불러오기 실패:', error);
