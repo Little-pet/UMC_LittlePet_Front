@@ -4,7 +4,7 @@ import { usePetStore } from '#/context/petStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import logo from '@assets/Logo.svg';
+import logo from '@assets/logo.svg';
 import dayjs from 'dayjs';
 import healthy from '@assets/건강.svg';
 import good from '@assets/양호.svg';
@@ -22,6 +22,9 @@ const fetchHealthRecord = async (petId: number) => {
     `https://umclittlepet.shop/api/pets/${petId}/health-records/latest`,
     { withCredentials: true }
   );
+
+  console.log('최신건강기록', response.data.result);
+
   return response.data.result;
 };
 
@@ -37,16 +40,11 @@ const HealthProfile: React.FC = () => {
   } | null>(null);
 
   const userId = 4;
-  //const recordDate = dayjs().format('YYYY-MM-DD');
 
-  //처음 실행될 때 fetchPets
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchPets(userId);
-    };
-
-    fetchData();
-  }, []);
+    fetchPets(userId);
+    console.log(usePetStore.getState().pets);
+  }, [userId]);
 
   //pets배열이 바뀔 때마다다
   useEffect(() => {
@@ -63,6 +61,8 @@ const HealthProfile: React.FC = () => {
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
+
+  const latestRecord = healthRecord?.latestRecord || {};
 
   useEffect(() => {
     if (healthRecord) {
@@ -151,7 +151,7 @@ const HealthProfile: React.FC = () => {
                     {selectedPetDetails?.petCategory || '정보 없음'}
 
                     <GenderIcon gender={selectedPetDetails?.gender}>
-                      {selectedPetDetails?.gender === 'female' ? '♀' : '♂'}
+                      {selectedPetDetails?.gender === 'FEMALE' ? '♀' : '♂'}
                     </GenderIcon>
 
                     <PetBirthDate>
@@ -165,7 +165,9 @@ const HealthProfile: React.FC = () => {
                   {/* 응답 데이터 확인 후 recordDate그대로가 아니라 0일전으로 변경해야될 수도 있음 */}
                   <RecentUpdate>
                     최근 업데이트:{' '}
-                    {` ${getFormattedDate(healthRecord?.latestRecord.recordDate ?? null)}`}
+                    {latestRecord?.recordDate
+                      ? getFormattedDate(latestRecord.recordDate)
+                      : '기록 없음'}
                   </RecentUpdate>
                 </PetInfo>
                 <HealthBadge src={healthBadgeImage} alt={healthStatus} />
@@ -175,7 +177,7 @@ const HealthProfile: React.FC = () => {
                 <RecordItem>
                   <Label>체중</Label>
                   <Value>
-                    {healthRecord?.latestRecord.weight}kg
+                    {latestRecord.weight}kg
                     <WeightChange>
                       {/* 몸무게 차이 계산 로직 추후 추가 */}
                       지난 기록 대비 <span> {weightChangeText}</span>
@@ -184,30 +186,30 @@ const HealthProfile: React.FC = () => {
                 </RecordItem>
                 <RecordItem>
                   <Label>식사량</Label>
-                  <MealValue>{healthRecord?.latestRecord.mealAmount}</MealValue>
+
+                  <MealValue>{latestRecord.mealAmount}</MealValue>
                 </RecordItem>
 
                 <RecordItem>
                   <Label>특이 증상</Label>
-                  <Value>
-                    {healthRecord?.latestRecord.atypicalSymptom || '없음'}
-                  </Value>
+
+                  <Value>{latestRecord.atypicalSymptom || '없음'}</Value>
                 </RecordItem>
 
-                {healthRecord && healthRecord?.latestRecord.diagnosisName && (
+                {healthRecord && latestRecord.diagnosisName && (
                   <RecordItem>
                     <Label>진료 내역</Label>
                     <HospitalRecordValue>
                       <RecordRow>
                         <ListTitle>진단명</ListTitle>
                         <RecordText>
-                          {healthRecord?.latestRecord.diagnosisName || '없음'}
+                          {latestRecord.diagnosisName || '없음'}
                         </RecordText>
                       </RecordRow>
                       <RecordRow>
                         <ListTitle>검사 및 처방 내역</ListTitle>
                         <RecordText>
-                          {healthRecord?.latestRecord.prescription || '없음'}
+                          {latestRecord.prescription || '없음'}
                         </RecordText>
                       </RecordRow>
                     </HospitalRecordValue>
@@ -402,10 +404,11 @@ const AnimalIcon = styled.img`
   width: 12px;
 `;
 
-const GenderIcon = styled.span<{ gender: 'female' | 'male' }>`
+const GenderIcon = styled.span<{ gender: 'FEMALE' | 'MALE' | 'OTHER' }>`
   font-weight: 600;
   font-size: 12px;
-  color: ${({ gender }) => (gender === 'female' ? '#C76B6B' : '#6EA8FE')};
+  color: ${({ gender }) => (gender === 'FEMALE' ? '#C76B6B' : '#6EA8FE')};
+  display: ${({ gender }) => (gender === 'OTHER' ? 'none' : 'inline')};
 `;
 
 const RecentUpdate = styled.p`

@@ -9,6 +9,7 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
 import axios from 'axios';
+
 interface Badge {
   name: string;
 }

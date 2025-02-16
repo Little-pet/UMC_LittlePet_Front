@@ -23,6 +23,7 @@ interface Pet {
 interface Badge {
   name: string;
 }
+
 interface UserStore {
   user: User | null;
   pets: Pet[];

@@ -129,6 +129,7 @@ const TimeStamp = styled.div`
   font-family: Pretendard-Medium;
   color: #737373;
 `;
+
 const ReplyButton = styled.div`
   width: 56px;
   height: 22px;

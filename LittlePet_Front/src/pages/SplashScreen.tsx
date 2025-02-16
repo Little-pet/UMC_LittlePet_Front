@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import textLogo from '@assets/TextLogo.svg';
-import logo from '@assets/Logo.svg'; // 로고 파일
+import logo from '@assets/logo.svg'; // 로고 파일
 
 const SplashScreen: React.FC = () => {
   return (
     <SplashContainer>
-      <StyledTextLogo src={textLogo} alt="리틀펫" />
-      <StyledImgLogo src={logo} alt="logo" />
+      <StyledTextLogo src={textLogo} alt='리틀펫' />
+      <StyledImgLogo src={logo} alt='logo' />
     </SplashContainer>
   );
 };

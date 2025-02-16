@@ -49,6 +49,7 @@ const ProfileSection: React.FC = ({ user, pets, isLoading }) => {
             <img src={Edit} alt='EditButton' width={16} height={16} />
           </EditButton>
         </UserDetailsBox>
+
         {/* 반려동물 등록 정보 */}
         <PetList>
           {distinctCategories.map((category: string, index) => (

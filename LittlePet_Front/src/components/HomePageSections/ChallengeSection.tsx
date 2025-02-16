@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import ChallengeCard from '#/components/Community/challengeCard';
 import { useCommunityStore } from '#/context/CommunityStore';
+
 const ChallengeSection: React.FC = () => {
   const navigate = useNavigate();
   const handleNavigate = (): void => {

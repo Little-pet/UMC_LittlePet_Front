@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import arrowIcon from '#/assets/arrow.svg';
 import AnimalItem from '#/components/Community/AddPage/animalItem';
+<<<<<<< HEAD
 import { AnimalIcons } from '#/components/icon';
+=======
+import hamsterIcon from '@assets/animaldropdown/hamster.svg';
+import rabbitIcon from '@assets/animaldropdown/rabbit.svg';
+import hedgehogIcon from '@assets/animaldropdown/hedgehog.svg';
+
+>>>>>>> 1261dbb791daa3a819e0b7c5bacc1cd17f582cf7
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
+  onIdSelect: (id: number) => void;
 }
 
 //  동물별 아이콘을 매칭하는 객체 생성
@@ -22,6 +30,7 @@ const animalIcons: { [key: string]: string } = {
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   selectedCategory,
   onCategorySelect,
+  onIdSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const animals = [
@@ -36,6 +45,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   const handleCategoryClick = (name: string) => {
     onCategorySelect(name); // 부모 컴포넌트로 선택한 카테고리 전달
+    onIdSelect(id);
     setIsOpen(false); // 드롭다운 닫기
   };
 

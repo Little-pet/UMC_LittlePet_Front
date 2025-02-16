@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
 import { useCommunityStore } from '#/context/CommunityStore';
+
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
   const handleClick = (filter: '인기순' | '최신순') => {
