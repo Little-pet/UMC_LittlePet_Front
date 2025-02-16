@@ -255,7 +255,7 @@ const ActionGroup = styled.div`
   gap: 12px;
 `;
 
-const ActionText = styled.div`
+const ActionText = styled.div<{ isClickable?: boolean }>`
   font-size: 12px;
   color: #737373;
   font-family: 'Pretendard-Medium';

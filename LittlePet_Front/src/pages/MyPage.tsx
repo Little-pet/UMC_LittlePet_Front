@@ -16,11 +16,12 @@ const MyPage: React.FC = () => {
   }, [userId, fetchUser]);
   if (isLoading) return <div>loading...</div>;
 
+
   return (
     <Container>
       <Title>마이페이지</Title>
       <ProfileContainer>
-        <ProfileSection user={user} pets={pets} isLoading={isLoading} />
+        <ProfileSection /*user={user} pets={pets} isLoading={isLoading}*/ />
         <StatsComponent user={stats} isLoading={isLoading} />
         <PetProfiles pets={pets} isLoading={isLoading} />
         <BadgeComponent badges={badges} isLoading={isLoading} />

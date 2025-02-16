@@ -6,7 +6,7 @@ import { AnimalIcons } from '#/components/icon';
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
-  onIdSelect: (id: number) => void;
+  onIdSelect?: (id: number) => void;
 }
 
 //  동물별 아이콘을 매칭하는 객체 생성
@@ -116,7 +116,7 @@ const DropdownMenu = styled.ul`
   gap: 15px;
 `;
 
-const ArrowIcon = styled(({ isOpen, ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled.img<{ isOpen: boolean }>`
   transition: transform 0.3s ease-in-out;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;

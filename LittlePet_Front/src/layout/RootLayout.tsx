@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import NavbarTop from '#/components/Navbar/NavbarTop';

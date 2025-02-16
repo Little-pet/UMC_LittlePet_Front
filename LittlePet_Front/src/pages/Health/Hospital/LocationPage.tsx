@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import LocationModal from '#/components/Hospital/LocationModal';
 const LocationPage = () => {
-  const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
   const navigate = useNavigate();
   const { state } = useLocation();
