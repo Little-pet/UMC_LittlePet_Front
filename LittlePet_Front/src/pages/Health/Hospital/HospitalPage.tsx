@@ -19,7 +19,6 @@ const HospitalPage: React.FC = () => {
   );
   const [view, setView] = useState<boolean>(false);
   const [timeText, setTimeText] = useState<string>('');
-  const [hospitals, setHospitals] = useState();
 
   const times = ['영업중', '24시간', '주말'];
   const filters = [
@@ -121,12 +120,12 @@ const HospitalPage: React.FC = () => {
         <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
           {hospitalsByRegion.map((item, idx) => (
             <HospitalItem
-              imageSrc={HospitalImg}
+              imageSrc={item.imageUrl}
               name={item.name}
               hospitalId={item.id}
-              distance={512}
               comments={0}
               openStatus={item.closedDay}
+              rating={item.rating}
             />
           ))}
         </div>

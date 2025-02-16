@@ -9,17 +9,17 @@ interface HospitalItemProps {
   imageSrc: string;
   name: string;
   hospitalId: string | number;
-  distance: number;
   comments: number;
   openStatus: string;
+  rating: number;
 }
 const HospitalItem: React.FC<HospitalItemProps> = ({
   imageSrc,
   name,
   hospitalId,
-  distance,
   comments,
   openStatus,
+  rating,
 }) => {
   const { fetchScrappedHospitals, scrappedHospitals } = useHospitalStore();
   useEffect(() => {
@@ -36,14 +36,11 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
         <Details>
           <Header>
             <HospitalName>{name}</HospitalName>
-            <Distance>{distance}m</Distance>
           </Header>
           <RatingsWrapper>
             <Rating>
               <StarIcon src={starIcon} alt='Star' />
-              <RatingText>
-                {Number((Math.random() * (5 - 4.5) + 4.5).toFixed(1))}
-              </RatingText>
+              <RatingText>{rating}</RatingText>
             </Rating>
             <Comments>
               <CommentIcon src={commentIcon} alt='Comments' />
@@ -100,12 +97,6 @@ const HospitalName = styled.div`
   font-size: 18px;
   font-family: Pretendard-SemiBold;
   color: black;
-`;
-
-const Distance = styled.div`
-  font-size: 12px;
-  font-family: Pretendard-Medium;
-  color: #737373;
 `;
 
 const RatingsWrapper = styled.div`

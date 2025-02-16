@@ -60,12 +60,11 @@ const HospitalDetailPage = () => {
   );
   return (
     <div>
-      <Img src={hospitalImg} />
+      <Img src={hospitalDetail.imageUrl} />
       <DetailBox>
         <Details>
           <Header>
             <HospitalName>{hospitalDetail.name}</HospitalName>
-            <Distance>512m</Distance>
           </Header>
           <OpenStatus>{hospitalDetail.address}</OpenStatus>
           <RatingsWrapper>
@@ -137,12 +136,6 @@ const HospitalName = styled.div`
   font-size: 18px;
   font-family: Pretendard-SemiBold;
   color: black;
-`;
-
-const Distance = styled.div`
-  font-size: 12px;
-  font-family: Pretendard-Medium;
-  color: #737373;
 `;
 
 const RatingsWrapper = styled.div`
