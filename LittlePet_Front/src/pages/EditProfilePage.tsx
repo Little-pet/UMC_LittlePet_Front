@@ -25,30 +25,21 @@ const EditProfilePage: React.FC = () => {
   const [info, setInfo] = useState<User | null>(null);
   const userId = 4;
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['userProfile', userId],
-    queryFn: async () => {
-      const response = await axios.get(
-        `https://umclittlepet.shop/api/users/update/${userId}`,
-        { withCredentials: true }
-      );
-
-      return response.data;
-    },
-    staleTime: 0,
-    gcTime: 5 * 60 * 1000,
-  });
-
-  if (isLoading) {
-    return <LoadingContainer>로딩 중...</LoadingContainer>;
-  }
-
-  // data가 변경될 때만 info 업데이트
   useEffect(() => {
-    if (data?.result) {
-      setInfo(data.result);
-    }
-  }, [data]);
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          `https://umclittlepet.shop/api/users/update/${userId}`
+        );
+        console.log('프로필 조회 성공:', response.data);
+        setInfo(response.data.result); // 초기상태
+      } catch (error) {
+        console.error('프로필 조회 실패:', error);
+      }
+    };
+
+    fetchUser(); // 선언한 async 함수 실행
+  }, []);
 
   useEffect(() => {
     if (info) {
@@ -101,8 +92,6 @@ const EditProfilePage: React.FC = () => {
       );
     }
   };
-
-  <Input type='text' value={phone} onChange={handlePhoneChange} />;
 
   // 저장 버튼 클릭 시 사용자 정보 업데이트
   const handleSave = async () => {
