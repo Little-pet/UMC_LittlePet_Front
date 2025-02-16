@@ -19,7 +19,7 @@ const CommunityPost = () => {
         </Header>
         <ItemList>
           {new Array(3).fill('').map((_, i) => (
-            <ItemContainer />
+            <ItemContainer key={i} />
           ))}
         </ItemList>
       </ContentWrapper>

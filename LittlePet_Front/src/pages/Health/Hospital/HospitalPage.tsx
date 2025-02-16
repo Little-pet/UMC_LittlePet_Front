@@ -5,7 +5,6 @@ import arrowIcon from '#/assets/arrow.svg';
 import mapIcon from '#/assets/map.svg';
 import HospitalItem from '#/components/Hospital/HospitalItem';
 import AreaModal from '#/components/Hospital/AreaModal';
-import HospitalImg from '#/assets/image.png';
 import banner from '@assets/banner/banner-health.svg';
 import { useHospitalStore } from '#/context/hospitalStore';
 

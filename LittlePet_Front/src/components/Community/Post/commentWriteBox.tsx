@@ -25,7 +25,7 @@ const CommentWriteBox: React.FC = ({ postId, parentId }) => {
     }
   };
   const { user, pets, isLoading } = useUserStore();
-  console.log(parentId);
+  //console.log(parentId);
   const author = user?.name;
   const animal = pets[0]?.petCategory;
   const userId = 4;
@@ -44,7 +44,7 @@ const CommentWriteBox: React.FC = ({ postId, parentId }) => {
     console.log(requestBody);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + `/community/${postId}/comments`,
+        `https://umclittlepet.shop/api/community/${postId}/comments`,
         requestBody,
         {
           headers: {
@@ -54,7 +54,7 @@ const CommentWriteBox: React.FC = ({ postId, parentId }) => {
         }
       );
       console.log('댓글 작성 성공', response.data);
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error('댓글 작성 실패:', error);
     }

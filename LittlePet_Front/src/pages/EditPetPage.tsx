@@ -63,7 +63,7 @@ const EditPetPage: React.FC = () => {
     const fetchPets = async () => {
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
+          `https://umclittlepet.shop/api/pets/${petId}`
         );
         console.log('반려동물 단일 조회 성공:', response.data);
         setInfo(response.data.result); // 초기상태
@@ -120,7 +120,7 @@ const EditPetPage: React.FC = () => {
     }
     try {
       const response = await axios.put(
-        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`,
+        `https://umclittlepet.shop/api/pets/${petId}`,
         formData,
         {
           headers: {
@@ -141,7 +141,7 @@ const EditPetPage: React.FC = () => {
     try {
       console.log('petId: ', petId);
       const response = await axios.delete(
-        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
+        `https://umclittlepet.shop/api/pets/${petId}`
       );
       console.log('반려동물 프로필 삭제 성공', response.data);
       navigate('/mypage');
