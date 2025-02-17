@@ -80,22 +80,22 @@ const EditPetPage: React.FC = () => {
 
   useEffect(() => {
     if (info) {
-      setName(info.name);
-      setBirthDate(info.birthDay);
-      setCategoryText(info.categorySpecies);
-      setPreviewImage(info.profilePhoto);
-      setTagSelected(info.gender);
+      setName(info.name || ''); // undefined 방지
+      setBirthDate(info.birthDay || '');
+      setCategoryText(info.categorySpecies || '');
+      setPreviewImage(info.profilePhoto || '');
+      setTagSelected(info.gender || '');
     }
   }, [info]);
 
   //  변경 감지하여 버튼 활성화
   useEffect(() => {
     const hasChanges =
-      name !== info.name ||
-      birthDate !== info.birthDay ||
-      categoryText !== info.categorySpecies ||
-      previewImage !== info.profilePhoto ||
-      tagSelected !== info.gender;
+      (info && name !== info.name) ||
+      (info && birthDate !== info.birthDay) ||
+      (info && categoryText !== info.categorySpecies) ||
+      (info && previewImage !== info.profilePhoto) ||
+      (info && tagSelected !== info.gender);
 
     setIsModified(hasChanges);
   }, [name, birthDate, categoryText, profileImage, tagSelected]);
