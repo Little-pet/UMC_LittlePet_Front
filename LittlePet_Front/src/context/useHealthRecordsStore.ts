@@ -7,7 +7,7 @@ interface HealthRecordState {
   fetchRecordDates: (petId: string) => Promise<void>;
 }
 
-export const useHealthRecordsStore = create<HealthRecordState>((set, get) => ({
+export const useHealthRecordsStore = create<HealthRecordState>((set) => ({
   petId: null,
   recordDates: [],
 
@@ -24,6 +24,7 @@ export const useHealthRecordsStore = create<HealthRecordState>((set, get) => ({
         set({ petId, recordDates: [] });
       }
     } catch (error) {
+      console.log(error);
       set({ petId, recordDates: [] });
     }
   },

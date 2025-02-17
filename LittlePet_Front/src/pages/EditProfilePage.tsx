@@ -353,9 +353,3 @@ const SaveButton = styled.button`
   text-align: center;
   margin-top: 89px;
 `;
-
-const LoadingContainer = styled.div`
-  font-size: 18px;
-  text-align: center;
-  margin-top: 50px;
-`;
