@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import CommentWriteBox from './commentWriteBox';
-import react, { useState } from 'react';
+import { useState } from 'react';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름

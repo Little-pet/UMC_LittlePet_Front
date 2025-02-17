@@ -1,7 +1,7 @@
 import closeIcon from '#/assets/close.svg';
 import { motion } from 'framer-motion';
 import HospitalItem from './HospitalItem';
-import HospitalImg from '#/assets/image.png';
+//import HospitalImg from '#/assets/image.png';
 import styled from 'styled-components';
 interface InfoModalProps {
   onClose: () => void;

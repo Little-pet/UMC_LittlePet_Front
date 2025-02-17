@@ -51,12 +51,13 @@ const GoalBadgeComponent: React.FC = () => {
     const fetchAllProgress = async () => {
       const progressData: { [key: string]: number } = {};
       // badges 배열에 있는 각 badge에 대해 진행 상태를 가져옵니다.
-      for (const badge of badges) {
+      for (const badge of badges ?? []) {
         try {
           const result = await fetchProgress(badge);
           progressData[badge] = result || 0;
         } catch (error) {
           progressData[badge] = 0;
+          console.log(error);
         }
       }
       setProgress(progressData);
@@ -83,7 +84,7 @@ const GoalBadgeComponent: React.FC = () => {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            {badges.map((badge, idx) => {
+            {(badges ?? []).map((badge, idx) => {
               const icon = badgeIconMapping[badge];
               const word = String(progress[badge] ?? 0);
               const match = word.match(/(.*?)(\d+)(.*)/);
