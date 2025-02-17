@@ -26,11 +26,12 @@ const ChallengeSection: React.FC = () => {
         {topPosts.map((post, id) => (
           <ChallengeCard
             key={id}
+            category='챌린지'
+            type='challenge'
             userId={post.userId}
             name={post.userName}
             postId={post.postId}
             animal={post.petCategory}
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
             descriptionTitle={post.title}
             contents={post.contents}
           />
