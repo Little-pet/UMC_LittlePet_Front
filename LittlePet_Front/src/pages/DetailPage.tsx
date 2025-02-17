@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import PostContent from '#/components/Community/Post/postContent';
 import Comment from '#/components/Community/Post/comment';
@@ -6,15 +6,19 @@ import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
 import { useCommunityStore } from '#/context/CommunityStore';
-import { useUserStore } from '#/context/UserStore';
 
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const numericPostId = Number(postId);
   const { fetchPost, isLoading, currentPost } = useCommunityStore();
-  const { user, pets } = useUserStore();
   const { state } = useLocation();
   const { category, type } = state || {};
+  const [openCommentId, setOpenCommentId] = useState<number | null>(null);
+
+  const toggleReplyBox = (commentId: number) => {
+    setOpenCommentId((prev) => (prev === commentId ? null : commentId));
+  };
+
   useEffect(() => {
     fetchPost(numericPostId);
   }, [numericPostId]);
@@ -22,6 +26,7 @@ const DetailPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (!currentPost) return <div>No data available</div>;
   const data = currentPost;
+
   return (
     <Container>
       <PostContent
@@ -47,24 +52,28 @@ const DetailPage: React.FC = () => {
           <React.Fragment key={idx}>
             <Comment
               key={idx}
-              parent={idx}
+              parent={comment.commentId}
               userName={comment.name}
               animal={comment.userPets[0]}
               gender='male'
               content={comment.content}
               time={comment.updatedTime}
               postId={numericPostId}
+              isOpen={openCommentId === comment.commentId}
+              toggleReplyBox={() => toggleReplyBox(comment.commentId)}
             />
             {comment.replies.length > 0 &&
               comment.replies.map((reply, replyIdx) => (
                 <Reply
                   key={replyIdx}
-                  parent={idx}
+                  parent={comment.commentId}
                   userName={reply.name}
                   animal={reply.userPets[0]}
-                  gender='female'
                   content={reply.content}
                   time={reply.createdTime}
+                  postId={numericPostId}
+                  isOpen={openCommentId === reply.commentId}
+                  toggleReplyBox={() => toggleReplyBox(reply.commentId)}
                 />
               ))}
           </React.Fragment>

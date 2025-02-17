@@ -9,6 +9,8 @@ interface CommentProps {
   time: string; // 시간 (HH:mm)
   postId: number;
   parent: number;
+  isOpen: boolean;
+  toggleReplyBox: () => void;
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
@@ -17,6 +19,8 @@ const Comment: React.FC<CommentProps> = ({
   time,
   postId,
   parent,
+  isOpen,
+  toggleReplyBox,
 }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
@@ -36,7 +40,6 @@ const Comment: React.FC<CommentProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <CommentContainer>
@@ -57,7 +60,7 @@ const Comment: React.FC<CommentProps> = ({
       <Content>{content}</Content>
       <Footer>
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
-        <ReplyButton onClick={() => setIsOpen(!isOpen)}>답글 쓰기</ReplyButton>
+        <ReplyButton onClick={toggleReplyBox}>답글 쓰기</ReplyButton>
       </Footer>
       {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
     </CommentContainer>

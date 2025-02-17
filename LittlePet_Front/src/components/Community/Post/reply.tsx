@@ -1,22 +1,27 @@
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
-import femaleIcon from '#/assets/성별여자.svg';
-import maleIcon from '#/assets/성별남자.svg';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
-
+import CommentWriteBox from './commentWriteBox';
+import react, { useState } from 'react';
 interface ReplyProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
-  gender: 'male' | 'female'; // 성별 ('male' 또는 'female')
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
+  parent: number;
+  postId: number;
+  isOpen: boolean;
+  toggleReplyBox: () => void;
 }
 const Reply: React.FC<ReplyProps> = ({
   userName,
   animal,
-  gender,
   content,
   time,
+  parent,
+  postId,
+  isOpen,
+  toggleReplyBox,
 }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
@@ -36,6 +41,7 @@ const Reply: React.FC<ReplyProps> = ({
         return AnimalIcons.snake;
     }
   };
+
   return (
     <CommentContainer>
       <Header>
@@ -50,19 +56,15 @@ const Reply: React.FC<ReplyProps> = ({
               />
               <IconText>{animal}</IconText>
             </IconGroup>
-            {gender == 'female' ? (
-              <img src={femaleIcon} style={{ width: '8px' }} />
-            ) : (
-              <img src={maleIcon} style={{ width: '10px' }} />
-            )}
           </UserInfo>
         )}
       </Header>
       <Content>{content}</Content>
       <Footer>
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
-        <ReplyButton>답글 쓰기</ReplyButton>
+        <ReplyButton onClick={toggleReplyBox}>답글 쓰기</ReplyButton>
       </Footer>
+      {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
     </CommentContainer>
   );
 };
