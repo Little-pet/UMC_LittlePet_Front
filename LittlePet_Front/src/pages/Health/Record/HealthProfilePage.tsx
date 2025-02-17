@@ -32,7 +32,7 @@ const HealthProfile: React.FC = () => {
   const navigate = useNavigate();
 
   const { pets, fetchPets, selectedPet, selectPet } = usePetStore();
-  const { isLoggedIn, userId, checkLoginStatus } = useAuthStore();
+  const { isLoggedIn, userId } = useAuthStore();
   const [loading, setLoading] = useState(true);
   const [selectedPetDetails, setSelectedPetDetails] = useState<{
     gender?: string;
@@ -41,22 +41,27 @@ const HealthProfile: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    checkLoginStatus();
-    fetchPets(userId);
-    console.log(usePetStore.getState().pets);
-  }, [userId]);
+    const fetchData = async () => {
+      if (!isLoggedIn) {
+        setLoading(false); // 로그인 안 한 유저는 바로 로딩 해제
+        return;
+      }
 
-  //pets배열이 바뀔 때마다다
-  useEffect(() => {
-    if (pets.length > 0) {
-      setLoading(false);
-    }
-  }, [pets]);
+      setLoading(true); //  로그인한 유저는 로딩 시작
+      await fetchPets(userId); //  반려동물 데이터 가져오기
+      setLoading(false); //  데이터 가져온 후 로딩 해제
+    };
+
+    fetchData();
+  }, [userId, isLoggedIn]);
 
   /* Tanstack Query 사용하여 최신 건강 기록 캐싱 */
   const { data: healthRecord, isLoading: recordLoading } = useQuery({
     queryKey: ['healthRecord', selectedPet?.petId],
-    queryFn: () => fetchHealthRecord(selectedPet!.petId),
+    queryFn: () =>
+      selectedPet
+        ? fetchHealthRecord(selectedPet.petId)
+        : Promise.resolve(null),
     enabled: !!selectedPet, // selectedPet이 있을 때만 실행
     staleTime: 0,
     gcTime: 5 * 60 * 1000,

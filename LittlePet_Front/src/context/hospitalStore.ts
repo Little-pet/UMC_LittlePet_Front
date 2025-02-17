@@ -22,7 +22,7 @@ interface HospitalStore {
   fetchHospitalsByRegion: (region: string) => Promise<void>;
 }
 
-export const useHospitalStore = create<HospitalStore>((set, get) => ({
+export const useHospitalStore = create<HospitalStore>((set) => ({
   scrappedHospitals: [],
   hospitalDetail: null,
   hospitalsByRegion: [],

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+//import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import TagButton from '#/components/Community/AddPage/tagButton';
 import { useNavigate } from 'react-router-dom';
@@ -108,7 +108,7 @@ const AddPage: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const imgUrl = reader.result as string; // ✅ Base64 URL
-        let quillObj = quillRef.current?.getEditor(); // ✅ Quill 에디터 인스턴스 가져오기
+        const quillObj = quillRef.current?.getEditor(); // ✅ Quill 에디터 인스턴스 가져오기
         const range = quillObj?.getSelection();
         quillObj?.insertEmbed(range?.index || 0, 'image', imgUrl); // ✅ Quill 에디터에 이미지 삽입
         const updatedContent = quillObj?.root.innerHTML || '';
@@ -334,6 +334,5 @@ const AddPage: React.FC = () => {
       </Form>
     </Container>
   );
-
 };
 export default AddPage;

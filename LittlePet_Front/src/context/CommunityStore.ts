@@ -17,7 +17,7 @@ export interface CommunityPost {
   createdTime: string;
   updatedTime: string;
   contents: Content[];
-  commnets: any[];
+  comments: any[];
   category?: string;
 }
 
@@ -35,7 +35,7 @@ interface CommunityStore {
   fetchPopularPosts: () => Promise<void>;
 }
 
-export const useCommunityStore = create<CommunityStore>((set, get) => ({
+export const useCommunityStore = create<CommunityStore>((set) => ({
   posts: [],
   currentPost: null,
   isLoading: false,

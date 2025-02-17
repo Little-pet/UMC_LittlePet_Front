@@ -5,6 +5,9 @@ import Logout from '@assets/Logout.svg';
 import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
 import Security from '@assets/Security.svg';
+import { useAuthStore } from '#/context/AuthStore';
+
+import axios from 'axios';
 
 // 메뉴 항목 데이터 타입 정의
 interface MenuItemProps {
@@ -24,6 +27,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => {
 };
 
 const SettingsPage: React.FC = () => {
+  const { isLoggedIn, checkLoginStatus } = useAuthStore();
   const handleTermsOfService = () => {
     window.location.href =
       'https://kind-property-f6b.notion.site/1988adfe580080658c3ae0e6efb14b7a?pvs=4';
@@ -32,6 +36,20 @@ const SettingsPage: React.FC = () => {
   const handleSecurity = () => {
     window.location.href =
       'https://kind-property-f6b.notion.site/1988adfe5800804fb469ddb7572a10f9?pvs=4';
+  };
+
+  //로그아웃 핸들러
+  const handleLogout = async () => {
+    try {
+      await axios.get('https://umclittlepet.shop/api/auth/logout', {
+        withCredentials: true,
+      });
+
+      // Zustand 상태 초기화
+      checkLoginStatus();
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+    }
   };
 
   return (
@@ -53,7 +71,13 @@ const SettingsPage: React.FC = () => {
 
       <Section>
         <SectionTitle>계정 설정</SectionTitle>
-        <MenuItem icon={<img src={Logout} alt='로그아웃' />} text='로그아웃' />
+        {isLoggedIn && (
+          <MenuItem
+            icon={<img src={Logout} alt='로그아웃' />}
+            text='로그아웃'
+            onClick={handleLogout}
+          />
+        )}
         <MenuItem
           icon={<img src={CancelAccount} alt='회원탈퇴' />}
           text='회원탈퇴'
