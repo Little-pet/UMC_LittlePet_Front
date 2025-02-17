@@ -119,6 +119,7 @@ const HospitalPage: React.FC = () => {
         <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
           {hospitalsByRegion.map((item, idx) => (
             <HospitalItem
+              key={idx}
               imageSrc={item.imageUrl}
               name={item.name}
               hospitalId={item.id}

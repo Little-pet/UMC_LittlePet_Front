@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import DOMPurify from 'dompurify';
 import axios from 'axios';
 // 최대 업로드 개수 & 파일 크기
 const MAX_IMAGES = 5;
@@ -47,14 +46,10 @@ const EditPostPage: React.FC = () => {
   const [title, setTitle] = useState<string>(initialTitle);
   const [textCount, setTextCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
-  const [imgCount, setImgCount] = useState<number>(0);
   const [valid, setValid] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = textCount > 0;
-  // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
-  // 사용자 접속시 그 악성코드가 실행되는 것을 XSS, 보안을 위해 sanitize 추가
-  const sanitizedContent = DOMPurify.sanitize(content);
 
   const tags = [
     {
@@ -183,12 +178,11 @@ const EditPostPage: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         const imgUrl = reader.result as string; // ✅ Base64 URL
-        let quillObj = quillRef.current?.getEditor(); // ✅ Quill 에디터 인스턴스 가져오기
+        const quillObj = quillRef.current?.getEditor(); // ✅ Quill 에디터 인스턴스 가져오기
         const range = quillObj?.getSelection();
         quillObj?.insertEmbed(range?.index || 0, 'image', imgUrl); // ✅ Quill 에디터에 이미지 삽입
         const updatedContent = quillObj?.root.innerHTML || '';
         setContent(updatedContent);
-        setImgCount(getImageCount(updatedContent));
         setPostImgs((prev) => [...prev, { file, base64: imgUrl }]);
         console.log('현재 이미지 개수: ', getImageCount(updatedContent));
       };
@@ -325,7 +319,6 @@ const EditPostPage: React.FC = () => {
 
     // 상태 업데이트
     setTextCount(textCount);
-    setImgCount(getImageCount(content));
     const parseHTML = (html: string) => {
       const parser = new DOMParser();
       return parser.parseFromString(html, 'text/html').body.innerHTML;

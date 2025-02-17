@@ -8,6 +8,10 @@ export interface Hospital {
   closedDay: string;
   latitude?: number;
   longitude?: number;
+  imageUrl: string;
+  openingHours: string;
+  phoneNumber: string;
+  rating: number;
 }
 interface HospitalStore {
   scrappedHospitals: Hospital[]; // 스크랩한 병원 목록

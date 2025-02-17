@@ -83,9 +83,7 @@ const AddReviewPage = () => {
   );
 };
 export default AddReviewPage;
-const TextArea = styled.div`
-  width: 100%;
-`;
+
 const StarButton = styled.div`
   display: flex;
   gap: 5px;
