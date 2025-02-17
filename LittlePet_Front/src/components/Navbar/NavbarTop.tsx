@@ -5,7 +5,7 @@ import logo from '#/assets/logo_blue.svg';
 import logoBlack from '#/assets/logo.svg';
 import hamburger from '#/assets/hamburger.svg';
 import close from '#/assets/close.svg';
-//import notifications from '#/assets/notifications.svg';
+import notifications from '#/assets/notifications.svg';
 import ResponsiveMenu from './ResponsiveMenu'; // ResponsiveMenu 컴포넌트 import
 import Navbar from './Navbar';
 import littlePet from '#/assets/리틀펫.svg';
@@ -59,13 +59,16 @@ const NavbarTop: FC = () => {
             )}
           </Menu>
 
-          {/* 햄버거 아이콘: 모바일에서는 `X`로 변경되지만, PC에서는 그대로 유지 */}
-          <HamburgerIcon onClick={() => setOpen(!open)}>
-            <img
-              src={window.innerWidth < 768 && open ? close : hamburger}
-              alt={open ? '닫기' : '햄버거'}
-            />
-          </HamburgerIcon>
+          <IconContainer>
+            <Notifications src={notifications} />
+            {/* 햄버거 아이콘: 모바일에서는 `X`로 변경되지만, PC에서는 그대로 유지 */}
+            <HamburgerIcon onClick={() => setOpen(!open)}>
+              <img
+                src={window.innerWidth < 768 && open ? close : hamburger}
+                alt={open ? '닫기' : '햄버거'}
+              />
+            </HamburgerIcon>
+          </IconContainer>
         </div>
       </Nav>
 
@@ -76,7 +79,7 @@ const NavbarTop: FC = () => {
         </DesktopNavbarWrapper>
       )}
 
-      {/* 📌 모바일에서만 사이드바 메뉴 표시 */}
+      {/*  모바일에서만 사이드바 메뉴 표시 */}
       <ResponsiveMenu open={open} />
     </>
   );
@@ -157,9 +160,23 @@ const MenuLink = styled.a<{ isActive: boolean }>`
 
 /*  PC에서는 항상 보이고, 모바일에서는 open 상태일 때 숨김 */
 const DesktopNavbarWrapper = styled.div<{ open: boolean }>`
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     display: ${({ open }) => (open ? 'none' : 'block')};
   }
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  height: 24px;
+`;
+
+const Notifications = styled.img`
+  height: 24px;
+  width: 24px;
+  @media (min-width: 800px) {
+    display:none;
 `;
 
 const HamburgerIcon = styled.div`
