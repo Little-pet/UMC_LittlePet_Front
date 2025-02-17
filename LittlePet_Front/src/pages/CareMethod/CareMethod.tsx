@@ -69,7 +69,15 @@ const CareMethodPage: React.FC = () => {
     fetchCategories();
   }, []);
 
-  const allowedSpecies = ['햄스터', '고슴도치', '토끼'];
+  const allowedSpecies = [
+    '햄스터',
+    '고슴도치',
+    '토끼',
+    '앵무새',
+    '거북',
+    '뱀',
+    '페럿',
+  ];
   const handleAnimalClick = (link: string, species: string) => {
     if (allowedSpecies.includes(species)) {
       console.log(`Navigating to: ${link}`); // 이동하는 URL 확인
@@ -105,15 +113,18 @@ const CareMethodPage: React.FC = () => {
 
                 return (
                   item && (
-                    <CategoryItem
-                      key={item.id}
-                      src={item.image}
-                      alt={item.name}
-                      onClick={() =>
-                        allowedSpecies.includes(item.name) &&
-                        handleAnimalClick(item.link, item.name)
-                      }
-                    />
+                    <CategoryItemWrapper>
+                      <CategoryImg
+                        key={item.id}
+                        src={item.image}
+                        alt={item.name}
+                        onClick={() =>
+                          allowedSpecies.includes(item.name) &&
+                          handleAnimalClick(item.link, item.name)
+                        }
+                      />
+                      <CategoryName>{item.name}</CategoryName>
+                    </CategoryItemWrapper>
                   )
                 );
               })}
@@ -181,7 +192,7 @@ const Content = styled.div`
 const CategoryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 2-column layout */
-  gap: 10px;
+  gap: 18px;
   width: 100%;
   @media (min-width: 800px) {
     justify-content: space-between;
@@ -204,10 +215,39 @@ const CategoryButton = styled.button<{ isSelected: boolean }>`
   font-weight: 500;
   @media (min-width: 800px) {
     font-size: 14px
-    :35px;
+    height:35px;
   }
 `;
 
-const CategoryItem = styled.img`
+const CategoryItemWrapper = styled.div`
+  position: relative;
+  width: 100px;
+  height: 130px;
+
+  cursor: pointer;
+
+  @media (min-width: 800px) {
+    width: 150px;
+    height: 175px;
+  }
+`;
+const CategoryImg = styled.img`
+  border-radius: 5px;
   width: 100%;
+  height: 100%;
+  box-shadow: 0px 2px 5px 0px #00000026;
+`;
+
+const CategoryName = styled.div`
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  @media (min-width: 800px) {
+    font-size: 16px;
+  }
 `;
