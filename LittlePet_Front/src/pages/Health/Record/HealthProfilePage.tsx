@@ -41,7 +41,7 @@ const HealthProfile: React.FC = () => {
   useEffect(() => {
     checkLoginStatus();
     fetchPets(userId);
-    console.log(usePetStore.getState().pets);
+    console.log('adfsf', usePetStore.getState().pets);
   }, [userId]);
 
   //pets배열이 바뀔 때마다다

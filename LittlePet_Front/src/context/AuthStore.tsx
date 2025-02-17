@@ -9,7 +9,7 @@ interface AuthStore {
 }
 
 // Zustand 스토어 생성
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>((set, get) => ({
   isLoggedIn: false, // 기본값 false
   userId: null, // 기본값 null
 
@@ -20,12 +20,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
         'https://umclittlepet.shop/api/auth/status',
         { withCredentials: true }
       );
-
+      console.log('✅ API 응답:', response.data);
       if (response.data.loggedIn) {
         set({
           isLoggedIn: true,
           userId: response.data.userId,
         });
+        console.log('로그인 성공!');
+        console.log('isLoggedIn상태', get().isLoggedIn);
+        console.log('userId', get().userId);
       } else {
         set({ isLoggedIn: false, userId: null });
       }
