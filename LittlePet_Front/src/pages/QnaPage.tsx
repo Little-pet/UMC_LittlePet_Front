@@ -58,6 +58,7 @@ const QnaPage: React.FC = () => {
         <ItemList>
           {posts.map((post, id) => (
             <Item
+              key={id}
               title='Q&A'
               type='qna'
               postId={post.postId}

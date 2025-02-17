@@ -20,10 +20,8 @@ import symptom5 from '@assets/symptoms/이상 행동.svg';
 import symptom6 from '@assets/symptoms/털 빠짐.svg';
 import symptom7 from '@assets/symptoms/체온 감소.svg';
 import symptom8 from '@assets/symptoms/체온 상승.svg';
-
 import symptom9 from '@assets/symptoms/분비물.svg';
 import symptom10 from '@assets/symptoms/기타.svg';
-import banner from '@assets/banner/banner-health.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -35,21 +33,11 @@ const AddHealthRecordPage: React.FC = () => {
     searchParams.get('date') || new Date().toISOString().split('T')[0];
   const navigate = useNavigate();
 
-  // 토스트 메시지 상태 추가
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isToastVisible, setToastVisible] = useState(false);
-
-  // ✅ `setTimeout()` 제거하고 상태만 변경
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    setToastVisible(true);
-  };
-
   //식사량
   const mealAmountOptions = [
-    { id: '감소', label: '감소' },
+    { id: '적음', label: '적음' },
     { id: '정상', label: '정상' },
-    { id: '증가', label: '증가' },
+    { id: '많음', label: '많음' },
   ];
 
   //배변 상태
@@ -100,17 +88,25 @@ const AddHealthRecordPage: React.FC = () => {
 
   // 입력 데이터 상태 관리
   const [formData, setFormData] = useState({
-    weight: 0,
-    mealAmount: null,
-    fecesStatus: null,
-    fecesColorStatus: null,
-    atypicalSymptom: null,
-    healthStatus: null,
-    hospitalVisit: null,
-    diagnosisName: null,
-    prescription: null,
-    otherSymptom: null,
+    weight: '',
+    mealAmount: '',
+    fecesStatus: '',
+    fecesColor: '',
+    symptoms: '',
+    healthStatus: '',
+    hospitalVisit: '',
+    diagnosis: '',
+    treatmentDetails: '',
+    otherSymptoms: '',
   });
+
+  const [selectedFecesType, setSelectedFecesType] = useState<number | null>(
+    null
+  );
+  const [selectedFecesColor, setSelectedFecesColor] = useState<number | null>(
+    null
+  );
+  const [selectedSymptoms, setSelectedSymptoms] = useState<number | null>(null);
 
   // 입력 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,77 +116,41 @@ const AddHealthRecordPage: React.FC = () => {
     }));
   };
 
-  //선택 핸들러
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name as keyof typeof formData]:
-        prevFormData[name as keyof typeof formData] === value ? null : value,
-    }));
+    setFormData({ ...formData, [name]: value });
+  };
+
+  //클릭 핸들러
+  const handleSelect = (name: string, value: number) => {
+    if (name === 'fecesType') setSelectedFecesType(value);
+    if (name === 'fecesColor') setSelectedFecesColor(value);
+    if (name === 'symptoms') setSelectedSymptoms(value);
   };
 
   // 폼 제출 핸들러
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 기본 폼 제출 동작 방지
-
-    // 요청 데이터 확인용 로그
-    console.log('요청 데이터 전처리 전:', formData);
-
-    if (!petId) {
-      return;
-    }
-
-    const isHospitalVisit = formData.hospitalVisit === 'o';
-    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
-    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
-    const isFecesColorRequired =
-      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
+    e.preventDefault(); // 폼 기본 제출 동작 방지
 
     if (
       !formData.weight ||
       !formData.mealAmount ||
-      isFecesColorRequired ||
+      !formData.fecesColor ||
       !formData.healthStatus ||
       !formData.fecesStatus ||
       !formData.hospitalVisit ||
-      isDiagnosisRequired ||
-      isPrescriptionRequired
+      !formData.diagnosis ||
+      !formData.treatmentDetails
     ) {
-      showToast('필수 입력 항목을 확인해주세요!');
+      alert('필수 입력 항목을 확인해주세요!');
       return;
     }
-
-    //  `hospitalVisit`을 boolean 값으로 변환하여 서버에서 요구하는 형태로 맞추기
-    const requestData = {
-      recordDate: date,
-      weight: Number(formData.weight), // 숫자로 변환
-      mealAmount: formData.mealAmount,
-      fecesStatus: formData.fecesStatus,
-      fecesColorStatus:
-        formData.fecesStatus === '대변 안 봄'
-          ? null
-          : formData.fecesColorStatus, // 대변 안 봄이면 null 처리
-      atypicalSymptom: formData.atypicalSymptom || null,
-      healthStatus: formData.healthStatus,
-      hospitalVisit: formData.hospitalVisit === 'o', //  문자열 "o"이면 true, 아니면 false
-      diagnosisName: isHospitalVisit ? formData.diagnosisName : null,
-      prescription: isHospitalVisit ? formData.prescription : null,
-      otherSymptom: formData.otherSymptom || null,
-    };
-
-    //  변환된 요청 데이터 확인
-    console.log('변환된 요청 데이터:', requestData);
-
+    /*추후 백엔드와 연동시 수정*/
     try {
-      const response = await axios.post(
-        `https://umclittlepet.shop/api/pets/${petId}/health-records`,
-        requestData,
-        {
-          withCredentials: true,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      const response = await fetch('/api/health-records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, date }),
+      });
 
       if (response.data.isSuccess) {
         alert('건강 기록이 저장되었습니다!');
@@ -209,171 +169,149 @@ const AddHealthRecordPage: React.FC = () => {
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
-    } catch (error: any) {
-      console.error(' 저장 오류:', error);
+    } catch (error) {
+      console.error('저장 오류:', error);
+      alert('서버 오류가 발생했습니다.');
     }
   };
 
   return (
-    <ContainerWrapper>
-      <Banner src={banner} />
-      <Container>
-        <Title>건강 기록하기</Title>
-        {toastMessage && (
-          <Toast
-            message={toastMessage}
-            isVisible={isToastVisible}
-            onClose={() => setToastMessage(null)}
+    <Container>
+      <Title>건강 기록하기</Title>
+      <Form>
+        <InputGroup>
+          <Label>
+            체중 <span>*</span>
+          </Label>
+          <WeightInputContainer>
+            <WeightInput
+              type='text'
+              name='weight'
+              value={formData.weight}
+              onChange={handleChange}
+              placeholder='0.00'
+            />
+            <Unit>kg</Unit>
+          </WeightInputContainer>
+        </InputGroup>
+
+        <InputGroup>
+          <Label>
+            식사량 <span>*</span>
+          </Label>
+          <SelectableButtonGroup
+            name='mealAmount'
+            options={mealAmountOptions}
+            selectedValue={formData.mealAmount}
+            onSelect={handleSelectChange}
           />
+        </InputGroup>
+
+        <SelectGroup>
+          <Label>
+            배변 형태 <span>*</span>
+          </Label>
+          <SelectableButton
+            name='fecesType'
+            options={fecesTypes}
+            selectedOption={selectedFecesType}
+            onSelect={handleSelect}
+          />
+        </SelectGroup>
+
+        <SelectGroup>
+          <Label>
+            대변 색 <span>*</span>
+          </Label>
+          <FecesColorButton
+            name='fecesColor'
+            options={fecesColors}
+            selectedOption={selectedFecesColor}
+            onSelect={handleSelect}
+          />
+        </SelectGroup>
+
+        <SelectGroup>
+          <Label>특이 증상</Label>
+          <SelectableButton
+            name='symptoms'
+            options={Symptoms}
+            selectedOption={selectedSymptoms}
+            onSelect={handleSelect}
+          />
+        </SelectGroup>
+
+        {selectedSymptoms === 10 && (
+          <InputGroup>
+            <Input
+              name='otherSymptoms'
+              value={formData.otherSymptoms}
+              onChange={handleChange}
+              placeholder='기타 특이 증상을 적어주세요'
+            />
+          </InputGroup>
         )}
-        <Form onSubmit={handleSubmit}>
-          <InputGroup>
-            <Label>
-              체중 <span>*</span>
-            </Label>
-            <WeightInputContainer>
-              <WeightInput
-                type='text'
-                name='weight'
-                value={formData.weight}
-                onChange={handleChange}
-                placeholder='0.00'
-              />
-              <Unit>kg</Unit>
-            </WeightInputContainer>
-          </InputGroup>
 
-          <InputGroup>
-            <Label>
-              식사량 <span>*</span>
-            </Label>
-            <SelectableButtonGroup
-              name='mealAmount'
-              options={mealAmountOptions}
-              selectedValue={formData.mealAmount}
-              onSelect={handleSelectChange}
-            />
-          </InputGroup>
+        <InputGroup>
+          <Label>
+            건강 상태 <span>*</span>
+          </Label>
+          <SelectableButtonGroup
+            name='healthStatus'
+            options={healthStatusOptions}
+            selectedValue={formData.healthStatus}
+            onSelect={handleSelectChange}
+          />
+        </InputGroup>
 
-          <SelectGroup>
-            <Label>
-              배변 형태 <span>*</span>
-            </Label>
-            <SelectableButton
-              name='fecesStatus'
-              options={fecesTypes}
-              selectedOption={formData.fecesStatus}
-              onSelect={handleSelectChange}
-            />
-          </SelectGroup>
+        <InputGroup>
+          <Label>
+            병원 내진 여부 <span>*</span>
+          </Label>
 
-          <SelectGroup>
-            <Label>
-              대변 색 <span>*</span>
-            </Label>
-            <FecesColorButton
-              name='fecesColorStatus'
-              options={fecesColors}
-              selectedOption={formData.fecesColorStatus}
-              onSelect={handleSelectChange}
-            />
-          </SelectGroup>
+          <SelectableButtonGroup
+            name='hospitalVisit'
+            options={HospitalVisitOptions}
+            selectedValue={formData.hospitalVisit}
+            onSelect={handleSelectChange}
+          />
+        </InputGroup>
 
-          <SelectGroup>
-            <Label>특이 증상</Label>
-            <SelectableButton
-              name='atypicalSymptom'
-              options={Symptoms}
-              selectedOption={formData.atypicalSymptom}
-              onSelect={handleSelectChange}
-            />
-          </SelectGroup>
-
-          {formData.atypicalSymptom === '기타' && (
+        {formData.hospitalVisit === 'o' && (
+          <>
             <InputGroup>
+              <Label>
+                진단명 <span>*</span>
+              </Label>
               <Input
-                name='otherSymptom'
-                value={formData.otherSymptom}
+                name='diagnosis'
+                value={formData.diagnosis}
                 onChange={handleChange}
-                placeholder='기타 특이 증상을 적어주세요'
+                placeholder='진단명을 입력하세요'
               />
             </InputGroup>
-          )}
 
-          <InputGroup>
-            <Label>
-              건강 상태 <span>*</span>
-            </Label>
-            <SelectableButtonGroup
-              name='healthStatus'
-              options={healthStatusOptions}
-              selectedValue={formData.healthStatus}
-              onSelect={handleSelectChange}
-            />
-          </InputGroup>
+            <InputGroup>
+              <Label>
+                검사 및 처방 내역 <span>*</span>
+              </Label>
+              <Input
+                name='treatmentDetails'
+                value={formData.treatmentDetails}
+                onChange={handleChange}
+                placeholder='검사 및 처방 내용을 입력하세요'
+              />
+            </InputGroup>
+          </>
+        )}
 
-          <InputGroup>
-            <Label>
-              병원 내진 여부 <span>*</span>
-            </Label>
-
-            <SelectableButtonGroup
-              name='hospitalVisit'
-              options={HospitalVisitOptions}
-              selectedValue={formData.hospitalVisit}
-              onSelect={handleSelectChange}
-            />
-          </InputGroup>
-
-          {formData.hospitalVisit === 'o' && (
-            <>
-              <InputGroup>
-                <Label>
-                  진단명 <span>*</span>
-                </Label>
-                <Input
-                  name='diagnosisName'
-                  value={formData.diagnosisName}
-                  onChange={handleChange}
-                  placeholder='진단명을 입력하세요'
-                />
-              </InputGroup>
-
-              <InputGroup>
-                <Label>
-                  검사 및 처방 내역 <span>*</span>
-                </Label>
-                <Input
-                  name='prescription'
-                  value={formData.prescription}
-                  onChange={handleChange}
-                  placeholder='검사 및 처방 내용을 입력하세요'
-                />
-              </InputGroup>
-            </>
-          )}
-
-          <SaveButton type='submit'>저장하기</SaveButton>
-        </Form>
-      </Container>
-    </ContainerWrapper>
+        <SaveButton onClick={() => handleSubmit}>저장하기</SaveButton>
+      </Form>
+    </Container>
   );
 };
 
 export default AddHealthRecordPage;
-
-const Banner = styled.img`
-  width: 100vw;
-  @media (max-width: 800px) {
-    display: none;
-  }
-`;
-
-const ContainerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 
 const Container = styled.div`
   padding: 0 25px;
@@ -392,7 +330,7 @@ const Title = styled.h1`
   margin-bottom: 20px;
 `;
 
-const Form = styled.form`
+const Form = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -479,13 +417,4 @@ const SaveButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  @media (min-width: 800px) {
-    width: 197px;
-    height: 68px;
-    padding: 16px 60px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 5px 0px #00000026;
-    font-size: 22px;
-    justify-content: end;
-  }
 `;

@@ -34,7 +34,7 @@ interface UserStore {
   isLoading: boolean;
 }
 
-export const useUserStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set) => ({
   user: null,
   pets: [],
   stats: null,

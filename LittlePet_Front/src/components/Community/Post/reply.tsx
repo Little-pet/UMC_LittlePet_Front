@@ -1,8 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
 import CommentWriteBox from './commentWriteBox';
-import react, { useState } from 'react';
 interface ReplyProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름

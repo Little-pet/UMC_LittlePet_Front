@@ -16,10 +16,10 @@ interface HospitalStore {
 
   // API 호출 함수들
   fetchHospitalDetail: (hospitalId: number) => Promise<void>;
-  scrapHospital: (hospitalId: number) => Promise<void>;
-  unscriptHospital: (hospitalId: number) => Promise<void>;
+  scrapHospital: (hospitalId: number, userId: number) => Promise<void>;
+  unscriptHospital: (hospitalId: number, userId: number) => Promise<void>;
   fetchScrappedHospitals: (userId: number) => Promise<void>;
-  fetchHospitalsByRegion: (region: string) => Promise<void>;
+  fetchHospitalsByRegion: (areaId: number) => Promise<void>;
 }
 
 export const useHospitalStore = create<HospitalStore>((set) => ({

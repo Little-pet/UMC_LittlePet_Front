@@ -3,8 +3,15 @@ import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/context/UserStore';
+interface CommentWriteBoxProps {
+  postId: number;
+  parentId?: number | null;
+}
 // 실제 댓글 작성 컴포넌트
-const CommentWriteBox: React.FC = ({ postId, parentId }) => {
+const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
+  postId,
+  parentId,
+}) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
   const isTextValid =
@@ -30,7 +37,7 @@ const CommentWriteBox: React.FC = ({ postId, parentId }) => {
         return AnimalIcons.snake;
     }
   };
-  const { user, pets, isLoading } = useUserStore();
+  const { user, pets } = useUserStore();
   //console.log(parentId);
   const author = user?.name;
   const animal = pets[0]?.petCategory;

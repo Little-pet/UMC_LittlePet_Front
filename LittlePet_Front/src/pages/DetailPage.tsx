@@ -34,7 +34,6 @@ const DetailPage: React.FC = () => {
         author={data.userName}
         badgeType={data.userBadges}
         animal={data.petCategory}
-        gender='male'
         time={data.updatedTime}
         footerData={[data.views, data.likes, data.commentNum]}
         contents={data.contents}
@@ -55,7 +54,6 @@ const DetailPage: React.FC = () => {
               parent={comment.commentId}
               userName={comment.name}
               animal={comment.userPets[0]}
-              gender='male'
               content={comment.content}
               time={comment.updatedTime}
               postId={numericPostId}

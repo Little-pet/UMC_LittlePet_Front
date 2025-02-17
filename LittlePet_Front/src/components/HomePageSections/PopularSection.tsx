@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { ContentWrapper, ItemList } from '#/components/Community/styles/common';
 import Item from '#/components/Community/item';
@@ -10,6 +10,7 @@ const PopularSection: React.FC = () => {
     fetchPopularPosts();
   }, [fetchPopularPosts]);
   if (isLoading) return <div>Loading...</div>;
+
   return (
     <Popular>
       <PopularTitle>인기글 🔥</PopularTitle>
@@ -27,6 +28,7 @@ const PopularSection: React.FC = () => {
           {popularPosts.map((post, id) => (
             <Item
               key={id}
+              type='popular'
               title={post.category}
               postId={post.postId}
               subText={post.petCategory}

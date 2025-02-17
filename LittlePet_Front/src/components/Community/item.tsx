@@ -13,9 +13,9 @@ interface ItemProps {
   postId: string | number;
   subText: string;
   description: string;
-  footerData: string[];
+  footerData: (number | string)[];
   contents: Content[];
-  type: string;
+  type?: string;
 }
 // 카테고리를 들어가자마자 볼 수 있는 미리보기 글들의 컴포넌트
 const Item: React.FC<ItemProps> = ({
