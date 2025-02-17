@@ -20,11 +20,11 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         'https://umclittlepet.shop/api/auth/status',
         { withCredentials: true }
       );
-      console.log('✅ API 응답:', response.data);
+      console.log(' API 응답:', response.data);
       if (response.data.loggedIn) {
         set({
           isLoggedIn: true,
-          userId: response.data.userId,
+          userId: response.data.user.userId,
         });
         console.log('로그인 성공!');
         console.log('isLoggedIn상태', get().isLoggedIn);
