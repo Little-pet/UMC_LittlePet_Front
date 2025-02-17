@@ -7,13 +7,17 @@ import InfoModal from '#/components/Hospital/InfoModal';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useHospitalStore } from '#/context/hospitalStore';
 // 타입 정의
-interface Marker {
+interface Hospital {
   id: number;
-  x: number; // 경도 (longitude)
-  y: number; // 위도 (latitude)
-}
-interface LocationState {
-  locationData: string;
+  name: string;
+  address: string;
+  closedDay: string;
+  latitude?: number;
+  longitude?: number;
+  imageUrl: string;
+  openingHours: string;
+  phoneNumber: string;
+  rating: number;
 }
 
 const MapPage: React.FC = () => {
@@ -22,8 +26,7 @@ const MapPage: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [timeText, setTimeText] = useState<string>('');
   const { state } = useLocation();
-  const [info, setInfo] = useState<Marker | null>(null); // 선택된 마커 정보
-  const [markers, setMarkers] = useState<Marker[]>([]); // 마커 배열
+  const [info, setInfo] = useState<Hospital | null>(null); // 선택된 마커 정보
   const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
   const { locationData } = state || {};
 
@@ -64,9 +67,10 @@ const MapPage: React.FC = () => {
         // LatLngBounds 객체에 좌표를 추가합니다
         const bounds = new kakao.maps.LatLngBounds();
         for (let i = 0; i < data.length; i++) {
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          bounds.extend(
+            new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x))
+          );
         }
-        setMarkers(data);
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         map.setBounds(bounds);
@@ -157,7 +161,7 @@ const MapPage: React.FC = () => {
 export default MapPage;
 const Container = styled.div`
   position: relative;
-  overflowy: hidden;
+  overflow-y: hidden;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -234,7 +238,7 @@ const DropdownMenu = styled.ul`
   flex-direction: column;
   justify-content: space-between;
 `;
-const ArrowIcon = styled(({ isDropdownOpen, ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled(({ ...rest }) => <img {...rest} />)`
   transition: transform 0.3s ease-in-out;
   transform: ${({ isDropdownOpen }) =>
     isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};

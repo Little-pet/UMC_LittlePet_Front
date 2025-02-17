@@ -1,9 +1,23 @@
+import React from 'react';
 import closeIcon from '#/assets/close.svg';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 // Props 타입 정의
+interface Info {
+  id: number;
+  name: string;
+  address: string;
+  closedDay: string;
+  latitude?: number;
+  longitude?: number;
+  imageUrl: string;
+  openingHours: string;
+  phoneNumber: string;
+  rating: number;
+}
 interface LocationModalProps {
   onClose: () => void; // 모달 닫기 콜백 함수
+  info: Info;
 }
 const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
   const openKakaoMap = (name: string, la: number, lo: number): void => {
