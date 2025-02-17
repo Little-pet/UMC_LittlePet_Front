@@ -5,7 +5,7 @@ import Carousel from '@components/HomePageSections/Carousel';
 import ChallengeSection from '@components/HomePageSections/ChallengeSection';
 import QuizSection from '@components/HomePageSections/QuizSection';
 import PopularSection from '@components/HomePageSections/PopularSection';
-
+import Footer from '@components/HomePageSections/HomePageFooter';
 const HomePage: React.FC = () => {
   return (
     <Container>
@@ -18,6 +18,7 @@ const HomePage: React.FC = () => {
         <QuizSection />
       </ContentContainer>
       <PopularSection />
+      <Footer />
     </Container>
   );
 };
