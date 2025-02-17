@@ -63,7 +63,7 @@ const HospitalPage: React.FC = () => {
         <TopActions>
           <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
             <AreaText>서울시 {selectedArea}</AreaText>
-            <ArrowIcon src={arrowIcon} view={view} />
+            <ArrowIcon src={arrowIcon} view={isModalOpen} />
           </AreaModalButton>
           <MapButton
             to='/health/hospital/map'
