@@ -1,48 +1,68 @@
 import styled from 'styled-components';
-import animalIcon from '#/assets/동물 아이콘.svg';
-import femaleIcon from '#/assets/성별여자.svg';
-import maleIcon from '#/assets/성별남자.svg';
-
+import { AnimalIcons } from '#/components/icon';
+import CommentWriteBox from './commentWriteBox';
+import react, { useState } from 'react';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
-  gender: 'male' | 'female'; // 성별 ('male' 또는 'female')
   content: string; // 댓글 내용
-  date: string; // 날짜 (YYYY.MM.DD)
   time: string; // 시간 (HH:mm)
+  postId: number;
+  parent: number;
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
   animal,
-  gender,
   content,
-  date,
   time,
-}) => (
-  <CommentContainer>
-    <Header>
-      <UserName>{userName}</UserName>
-      <UserInfo>
-        <IconGroup>
-          <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
-          <IconText>{animal}</IconText>
-        </IconGroup>
-        {gender == 'female' ? (
-          <img src={femaleIcon} style={{ width: '8px' }} />
-        ) : (
-          <img src={maleIcon} style={{ width: '10px' }} />
+  postId,
+  parent,
+}) => {
+  const getAnimalIcon = (category: string) => {
+    switch (category) {
+      case '햄스터':
+        return AnimalIcons.hamster;
+      case '토끼':
+        return AnimalIcons.rabbit;
+      case '고슴도치':
+        return AnimalIcons.hedgehog;
+      case '페럿':
+        return AnimalIcons.ferret;
+      case '앵무새':
+        return AnimalIcons.parrot;
+      case '거북이':
+        return AnimalIcons.turtle;
+      case '뱀':
+        return AnimalIcons.snake;
+    }
+  };
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  return (
+    <CommentContainer>
+      <Header>
+        <UserName>{userName}</UserName>
+        {animal && (
+          <UserInfo>
+            <IconGroup>
+              <img
+                src={getAnimalIcon(animal)}
+                style={{ width: '20px', height: '20px' }}
+              />
+              <IconText>{animal}</IconText>
+            </IconGroup>
+          </UserInfo>
         )}
-      </UserInfo>
-    </Header>
-    <Content>{content}</Content>
-    <Footer>
-      <TimeStamp>
-        {date}&nbsp;&nbsp;{time}
-      </TimeStamp>
-      <ReplyButton>답글 쓰기</ReplyButton>
-    </Footer>
-  </CommentContainer>
-);
+      </Header>
+      <Content>{content}</Content>
+      <Footer>
+        <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
+        <ReplyButton onClick={() => setIsOpen(!isOpen)}>답글 쓰기</ReplyButton>
+      </Footer>
+      {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
+    </CommentContainer>
+  );
+};
 
 export default Comment;
 const CommentContainer = styled.div`
@@ -60,6 +80,7 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 18px;
 `;
 
 const UserName = styled.div`
@@ -95,6 +116,7 @@ const Footer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  height: 22px;
 `;
 
 const TimeStamp = styled.div`

@@ -58,7 +58,7 @@ const MotionMenu = styled(motion.div)`
   height: 100vh;
   background-color: #fff;
   color: black;
-
+  z-index: 20;
   @media (min-width: 768px) {
     /* 태블릿 및 PC 화면에서는 작은 팝업으로 변경 */
     width: 272px;

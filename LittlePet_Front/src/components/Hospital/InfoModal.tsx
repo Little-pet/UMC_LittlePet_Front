@@ -6,7 +6,7 @@ import styled from 'styled-components';
 interface InfoModalProps {
   onClose: () => void;
 }
-const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
+const InfoModal: React.FC<InfoModalProps> = ({ onClose, info }) => {
   return (
     <Container
       initial={{ opacity: 0, y: 100 }}
@@ -31,13 +31,12 @@ const InfoModal: React.FC<InfoModalProps> = ({ onClose }) => {
         />
       </div>
       <HospitalItem
-        imageSrc={HospitalImg}
-        hospitalId={5}
-        name='로얄동물메디컬센터'
-        distance={512}
-        rating={4.5}
-        comments={188}
-        openStatus='24시간 영업'
+        imageSrc={info.imageUrl}
+        hospitalId={info.id}
+        name={info.name}
+        rating={info.rating}
+        comments={0}
+        openStatus={info.openingHours}
       />
     </Container>
   );

@@ -1,20 +1,29 @@
 import ChallengeCard from '#/components/Community/challengeCard';
 import ChallengeItem from '#/components/Community/challengeItem';
 import styled from 'styled-components';
-import MobileAddButton from '@components/Community/AddButton/MobileAddButton';
-import React, { useState } from 'react';
+import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
+import { useCommunityStore } from '#/context/CommunityStore';
+
 const ChallengePage: React.FC = () => {
-  const [selected, setSelected] = useState<'popular' | 'new'>('popular');
+  const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
+  const handleClick = (filter: '인기순' | '최신순') => {
+    setSelected(filter);
+  };
   const navigate = useNavigate();
 
   const handleNavigate = (): void => {
     navigate('/community/add');
   };
-  const handleClick = (filter: 'popular' | 'new') => {
-    setSelected(filter);
-  };
+
+  const { posts, fetchPosts, isLoading } = useCommunityStore();
+  useEffect(() => {
+    fetchPosts('챌린지', selected);
+  }, [fetchPosts, selected]);
+  if (isLoading) return <div>Loading...</div>;
+  const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <Container>
       <Banner src={banner} />
@@ -26,33 +35,19 @@ const ChallengePage: React.FC = () => {
           </Subtitle>
         </HeaderWrapper>
         <ChallengeWrapper>
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
-          <ChallengeCard
-            name='천혜향'
-            postId={9}
-            animal='햄스터'
-            gender='male'
-            badges={[{ type: 'challenge' }, { type: 'popular' }]}
-            descriptionTitle='조규현 닮은 푸들 아니고...'
-            descriptionText='이쯤되면 동물들이 규현을 닮은 게...'
-          />
+          {topPosts.map((post, idx) => (
+            <ChallengeCard
+              key={idx}
+              category='챌린지'
+              type='challenge'
+              name={post.userName}
+              postId={post.postId}
+              animal={post.petCategory}
+              descriptionTitle={post.title}
+              contents={post.contents}
+              userId={post.userId}
+            />
+          ))}
         </ChallengeWrapper>
       </ContentWrapper>
       <BannerContainer>
@@ -73,51 +68,33 @@ const ChallengePage: React.FC = () => {
         </HeaderWrapper>
         <Header>
           <HeaderFilter
-            onClick={() => handleClick('popular')}
-            isActive={selected === 'popular'}
+            onClick={() => handleClick('인기순')}
+            isActive={selected === '인기순'}
           >
             인기순
           </HeaderFilter>
           <HeaderFilter
-            onClick={() => handleClick('new')}
-            isActive={selected === 'new'}
+            onClick={() => handleClick('최신순')}
+            isActive={selected === '최신순'}
           >
             최신순
           </HeaderFilter>
         </Header>
         <ItemList>
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
-          <ChallengeItem
-            title='나갈래 고양이의 뒤를 잇는 나갈래 토끼...'
-            name='천혜향'
-            postId={9}
-            views={294}
-            likes={190}
-            comments={32}
-          />
+          {posts.map((post, id) => (
+            <ChallengeItem
+              key={id}
+              type='challenge'
+              title={post.title}
+              name={post.userName}
+              postId={post.postId}
+              views={post.views}
+              likes={post.likes}
+              comments={post.comments}
+              contents={post.contents}
+              category='챌린지'
+            />
+          ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

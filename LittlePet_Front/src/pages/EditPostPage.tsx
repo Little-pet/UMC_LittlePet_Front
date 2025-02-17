@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import TagButton from '#/components/Community/AddPage/tagButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -25,12 +25,26 @@ interface ImageData {
   base64: string;
 }
 
-const AddPage: React.FC = () => {
+const EditPostPage: React.FC = () => {
   const navigate = useNavigate();
-  const [tagSelected, setTagSelected] = useState<Tag>({ type: '', title: '' });
-  const [categoryText, setCategoryText] = useState<string>('');
+  const location = useLocation();
+  const {
+    category = '',
+    categoryType = '',
+    id = '',
+    initialTitle = '',
+    animal = '',
+    contents = '',
+  } = location.state || {};
+  console.log(location.state);
+  const [tagSelected, setTagSelected] = useState<Tag>({
+    type: categoryType,
+    title: category,
+  });
+
+  const [categoryText, setCategoryText] = useState<string>(animal);
   const [postImgs, setPostImgs] = useState<ImageData[]>([]);
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>(initialTitle);
   const [textCount, setTextCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
   const [imgCount, setImgCount] = useState<number>(0);
@@ -56,6 +70,37 @@ const AddPage: React.FC = () => {
       title: '챌린지',
     },
   ];
+  // URL을 File로 변환하는 함수
+  const convertURLtoFile = async (url: string): Promise<File> => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const fileName = url.split('/').pop() || 'image.jpg';
+      return new File([blob], fileName, { type: blob.type });
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      throw error;
+    }
+  };
+
+  const initialState = {
+    title: initialTitle,
+    categoryText: animal,
+    tagSelected: { type: categoryType, title: category },
+    content: contents
+      ? contents
+          .map((item) =>
+            item.content.startsWith('http')
+              ? `<img src="${item.content}" alt="uploaded image"/>`
+              : `<p>${item.content}</p>`
+          )
+          .join('')
+      : '',
+    postImgs: [] as ImageData[],
+  };
   // 태그 클릭
   const handleTagClick = (tag: Tag) => {
     setTagSelected(tag);
@@ -68,7 +113,37 @@ const AddPage: React.FC = () => {
       htmlContent.match(/<img [^>]*src=["'][^"']*["'][^>]*>/g) || [];
     return imgTags.length;
   };
+  useEffect(() => {
+    if (contents && Array.isArray(contents)) {
+      // 텍스트와 이미지 데이터를 순서대로 HTML로 변환
+      const formattedContent = contents
+        .map((item) => {
+          if (item.content.startsWith('http')) {
+            return `<img src="${item.content}" alt="uploaded image"/>`;
+          }
+          return `<p>${item.content}</p>`;
+        })
+        .join('');
 
+      setContent(formattedContent);
+    }
+    const convertImages = async () => {
+      if (contents && Array.isArray(contents)) {
+        const imageItems = contents.filter((item) =>
+          item.content.startsWith('http')
+        );
+        const images: ImageData[] = await Promise.all(
+          imageItems.map(async (item) => ({
+            base64: item.content,
+            file: await convertURLtoFile(item.content),
+          }))
+        );
+        setPostImgs(images);
+      }
+    };
+    convertImages();
+    console.log(postImgs);
+  }, [contents]);
   // 파일 선택 핸들러
   const handleFileChange = () => {
     //input type= file DOM을 만든다.
@@ -172,14 +247,7 @@ const AddPage: React.FC = () => {
   }, [content]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (categoryText === '') {
-      alert('종 카테고리를 선택해주세요!');
-      return;
-    }
-    if (tagSelected.title === '') {
-      alert('글 카테고리를 선택해주세요!');
-      return;
-    }
+
     if (!isTitleValid) {
       alert('제목을 입력해주세요!');
       return;
@@ -189,15 +257,29 @@ const AddPage: React.FC = () => {
       return;
     }
     const parsedContents = parseContent(content);
-    let imageCounter = 0;
+
+    const getFileNameFromUrl = (url: string): string => {
+      return url.split('/').pop() || url;
+    };
+
     const updatedContents = parsedContents.map((item) => {
       if (item.type === 'image') {
-        const fileName = postImgs[imageCounter]?.name || item.value;
-        imageCounter++;
-        return { ...item, value: fileName };
+        if (item.value.startsWith('data:image')) {
+          // 새로 추가된 이미지 (Base64 → 파일 저장 필요)
+          const fileIndex = postImgs.findIndex(
+            (img) => img.base64 === item.value
+          );
+          if (fileIndex !== -1) {
+            return { ...item, value: postImgs[fileIndex].file.name }; // 파일 이름 저장
+          }
+        } else {
+          // 기존 이미지 (URL → 파일명 추출)
+          return { ...item, value: getFileNameFromUrl(item.value) };
+        }
       }
       return item;
     });
+
     const postForm = {
       title,
       smallPetCategory: categoryText,
@@ -221,7 +303,7 @@ const AddPage: React.FC = () => {
     console.log(postImgs);
     try {
       const response = await axios.post(
-        `https://umclittlepet.shop/api/post/4`,
+        `https://umclittlepet.shop/api/post/${id}`,
         formData,
         {
           headers: {
@@ -230,10 +312,10 @@ const AddPage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log('커뮤니티 게시물 생성 성공', response.data);
+      console.log('커뮤니티 게시물 수정 성공', response.data);
       navigate(`/community/${tagSelected.type}`);
     } catch (error) {
-      console.error('커뮤니티 게시물 생성 실패:', error);
+      console.error('커뮤니티 게시물 수정 실패:', error);
     }
   };
   useEffect(() => {
@@ -244,17 +326,35 @@ const AddPage: React.FC = () => {
     // 상태 업데이트
     setTextCount(textCount);
     setImgCount(getImageCount(content));
+    const parseHTML = (html: string) => {
+      const parser = new DOMParser();
+      return parser.parseFromString(html, 'text/html').body.innerHTML;
+    };
+    const hasContent = plainText.length > 0;
 
-    if (
-      plainText.length > 0 &&
-      isTitleValid &&
-      categoryText !== '' &&
-      tagSelected.title !== ''
-    ) {
-      setValid(true);
-    } else {
-      setValid(false);
-    }
+    /* const isChanged =
+      title !== initialState.title ||
+      categoryText !== initialState.categoryText ||
+      tagSelected.title !== initialState.tagSelected.title ||
+      content !== initialState.content; */
+    const isTitleChanged = title !== initialState.title;
+    const isCategoryChanged = categoryText !== initialState.categoryText;
+    const isTagChanged = tagSelected.title !== initialState.tagSelected.title;
+    const isContentChanged =
+      parseHTML(initialState.content) !== parseHTML(content);
+    //const isContentChanged = content !== initialState.content;
+
+    /*  console.log('isTitleChanged:', isTitleChanged);
+    console.log('isCategoryChanged:', isCategoryChanged);
+    console.log('isTagChanged:', isTagChanged);
+    console.log('isContentChanged:', isContentChanged);
+    console.log('initial', initialState.content);
+    console.log(content); */
+
+    const isChanged =
+      isTitleChanged || isCategoryChanged || isTagChanged || isContentChanged;
+
+    setValid(hasContent && isTitleValid && isChanged);
   }, [title, content, categoryText, tagSelected]);
 
   const modules = useMemo(() => {
@@ -317,7 +417,7 @@ const AddPage: React.FC = () => {
         {valid === true ? (
           <ButtonWrapper>
             <SubmitButton type='submit'>
-              <ButtonText>등록하기</ButtonText>
+              <ButtonText>수정하기</ButtonText>
             </SubmitButton>
           </ButtonWrapper>
         ) : (
@@ -327,13 +427,138 @@ const AddPage: React.FC = () => {
               type='submit'
               value='제출'
             >
-              <ButtonText style={{ color: '#737373' }}>등록하기</ButtonText>
+              <ButtonText style={{ color: '#737373' }}>수정하기</ButtonText>
             </SubmitButton>
           </ButtonWrapper>
         )}
       </Form>
     </Container>
   );
-
 };
-export default AddPage;
+export default EditPostPage;
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 656px;
+  position: relative;
+`;
+
+const TagButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const Form = styled.form`
+  height: 100%;
+  padding: 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
+`;
+
+const Title = styled.input`
+  height: 22px;
+  font-size: 24px;
+  font-family: 'Pretendard-SemiBold';
+  border: none;
+  outline: none;
+  ::placeholder {
+    color: #737373;
+  }
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #e6e6e6;
+  margin: 1px 0;
+`;
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const SubmitButton = styled.button`
+  height: 48px;
+  box-sizing: border-box;
+  width: 87.5%;
+  border-radius: 5px;
+  background-color: #6ea8fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+  border: none;
+  @media only screen and (min-width: 800px) {
+    width: 150px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
+  }
+`;
+
+const ButtonText = styled.div`
+  font-size: 16px;
+  font-family: 'Pretendard-SemiBold';
+  color: #ffffff;
+`;
+
+const StyledQuill = styled(ReactQuill)`
+  .ql-container {
+    padding: 10px;
+    height: 360px;
+  }
+  .ql-editor {
+    border: none;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    line-height: 22px;
+    padding: 0 !important;
+    height: 340px;
+    overflow-y: auto; /* 세로 스크롤 */
+    /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+    -ms-overflow-style: none;
+
+    /* 파이어폭스에서 스크롤바 숨기기 */
+    scrollbar-width: none;
+  }
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #737373;
+  }
+
+  .ql-toolbar .ql-bold {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-bold:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-size {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-size:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-underline {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-underline:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+`;

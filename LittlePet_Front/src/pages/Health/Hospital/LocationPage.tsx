@@ -1,13 +1,15 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import LocationModal from '#/components/Hospital/LocationModal';
 const LocationPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const info = state?.info;
   const onClickBtn = () => {
-    navigate(-1); // 바로 이전 페이지로 이동, '/main' 등 직접 지정도 당연히 가능
+    navigate(-1); // 바로 이전 페이지로 이동
   };
   return (
     <Container>
@@ -17,8 +19,28 @@ const LocationPage = () => {
         </BackButton>
         <AreaText>위치</AreaText>
       </Header>
-
-      {isModalOpen && <LocationModal onClose={() => setIsModalOpen(false)} />}
+      <Map
+        id='map'
+        center={{
+          lat: info.latitude,
+          lng: info.longitude,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        level={3} // 지도의 확대 레벨
+        onCreate={setMap}
+      >
+        {' '}
+        <MapMarker
+          position={{ lat: info.latitude, lng: info.longitude }}
+          onClick={() => setIsModalOpen(true)}
+        ></MapMarker>
+      </Map>
+      {isModalOpen && (
+        <LocationModal onClose={() => setIsModalOpen(false)} info={info} />
+      )}
     </Container>
   );
 };

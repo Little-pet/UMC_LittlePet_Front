@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 // Props 타입 정의
 interface DeleteModalProps {
   onClose: () => void; // onClose는 함수이며 반환값은 없습니다.
