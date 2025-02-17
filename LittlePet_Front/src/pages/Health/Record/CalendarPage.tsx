@@ -5,8 +5,8 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import left from '#/assets/left.svg';
 import right from '#/assets/right.svg';
-import axios from 'axios';
 import banner from '@assets/banner/banner-health.svg';
+import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
 // 요일 배열
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
@@ -41,6 +41,7 @@ const CalendarPage: React.FC = () => {
   const location = useLocation();
   const petName = location.state?.petName;
   const navigate = useNavigate();
+  const { recordDates, fetchRecordDates } = useHealthRecordsStore();
   const initialDate = location.state?.selectedDate
     ? dayjs(location.state.selectedDate)
     : dayjs();
@@ -49,25 +50,16 @@ const CalendarPage: React.FC = () => {
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(initialDate);
   const [currentMonth, setCurrentMonth] = useState<dayjs.Dayjs>(initialDate);
-  const [recordDates, setRecordDates] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchRecordDates = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/pets/${petId}/health-records/record-dates`
-        );
-        if (response.data.isSuccess) {
-          setRecordDates(response.data.result);
-        }
-      } catch (error) {
-        console.error('Error fetching health record dates:', error);
-      }
-    };
     if (petId) {
-      fetchRecordDates();
+      fetchRecordDates(petId);
     }
   }, [petId]);
+
+  useEffect(() => {
+    console.log('recordDates업데이트됨:', recordDates);
+  }, [recordDates]);
 
   // 해당 월의 모든 날짜 가져오기 (이전 달 포함)
   const monthlyDates = getMonthlyDates(currentMonth);

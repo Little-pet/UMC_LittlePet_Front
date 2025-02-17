@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
+import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -27,6 +28,8 @@ import banner from '@assets/banner/banner-health.svg';
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { petId } = useParams();
+  const { recordDates, fetchRecordDates } = useHealthRecordsStore();
+
   //현재 선택된 날짜 (쿼리에서 가져오거나 기본값)
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -191,6 +194,13 @@ const AddHealthRecordPage: React.FC = () => {
 
       if (response.data.isSuccess) {
         alert('건강 기록이 저장되었습니다!');
+        await fetchRecordDates(petId);
+
+        console.log('recordDates:', recordDates);
+        console.log(
+          '🔄 Zustand에서 최신 recordDates 직접 확인:',
+          useHealthRecordsStore.getState().recordDates
+        ); // ✅ 최신 상태 직접 확인
         navigate(`/health/record/detail/${petId}?date=${date}`, {
           state: {
             selectedDate: date,

@@ -4,6 +4,7 @@ import Notice from '@assets/Notice.svg';
 import Logout from '@assets/Logout.svg';
 import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
+import Security from '@assets/Security.svg';
 import { useAuthStore } from '#/context/AuthStore';
 
 import axios from 'axios';
@@ -27,6 +28,15 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => {
 
 const SettingsPage: React.FC = () => {
   const { isLoggedIn, checkLoginStatus } = useAuthStore();
+  const handleTermsOfService = () => {
+    window.location.href =
+      'https://kind-property-f6b.notion.site/1988adfe580080658c3ae0e6efb14b7a?pvs=4';
+  };
+
+  const handleSecurity = () => {
+    window.location.href =
+      'https://kind-property-f6b.notion.site/1988adfe5800804fb469ddb7572a10f9?pvs=4';
+  };
 
   //로그아웃 핸들러
   const handleLogout = async () => {
@@ -50,6 +60,12 @@ const SettingsPage: React.FC = () => {
         <MenuItem
           icon={<img src={TermsOfService} alt='이용약관' />}
           text='이용약관'
+          onClick={handleTermsOfService}
+        />
+        <MenuItem
+          icon={<img src={Security} alt='개인정보처리방침' />}
+          text='개인정보처리방침'
+          onClick={handleSecurity}
         />
       </Section>
 

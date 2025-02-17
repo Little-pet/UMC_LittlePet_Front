@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import calendarIcon from '@assets/Calender.svg';
@@ -20,6 +21,8 @@ const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
 
 const PastRecordPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
+  const { recordDates, fetchRecordDates } = useHealthRecordsStore();
+  const [isRecorded, setIsRecorded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { getPetName } = usePetStore();
@@ -101,6 +104,19 @@ const PastRecordPage: React.FC = () => {
     ? fecesBadgeMap[fecesStatus] || abnormal
     : null;
 
+  //petId가 바뀔 때 기록된 날짜들 가져오기
+  useEffect(() => {
+    if (petId) {
+      fetchRecordDates(petId);
+    }
+  }, [petId]);
+
+  //recordDates가 바뀔 때마다 선택한 날짜가 포함됐는지 확인
+  useEffect(() => {
+    setIsRecorded(recordDates.includes(selectedDate.format('YYYY-MM-DD')));
+  }, [recordDates, selectedDate]);
+
+  //selectedDate에 따른 해당 건강 기록 가져오기
   useEffect(() => {
     const fetchHealthData = async () => {
       if (!petId) {
@@ -130,7 +146,7 @@ const PastRecordPage: React.FC = () => {
 
   //삭제 핸들러
   const handleDelete = async () => {
-    if (!petId || !selectedDate) {
+    if (!petId || !selectedDate || !isRecorded) {
       return;
     }
     try {
@@ -144,6 +160,8 @@ const PastRecordPage: React.FC = () => {
       if (response.data.isSuccess) {
         alert('건강 기록이 삭제되었습니다!');
         setRecordData(null);
+        fetchRecordDates(petId);
+        setIsRecorded(false);
       } else {
         alert('삭제 실패! 다시 시도해주세요.');
       }
@@ -251,7 +269,13 @@ const PastRecordPage: React.FC = () => {
           )}
           <ButtonContainer>
             <DesktopAddButton selectedDate={selectedDate} />
-            <DeleteButton onClick={() => handleDelete()}>삭제하기</DeleteButton>
+            <DeleteButton
+              onClick={() => handleDelete()}
+              disabled={!isRecorded}
+              isDisabled={!isRecorded}
+            >
+              삭제하기
+            </DeleteButton>
           </ButtonContainer>
         </HealthRecord>
         <MobileAddButton selectedDate={selectedDate} />
@@ -472,8 +496,8 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const DeleteButton = styled.button`
-  background-color: #c76b6b;
+const DeleteButton = styled.button<{ isDisabled: boolean }>`
+  background-color: ${({ isDisabled }) => (isDisabled ? '#E6E6E6' : '#C76B6B')};
   color: white;
   height: 48px;
   font-family: 'Pretendard';
@@ -482,7 +506,7 @@ const DeleteButton = styled.button`
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+  cursor: ${({ isDisabled }) => (isDisabled ? 'not-allowed' : 'pointer')};
   width: 100%;
   @media only screen and (min-width: 800px) {
     width: 197px;
