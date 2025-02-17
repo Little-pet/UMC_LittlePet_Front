@@ -4,17 +4,19 @@ import Notice from '@assets/Notice.svg';
 import Logout from '@assets/Logout.svg';
 import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
+import Security from '@assets/Security.svg';
 
 // 메뉴 항목 데이터 타입 정의
 interface MenuItemProps {
   icon: React.ReactNode;
   text: string;
+  onClick?: () => void;
 }
 
 // 메뉴 항목 컴포넌트
-const MenuItem: React.FC<MenuItemProps> = ({ icon, text }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => {
   return (
-    <ItemContainer>
+    <ItemContainer onClick={onClick}>
       {icon}
       <ItemText>{text}</ItemText>
     </ItemContainer>
@@ -22,6 +24,16 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text }) => {
 };
 
 const SettingsPage: React.FC = () => {
+  const handleTermsOfService = () => {
+    window.location.href =
+      'https://kind-property-f6b.notion.site/1988adfe580080658c3ae0e6efb14b7a?pvs=4';
+  };
+
+  const handleSecurity = () => {
+    window.location.href =
+      'https://kind-property-f6b.notion.site/1988adfe5800804fb469ddb7572a10f9?pvs=4';
+  };
+
   return (
     <Container>
       <Section>
@@ -30,6 +42,12 @@ const SettingsPage: React.FC = () => {
         <MenuItem
           icon={<img src={TermsOfService} alt='이용약관' />}
           text='이용약관'
+          onClick={handleTermsOfService}
+        />
+        <MenuItem
+          icon={<img src={Security} alt='개인정보처리방침' />}
+          text='개인정보처리방침'
+          onClick={handleSecurity}
         />
       </Section>
 
