@@ -1,4 +1,4 @@
-//import styled from 'styled-components';
+import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import TagButton from '#/components/Community/AddPage/tagButton';
 import { useNavigate } from 'react-router-dom';

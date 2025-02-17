@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { UserProvider } from './context/UserContext'; // UserProvider 추가
 import '#/font.css';
 import CommunityRootLayout from '#/layout/CommunityRootLayout';
 import QnaPage from '#/pages/QnaPage';
@@ -145,12 +144,10 @@ const App: React.FC = () => {
 
   const queryClient = new QueryClient();
   return (
-    <UserProvider>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 
