@@ -17,20 +17,26 @@ interface HospitalStore {
   scrappedHospitals: Hospital[]; // 스크랩한 병원 목록
   hospitalDetail: Hospital | null; // 선택한 병원 상세 정보
   hospitalsByRegion: Hospital[]; // 특정 지역의 병원 목록
-
-  // API 호출 함수들
+  hospitalsByFilter: Hospital[];
+  // 병원 상세 조회
   fetchHospitalDetail: (hospitalId: number) => Promise<void>;
+  // 병원 스크랩
   scrapHospital: (hospitalId: number, userId: number) => Promise<void>;
+  // 병원 스크랩 취소
   unscriptHospital: (hospitalId: number, userId: number) => Promise<void>;
+  // 스크랩한 병원 조회
   fetchScrappedHospitals: (userId: number) => Promise<void>;
+  // 지역별 병원 조회
   fetchHospitalsByRegion: (areaId: number) => Promise<void>;
+  // 병원 필터링해서 조회
+  fetchHospitalsByFilter: (filter: string) => Promise<void>;
 }
 
 export const useHospitalStore = create<HospitalStore>((set) => ({
   scrappedHospitals: [],
   hospitalDetail: null,
   hospitalsByRegion: [],
-
+  hospitalsByFilter: [],
   // 병원 상세 조회
   fetchHospitalDetail: async (hospitalId: number) => {
     try {
@@ -111,6 +117,22 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
       }
     } catch (error) {
       console.error('지역별 병원 조회 실패:', error);
+    }
+  },
+  // 병원 필터링해서 조회
+  fetchHospitalsByFilter: async (filter: string) => {
+    try {
+      const encodedFilter = encodeURIComponent(filter);
+      const response = await axios.get(
+        `https://umclittlepet.shop/api/hospitals/filter?filterType=${encodedFilter}`,
+        { withCredentials: true }
+      );
+      console.log('병원 필터링해서 조회 성공: ', response.data);
+      if (response.data.isSuccess) {
+        set({ hospitalsByFilter: response.data.result });
+      }
+    } catch (error) {
+      console.error('병원 필터링해서 조회 실패:', error);
     }
   },
 }));
