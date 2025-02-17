@@ -10,12 +10,27 @@ import GoalBadgeComponent from '@components/MyPageSections/GoalBadge';
 
 const MyPage: React.FC = () => {
   const userId = 4;
-  const { user, fetchUser, stats, badges, pets, isLoading } = useUserStore();
+  const {
+    user = {},
+    fetchUser = () => {},
+    stats = {
+      likeCount: 0,
+      commentCount: 0,
+      postCount: 0,
+      reviewCount: 0,
+      scrapCount: 0,
+    },
+    badges = [],
+    pets = [],
+    isLoading = false,
+  } = useUserStore();
   useEffect(() => {
-    fetchUser(userId);
-  }, [userId, fetchUser]);
-  if (isLoading) return <div>loading...</div>;
+    if (!user && fetchUser) {
+      fetchUser(userId);
+    }
+  }, [userId, fetchUser, user]);
 
+  if (isLoading) return <div>loading...</div>;
 
   return (
     <Container>
@@ -46,7 +61,6 @@ const Container = styled.div`
     padding: 0 96px;
   }
 `;
-
 const Title = styled.p`
   text-align: center;
   font-family: 'Pretendard';
@@ -57,7 +71,6 @@ const Title = styled.p`
     display: none;
   }
 `;
-
 const ProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
