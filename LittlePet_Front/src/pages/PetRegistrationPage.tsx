@@ -16,6 +16,7 @@ const PetRegistrationPage: React.FC = () => {
   const [categoryId, setCategoryId] = useState<number>();
   const [birthDate, setBirthDate] = useState<string>('');
 
+  void categoryId;
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -35,7 +36,7 @@ const PetRegistrationPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'ELSE',
+      gender: 'OTHER',
       title: '기타',
       icon: null,
     },
@@ -49,12 +50,12 @@ const PetRegistrationPage: React.FC = () => {
     profilePhoto: string; // 이미지 URL
     categoryName: string; // 카테고리 ID
   }
+  void {} as Pet;
 
   const handleSave = async () => {
-    const endpoint = '/users/4/pets';
     const petProfileRequest = {
       name,
-      birthDay: birthDate,
+      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
       gender: tagSelected,
       categorySpecies: categoryText,
     };
@@ -72,7 +73,7 @@ const PetRegistrationPage: React.FC = () => {
     console.log(profileImage);
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + endpoint,
+        `https://umclittlepet.shop/api/users/4/pets`,
         formData,
         {
           headers: {

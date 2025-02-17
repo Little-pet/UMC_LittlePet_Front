@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
@@ -63,12 +63,12 @@ const AddHealthRecordPage: React.FC = () => {
 
   //대변 색
   const fecesColors = [
-    { id: '1', label: '갈색', color: '#94714A' },
-    { id: '2', label: '검은색', color: '#262627' },
-    { id: '3', label: '붉은 색', color: '#C76B6B' },
-    { id: '4', label: '누런 색', color: '#F8E79E' },
-    { id: '5', label: '초록색', color: '#98D298' },
-    { id: '6', label: '회백색', color: '#E6E6E6' },
+    { id: 1, label: '갈색', color: '#94714A' },
+    { id: 2, label: '검은색', color: '#262627' },
+    { id: 3, label: '붉은 색', color: '#C76B6B' },
+    { id: 4, label: '누런 색', color: '#F8E79E' },
+    { id: 5, label: '초록색', color: '#98D298' },
+    { id: 6, label: '회백색', color: '#E6E6E6' },
   ];
 
   //특이 증상
@@ -222,7 +222,7 @@ const AddHealthRecordPage: React.FC = () => {
         {toastMessage && (
           <Toast
             message={toastMessage}
-            isVisible={!!toastMessage}
+            isVisible={isToastVisible}
             onClose={() => setToastMessage(null)}
           />
         )}

@@ -1,29 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import StatsComponent from '@components/MyPageSections/CategoryBar';
 import BadgeComponent from '@components/MyPageSections/BadgeLists';
 import Menu from '@components/MyPageSections/Menu';
 import PetProfiles from '@components/MyPageSections/PetProfiles';
 import ProfileSection from '@components/MyPageSections/ProfileSection';
-import { useGetUserData } from '#/hooks/useGetUserData';
 import { useUserStore } from '#/context/UserStore';
+import GoalBadgeComponent from '@components/MyPageSections/GoalBadge';
 
 const MyPage: React.FC = () => {
   const userId = 4;
-  const { isLoading, error } = useGetUserData(userId);
-  const stats = useUserStore((state) => state.stats);
-  const badges = useUserStore((state) => state.badges);
-  const user = useUserStore((state) => state.user);
-  const pets = useUserStore((state) => state.pets);
+  const { user, fetchUser, stats, badges, pets, isLoading } = useUserStore();
+  useEffect(() => {
+    fetchUser(userId);
+  }, [userId, fetchUser]);
+  if (isLoading) return <div>loading...</div>;
+
 
   return (
     <Container>
       <Title>마이페이지</Title>
       <ProfileContainer>
-        <ProfileSection user={user} pets={pets} isLoading={isLoading} />
+        <ProfileSection /*user={user} pets={pets} isLoading={isLoading}*/ />
         <StatsComponent user={stats} isLoading={isLoading} />
         <PetProfiles pets={pets} isLoading={isLoading} />
         <BadgeComponent badges={badges} isLoading={isLoading} />
+        <GoalBadgeComponent badges={badges} isLoading={isLoading} />
       </ProfileContainer>
       <Menu></Menu>
     </Container>
@@ -51,6 +53,9 @@ const Title = styled.p`
   font-weight: 600;
   font-size: 22px;
   margin-bottom: 0;
+  @media only screen and (min-width: 800px) {
+    display: none;
+  }
 `;
 
 const ProfileContainer = styled.div`

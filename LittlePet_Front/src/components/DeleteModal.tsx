@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 // Props 타입 정의
 interface DeleteModalProps {
   onClose: () => void; // onClose는 함수이며 반환값은 없습니다.
+  onDelete?: () => Promise<void>;
 }
 const DeleteModal: React.FC<DeleteModalProps> = ({ onClose, onDelete }) => {
   return (
@@ -40,7 +41,7 @@ const ButtonGroup = styled.div`
   gap: 20px;
 `;
 
-const Button = styled.div`
+const Button = styled.div<{ textColor?: string }>`
   background-color: ${({ color }) => color || '#E6E6E6'};
   color: ${({ textColor }) => textColor || '#737373'};
   font-size: 16px;

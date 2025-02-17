@@ -31,10 +31,12 @@ import HealthRootLayout from '#/layout/HealthRootLayout';
 import HealthProfilePage from '#/pages/Health/Record/HealthProfilePage';
 import PastRecordPage from '#/pages/Health/Record/PastRecordPage';
 import AddHealthRecordPage from '#/pages/Health/Record/AddHealthRecordPage';
-import CalendarPage from '#/pages/Health/Record/CalenderPage';
+import CalendarPage from '#/pages/Health/Record/CalendarPage';
 import CareMethodPage from '#/pages/CareMethod/CareMethod';
 import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
+import EditPostPage from './pages/EditPostPage';
+import { useAuthStore } from '#/context/AuthStore';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -59,11 +61,16 @@ const router = createBrowserRouter([
           { index: true, element: <QnaPage /> }, // 기본 경로 설정
           { path: 'qna', element: <QnaPage /> },
           { path: 'daily', element: <DailyPage /> },
-          { path: ':postId', element: <DetailPage /> },
+          { path: ':category/:postId', element: <DetailPage /> },
+
           { path: 'challenge', element: <ChallengePage /> },
         ],
       },
       { path: 'community/add', element: <AddPage /> },
+      {
+        path: 'community/:category/:postId/edit-post',
+        element: <EditPostPage />,
+      },
       {
         path: 'health',
         element: <HealthRootLayout />,
@@ -116,6 +123,7 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
+  const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
   const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
@@ -128,6 +136,7 @@ const App: React.FC = () => {
         setShowSplash(false);
       }, 3000);
     }
+    checkLoginStatus();
   }, []);
 
   if (showSplash) {

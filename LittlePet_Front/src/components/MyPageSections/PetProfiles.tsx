@@ -1,10 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled /*{ keyframes }*/ from 'styled-components';
 import AddButtonIcon from '@assets/AddButton.svg';
-const PetProfiles: React.FC = ({ pets }) => {
-  //const { pets, fetchPets } = usePetStore();
 
+interface Pet {
+  petId: number;
+  name: string;
+  profilePhoto: string;
+}
+
+interface PetProfilesProps {
+  pets: Pet[];
+  isLoading: boolean;
+}
+
+const PetProfiles: React.FC<PetProfilesProps> = ({ pets, isLoading }) => {
+  //const { pets, fetchPets } = usePetStore();
+  if (isLoading) return <LoadingMessage>로딩 중...</LoadingMessage>;
   const navigate = useNavigate();
 
   const handlePetClick = (petId: number) => {
@@ -89,7 +101,7 @@ const PetItem = styled.div`
 `;
 
 const AddButton = styled.img``;
-const blink = keyframes`
+/*const blink = keyframes`
   0% { opacity: 0.5; }
   50% { opacity: 1; }
   100% { opacity: 0.5; }
@@ -104,4 +116,9 @@ const SkeletonCard = styled.div`
   border-radius: 50%;
 
   animation: ${blink} 1.5s ease-in-out infinite;
+`;*/
+
+const LoadingMessage = styled.p`
+  font-size: 18px;
+  margin-top: 50px;
 `;

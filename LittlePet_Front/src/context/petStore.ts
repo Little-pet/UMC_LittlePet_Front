@@ -27,8 +27,6 @@ export const usePetStore = create<PetStore>((set, get) => ({
         { withCredentials: true }
       );
 
-      console.log(' API 응답 데이터:', response.data);
-
       if (response.data.isSuccess) {
         set({
           pets: response.data.result,

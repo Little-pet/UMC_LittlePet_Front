@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { usePets } from '#/context/PetContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
@@ -29,7 +28,7 @@ const EditPetPage: React.FC = () => {
   const [categoryText, setCategoryText] = useState<string>('');
   const [categoryId, setCategoryId] = useState<number>();
   const [birthDate, setBirthDate] = useState<string>('');
-
+  void categoryId;
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('이미지 변경');
@@ -53,18 +52,19 @@ const EditPetPage: React.FC = () => {
       icon: '♂',
     },
     {
-      gender: 'ELSE',
+      gender: 'OTHER',
       title: '기타',
       icon: null,
     },
   ];
 
-  const [info, setInfo] = useState<Pet>([]);
+  const [info, setInfo] = useState<Pet | null>(null);
+
   useEffect(() => {
     const fetchPets = async () => {
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
+          `https://umclittlepet.shop/api/pets/${petId}`
         );
         console.log('반려동물 단일 조회 성공:', response.data);
         setInfo(response.data.result); // 초기상태
@@ -73,29 +73,29 @@ const EditPetPage: React.FC = () => {
       }
     };
 
-    fetchPets(); // ✅ 선언한 async 함수 실행
+    fetchPets(); // 선언한 async 함수 실행
   }, []);
 
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
     if (info) {
-      setName(info.name);
-      setBirthDate(info.birthDay);
-      setCategoryText(info.categorySpecies);
-      setPreviewImage(info.profilePhoto);
-      setTagSelected(info.gender);
+      setName(info.name || ''); // undefined 방지
+      setBirthDate(info.birthDay || '');
+      setCategoryText(info.categorySpecies || '');
+      setPreviewImage(info.profilePhoto || '');
+      setTagSelected(info.gender || '');
     }
   }, [info]);
 
-  // ✅ 변경 감지하여 버튼 활성화
+  //  변경 감지하여 버튼 활성화
   useEffect(() => {
     const hasChanges =
-      name !== info.name ||
-      birthDate !== info.birthDay ||
-      categoryText !== info.categorySpecies ||
-      previewImage !== info.profilePhoto ||
-      tagSelected !== info.gender;
+      (info && name !== info.name) ||
+      (info && birthDate !== info.birthDay) ||
+      (info && categoryText !== info.categorySpecies) ||
+      (info && previewImage !== info.profilePhoto) ||
+      (info && tagSelected !== info.gender);
 
     setIsModified(hasChanges);
   }, [name, birthDate, categoryText, profileImage, tagSelected]);
@@ -104,7 +104,7 @@ const EditPetPage: React.FC = () => {
   const handleSave = async () => {
     const petProfileRequest = {
       name,
-      birthDay: birthDate,
+      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
       gender: tagSelected,
       categorySpecies: categoryText,
     };
@@ -121,7 +121,7 @@ const EditPetPage: React.FC = () => {
     }
     try {
       const response = await axios.put(
-        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`,
+        `https://umclittlepet.shop/api/pets/${petId}`,
         formData,
         {
           headers: {
@@ -142,7 +142,7 @@ const EditPetPage: React.FC = () => {
     try {
       console.log('petId: ', petId);
       const response = await axios.delete(
-        import.meta.env.VITE_BACKEND_URL + `/pets/${petId}`
+        `https://umclittlepet.shop/api/pets/${petId}`
       );
       console.log('반려동물 프로필 삭제 성공', response.data);
       navigate('/mypage');

@@ -2,14 +2,14 @@ import starIcon from '#/assets/star.svg';
 import styled from 'styled-components';
 import vectorIcon from '#/assets/Vector.svg';
 import addIcon from '#/assets/추가 버튼.svg';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import CategoryDropdown from '@components/CategoryDropdown';
 import StarModal from '#/components/Hospital/StarModal';
 const AddReviewPage = () => {
   const [categoryText, setCategoryText] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
-  const [star, setStar] = useState<number>(null);
+  const [star, setStar] = useState<number | null>(null);
   const [content, setContet] = useState<string>('');
 
   useEffect(() => {
@@ -46,11 +46,13 @@ const AddReviewPage = () => {
           </div>
           <img src={addIcon} />
         </AddContainer>
+
         <ReviewTextArea
           onChange={(e) => setContet(e.target.value)}
           value={content}
           placeholder='리뷰를 작성해 주세요'
         />
+
         {valid === true ? (
           <ButtonWrapper>
             <SubmitButton type='submit'>
@@ -81,6 +83,9 @@ const AddReviewPage = () => {
   );
 };
 export default AddReviewPage;
+const TextArea = styled.div`
+  width: 100%;
+`;
 const StarButton = styled.div`
   display: flex;
   gap: 5px;
@@ -104,6 +109,7 @@ const Container = styled.div`
 const ReviewTextArea = styled.textarea`
   border-radius: 15px;
   color: #737373;
+  width: 100%
   resize: none;
   font-size: 12px;
   font-family: Pretendard-Medium;

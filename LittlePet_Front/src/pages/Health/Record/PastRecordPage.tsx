@@ -41,7 +41,6 @@ const PastRecordPage: React.FC = () => {
 
   // 선택된 날짜를 기준으로 범위 내 날짜 가져오기
   const weekDates = getSurroundingDates(selectedDate, dateRange);
-  const [loading, setLoading] = useState(false);
 
   // 선택한 날짜를 중앙에 위치시키는 함수
   const scrollToCenter = () => {
@@ -139,8 +138,6 @@ const PastRecordPage: React.FC = () => {
       } catch (error) {
         console.error('건강 기록 불러오기 실패:', error);
         setRecordData(null);
-      } finally {
-        setLoading(false);
       }
     };
 

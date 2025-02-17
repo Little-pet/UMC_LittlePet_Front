@@ -16,7 +16,8 @@ interface UserActivity {
 }
 
 interface StatsProps {
-  user: UserActivity;
+  user: UserActivity | null;
+  isLoading: boolean;
 }
 
 // 개별 항목 컴포넌트
@@ -29,7 +30,8 @@ const StatItem: React.FC<StatItemProps> = ({ label, value }) => {
   );
 };
 
-const StatsComponent: React.FC<StatsProps> = ({ user }) => {
+const StatsComponent: React.FC<StatsProps> = ({ user, isLoading }) => {
+  if (isLoading) return <LoadingMessage>로딩 중 ...</LoadingMessage>;
   if (!user) return <div>Loading...</div>;
   // user 데이터를 활용하여 statsData 구성
   const statsData = [
@@ -98,4 +100,9 @@ const Value = styled.div`
   cursor: pointer;
   height: 22px;
   white-space: nowrap; // 줄바꿈 금지
+`;
+
+const LoadingMessage = styled.p`
+  font-size: 18px;
+  margin-top: 50px;
 `;

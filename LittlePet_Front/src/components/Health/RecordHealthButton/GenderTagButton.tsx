@@ -42,7 +42,7 @@ const CategoryButtonText = styled.div<{ isSelected: boolean }>`
   margin-right: 1px;
 `;
 
-const SpanIcon = styled.span<{ gender: string }>`
+const SpanIcon = styled.span<{ gender?: string }>`
   font-weight: 700;
   font-size: 13px;
   line-height: 22px;

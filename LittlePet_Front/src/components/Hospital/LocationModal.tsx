@@ -5,12 +5,11 @@ import styled from 'styled-components';
 interface LocationModalProps {
   onClose: () => void; // 모달 닫기 콜백 함수
 }
-const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
-  const openKakaoMap = (la: number, lo: number): void => {
-    const kakaoUrl = `kakaomap://route?ep=${la},${lo}&by=CAR`;
-
+const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
+  const openKakaoMap = (name: string, la: number, lo: number): void => {
+    const kakaoUrl = `https://map.kakao.com/link/to/${name},${la},${lo}`;
     // 카카오맵 앱 열기
-    window.location.href = kakaoUrl;
+    window.open(kakaoUrl, '_blank', 'noopener,noreferrer');
   };
   return (
     <Container
@@ -24,13 +23,12 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose }) => {
       </Header>
       <ContentContainer>
         <LocationHeader>
-          <LocationName>로얄동물메디컬센터 본원</LocationName>
-          <Distance>512m</Distance>
+          <LocationName>{info.name}</LocationName>
         </LocationHeader>
-        <Address>서울 특별시 중랑구 면목동 146-34</Address>
+        <Address>{info.address}</Address>
       </ContentContainer>
       <RouteButton
-        onClick={() => openKakaoMap(37.587512175916, 127.080244082268)}
+        onClick={() => openKakaoMap(info.name, info.latitude, info.longitude)}
       >
         길찾기
       </RouteButton>
@@ -85,12 +83,6 @@ const LocationHeader = styled.div`
 const LocationName = styled.div`
   font-size: 18px;
   font-family: 'Pretendard-SemiBold';
-`;
-
-const Distance = styled.div`
-  font-size: 12px;
-  font-family: 'Pretendard-Medium';
-  color: #737373;
 `;
 
 const Address = styled.div`
