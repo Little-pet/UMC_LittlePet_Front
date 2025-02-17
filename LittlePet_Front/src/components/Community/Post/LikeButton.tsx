@@ -16,7 +16,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
         `https://umclittlepet.shop/api/like/${userId}/${postId}`
       );
       console.log('좋아요 등록/취소 성공:', response.data);
-      window.location.reload();
+      setLikeCount(response.data.result.likeNum);
     } catch (error) {
       console.error('좋아요 등록/취소 실패:', error);
     }

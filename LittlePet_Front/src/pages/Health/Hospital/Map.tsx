@@ -155,3 +155,87 @@ const MapPage: React.FC = () => {
 };
 
 export default MapPage;
+const Container = styled.div`
+  position: relative;
+  overflowy: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
+`;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  padding: 0 25px;
+  position: relative;
+  box-sizing: border-box;
+`;
+const ControlBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+`;
+const DropdownContainer = styled.div`
+  text-decoration: none;
+  display: flex;
+  width: 112px;
+  height: 27px;
+  border-radius: 5px;
+  border: 1px solid #e6e6e6;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+`;
+const MapText = styled.div`
+  font-size: 12px;
+  font-family: Pretendard-SemiBold;
+  color: #737373;
+`;
+const DropDownText = styled.div`
+  font-size: 14px;
+  color: #262627;
+  font-family: 'Pretendard-SemiBold';
+  align-self: center;
+`;
+const AreaText = styled.div<{ color?: string }>`
+  font-size: 22px;
+  font-family: Pretendard-SemiBold;
+  color: ${(props) => props.color || '#262627'}; /* 기본값 설정 */
+`;
+
+const AreaModalButton = styled.div`
+  display: flex;
+  gap: 8px;
+  cursor: pointer;
+`;
+
+const DropdownMenu = styled.ul`
+  position: absolute;
+  top: 18px;
+  right: 0px;
+  width: 112px;
+  height: 126px;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  padding: 20px 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+const ArrowIcon = styled(({ isDropdownOpen, ...rest }) => <img {...rest} />)`
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ isDropdownOpen }) =>
+    isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+`;
