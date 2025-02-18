@@ -34,7 +34,7 @@ interface UserStore {
   isLoading: boolean;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
   pets: [],
   stats: null,
@@ -50,23 +50,31 @@ export const useUserStore = create<UserStore>((set) => ({
       if (response.data.isSuccess) {
         console.log('사용자 프로필 조회 성공', response.data);
         const result = response.data.result;
-        set({
-          user: {
-            name: result.name,
-            profilePhoto: result.profilePhoto,
-            introduction: result.introduction,
-          },
-          pets: result.userPet || [],
-          stats: {
-            postCount: result.postCount ?? 0,
-            commentCount: result.commentCount ?? 0,
-            likeCount: result.likeCount ?? 0,
-            reviewCount: result.reviewCount ?? 0,
-            scrapCount: result.scrapCount ?? 0,
-          },
-          badges: result.userBadge || [],
-          isLoading: false,
-        });
+
+        //pets가 달라졌을 때에만 상태 업데이트
+        const prevPets = get().pets;
+        if (JSON.stringify(prevPets) !== JSON.stringify(result.userPet || [])) {
+          set({
+            user: {
+              name: result.name,
+              profilePhoto: result.profilePhoto,
+              introduction: result.introduction,
+            },
+            pets: result.userPet || [],
+            stats: {
+              postCount: result.postCount ?? 0,
+              commentCount: result.commentCount ?? 0,
+              likeCount: result.likeCount ?? 0,
+              reviewCount: result.reviewCount ?? 0,
+              scrapCount: result.scrapCount ?? 0,
+            },
+            badges: result.userBadge || [],
+          });
+        } else {
+          console.log('🔹 [UserStore] pets 변경 없음, 상태 업데이트 생략');
+        }
+
+        set({ isLoading: false }); //  isLoading 상태 업데이트
       }
     } catch (error) {
       console.error('사용자 프로필 조회 실패:', error);

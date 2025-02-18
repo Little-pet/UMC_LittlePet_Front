@@ -42,12 +42,12 @@ const HealthProfile: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!isLoggedIn) {
+      setLoading(true);
+      if (!isLoggedIn || !userId) {
         setLoading(false); // 로그인 안 한 유저는 바로 로딩 해제
         return;
       }
 
-      setLoading(true); //  로그인한 유저는 로딩 시작
       await fetchPets(userId); //  반려동물 데이터 가져오기
       setLoading(false); //  데이터 가져온 후 로딩 해제
     };
@@ -66,10 +66,6 @@ const HealthProfile: React.FC = () => {
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
-
-  if (recordLoading) {
-    return <LoadingContainer>로딩 중...</LoadingContainer>;
-  }
 
   const latestRecord = healthRecord?.latestRecord || {};
 
@@ -112,7 +108,7 @@ const HealthProfile: React.FC = () => {
   const weightChangeText =
     roundedWeightDiff !== undefined
       ? roundedWeightDiff === 0
-        ? '유지'
+        ? ''
         : roundedWeightDiff > 0
           ? `${roundedWeightDiff}kg 증가`
           : `${Math.abs(roundedWeightDiff)}kg 감소`

@@ -7,11 +7,11 @@ import PetProfiles from '@components/MyPageSections/PetProfiles';
 import ProfileSection from '@components/MyPageSections/ProfileSection';
 import { useUserStore } from '#/context/UserStore';
 import GoalBadgeComponent from '@components/MyPageSections/GoalBadge';
+import { useAuthStore } from '#/context/AuthStore';
 
 const MyPage: React.FC = () => {
-  const userId = 4;
+  const userId = useAuthStore((state) => state.userId);
   const {
-    user = {},
     fetchUser = () => {},
     stats = {
       likeCount: 0,
@@ -24,12 +24,14 @@ const MyPage: React.FC = () => {
     pets = [],
     isLoading = false,
   } = useUserStore();
-  useEffect(() => {
-    if (!user && fetchUser) {
-      fetchUser(userId);
-    }
-  }, [userId, fetchUser, user]);
 
+  useEffect(() => {
+    console.log('✅ [MyPage] useEffect 실행됨', { userId, pets });
+
+    fetchUser(userId);
+  }, [userId, pets]);
+
+  console.log('🛠️ Zustand 상태 확인:', useUserStore.getState());
   if (isLoading) return <div>loading...</div>;
 
   return (

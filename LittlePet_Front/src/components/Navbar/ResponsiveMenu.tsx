@@ -24,8 +24,6 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
     navigate(isLoggedIn ? '/mypage' : '/login');
   };
 
-  const handleOnBoarding = () => navigate('/onboarding');
-
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -38,7 +36,7 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
             <MenuButton onClick={handleLoginOrMyPageClick}>
               {isLoggedIn ? '마이페이지' : '로그인 / 회원가입'}
             </MenuButton>
-            <MenuItem onClick={handleOnBoarding}>ABOUT</MenuItem>
+            <MenuItem>ABOUT</MenuItem>
             <MenuItem>CONTACT</MenuItem>
           </MenuContainer>
         </MotionMenu>
