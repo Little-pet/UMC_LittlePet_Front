@@ -7,6 +7,7 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
 import { useAuthStore } from '#/context/AuthStore';
+
 const PetRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
   const [tagSelected, setTagSelected] = useState<string>('');
@@ -83,6 +84,7 @@ const PetRegistrationPage: React.FC = () => {
         }
       );
       console.log('반려동물 프로필 등록 성공', response.data);
+
       navigate('/mypage');
     } catch (error) {
       console.error('반려동물 프로필 등록 실패:', error);

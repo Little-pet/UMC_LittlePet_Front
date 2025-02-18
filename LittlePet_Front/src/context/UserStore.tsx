@@ -32,6 +32,7 @@ interface UserStore {
   // 사용자 프로필 조회: API로부터 사용자 데이터를 받아와 상태에 저장
   fetchUser: (userId: number) => Promise<void>;
   isLoading: boolean;
+  lastFetchedUserId: number | null; //마지막으로 fetch한 userId
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -40,20 +41,41 @@ export const useUserStore = create<UserStore>((set, get) => ({
   stats: null,
   badges: [],
   isLoading: false,
+  lastFetchedUserId: null,
+
   fetchUser: async (userId: number) => {
+    if (!userId) {
+      console.log('❌ userId 없음. fetchUser 실행 안 함.');
+      return;
+    }
+    console.log(`🚀 fetchUser 실행됨! userId: ${userId}`);
+
     set({ isLoading: true });
     try {
       const response = await axios.get(
         `https://umclittlepet.shop/api/users/${userId}`,
         { withCredentials: true }
       );
+
       if (response.data.isSuccess) {
-        console.log('사용자 프로필 조회 성공', response.data);
+        console.log(' 사용자 프로필 조회 성공!', response.data);
         const result = response.data.result;
 
-        //pets가 달라졌을 때에만 상태 업데이트
+        // 이전 상태와 비교
+        const prevUserId = get().lastFetchedUserId;
         const prevPets = get().pets;
-        if (JSON.stringify(prevPets) !== JSON.stringify(result.userPet || [])) {
+        const prevUser = get().user;
+
+        const userChanged =
+          !prevUser || // 기존 user 정보가 없거나
+          prevUser.name !== result.name ||
+          prevUser.profilePhoto !== result.profilePhoto ||
+          prevUser.introduction !== result.introduction;
+
+        const petsChanged =
+          JSON.stringify(prevPets) !== JSON.stringify(result.userPet || []);
+
+        if (prevUserId !== userId || userChanged || petsChanged) {
           set({
             user: {
               name: result.name,
@@ -69,15 +91,17 @@ export const useUserStore = create<UserStore>((set, get) => ({
               scrapCount: result.scrapCount ?? 0,
             },
             badges: result.userBadge || [],
+            lastFetchedUserId: userId, // ✅ 마지막으로 불러온 userId 저장
           });
-        } else {
-          console.log('🔹 [UserStore] pets 변경 없음, 상태 업데이트 생략');
-        }
 
-        set({ isLoading: false }); //  isLoading 상태 업데이트
+          console.log('🔄 [UserStore] 상태 업데이트 완료:', get().user);
+        } else {
+          console.log('🔹 [UserStore] 변경 없음, 상태 업데이트 생략');
+        }
       }
     } catch (error) {
-      console.error('사용자 프로필 조회 실패:', error);
+      console.error('❌ 사용자 프로필 조회 실패:', error);
+    } finally {
       set({ isLoading: false });
     }
   },
