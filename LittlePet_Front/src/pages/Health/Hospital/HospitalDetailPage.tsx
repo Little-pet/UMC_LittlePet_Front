@@ -6,6 +6,7 @@ import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import commentIcon from '#/assets/댓글.svg';
 import { useHospitalStore } from '#/context/hospitalStore';
+import HospitalSkeleton from '#/components/SkeletonUI/HospitalSkeleton';
 // 타입 정의
 interface Category {
   type: string;
@@ -53,7 +54,7 @@ const HospitalDetailPage = () => {
   useEffect(() => {
     fetchHospitalDetail(Number(hospitalId));
   }, [hospitalId, fetchHospitalDetail]);
-  if (!hospitalDetail) return <div>Loading...</div>;
+  if (!hospitalDetail) return <HospitalSkeleton />;
   const isFavorited = scrappedHospitals.some(
     (hospital) => hospital.name === hospitalDetail.name
   );

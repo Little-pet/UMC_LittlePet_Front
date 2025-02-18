@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
 import { useCommunityStore } from '#/context/CommunityStore';
+import CommunityDetail from '#/components/SkeletonUI/CommunityDetail';
 
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -24,8 +25,8 @@ const DetailPage: React.FC = () => {
     patchViews(numericPostId);
   }, [numericPostId]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!currentPost) return <div>No data available</div>;
+  if (isLoading) return <CommunityDetail />;
+
   const data = currentPost;
 
   return (

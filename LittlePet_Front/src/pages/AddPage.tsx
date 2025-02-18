@@ -188,8 +188,12 @@ const AddPage: React.FC = () => {
       showToast('글 카테고리를 선택해주세요!');
       return;
     }
-    if (!isTitleValid) {
+    if (title.trim().length < 1) {
       showToast('제목을 입력해주세요!');
+      return;
+    }
+    if (title.trim().length > 30) {
+      showToast('제목은 최대 30자에요!');
       return;
     }
     if (!isContentValid) {
