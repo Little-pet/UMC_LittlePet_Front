@@ -1,11 +1,10 @@
-//import styled from 'styled-components';
+import styled from 'styled-components';
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import TagButton from '#/components/Community/AddPage/tagButton';
 import { useNavigate } from 'react-router-dom';
 import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import DOMPurify from 'dompurify';
 import axios from 'axios';
 // 최대 업로드 개수 & 파일 크기
 const MAX_IMAGES = 5;
@@ -33,14 +32,10 @@ const AddPage: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [textCount, setTextCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
-  const [imgCount, setImgCount] = useState<number>(0);
   const [valid, setValid] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = textCount > 0;
-  // 스크립트를 활용하여 javascript와 HTML로 악성 코드를 웹 브라우저에 심어,
-  // 사용자 접속시 그 악성코드가 실행되는 것을 XSS, 보안을 위해 sanitize 추가
-  const sanitizedContent = DOMPurify.sanitize(content);
 
   const tags = [
     {
@@ -113,7 +108,6 @@ const AddPage: React.FC = () => {
         quillObj?.insertEmbed(range?.index || 0, 'image', imgUrl); // ✅ Quill 에디터에 이미지 삽입
         const updatedContent = quillObj?.root.innerHTML || '';
         setContent(updatedContent);
-        setImgCount(getImageCount(updatedContent));
         setPostImgs((prev) => [...prev, { file, base64: imgUrl }]);
         console.log('현재 이미지 개수: ', getImageCount(updatedContent));
       };
@@ -189,11 +183,10 @@ const AddPage: React.FC = () => {
       return;
     }
     const parsedContents = parseContent(content);
-    let imageCounter = 0;
+
     const updatedContents = parsedContents.map((item) => {
       if (item.type === 'image') {
-        const fileName = postImgs[imageCounter]?.name || item.value;
-        imageCounter++;
+        const fileName = item.value;
         return { ...item, value: fileName };
       }
       return item;
@@ -243,7 +236,6 @@ const AddPage: React.FC = () => {
 
     // 상태 업데이트
     setTextCount(textCount);
-    setImgCount(getImageCount(content));
 
     if (
       plainText.length > 0 &&
@@ -336,3 +328,129 @@ const AddPage: React.FC = () => {
   );
 };
 export default AddPage;
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 656px;
+  position: relative;
+`;
+
+const TagButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const Form = styled.form`
+  height: 100%;
+  padding: 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  @media only screen and (min-width: 800px) {
+    padding: 0 96px;
+  }
+`;
+
+const Title = styled.input`
+  height: 22px;
+  font-size: 24px;
+  font-family: 'Pretendard-SemiBold';
+  border: none;
+  outline: none;
+  ::placeholder {
+    color: #737373;
+  }
+`;
+
+const Divider = styled.hr`
+  border: none;
+  border-top: 1px solid #e6e6e6;
+  margin: 1px 0;
+`;
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const SubmitButton = styled.button`
+  height: 48px;
+  box-sizing: border-box;
+  width: 87.5%;
+  border-radius: 5px;
+  background-color: #6ea8fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 20px;
+  cursor: pointer;
+  border: none;
+  @media only screen and (min-width: 800px) {
+    width: 150px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
+  }
+`;
+
+const ButtonText = styled.div`
+  font-size: 16px;
+  font-family: 'Pretendard-SemiBold';
+  color: #ffffff;
+`;
+
+const StyledQuill = styled(ReactQuill)`
+  .ql-container {
+    padding: 10px;
+    height: 360px;
+  }
+  .ql-editor {
+    border: none;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    line-height: 22px;
+    padding: 0 !important;
+    height: 340px;
+    overflow-y: auto; /* 세로 스크롤 */
+    /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 인터넷 익스플로러에서 스크롤바 숨기기 */
+    -ms-overflow-style: none;
+
+    /* 파이어폭스에서 스크롤바 숨기기 */
+    scrollbar-width: none;
+  }
+  .ql-editor.ql-blank::before {
+    font-style: normal;
+    color: #737373;
+  }
+
+  .ql-toolbar .ql-bold {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-bold:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-size {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-size:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+
+  .ql-toolbar .ql-underline {
+    pointer-events: none; /* 클릭 방지 */
+    cursor: default; /* 커서 기본값으로 설정 */
+    opacity: 0.5; /* 비활성화된 느낌 */
+  }
+  .ql-toolbar .ql-underline:hover {
+    background-color: transparent; /* hover 효과 제거 */
+  }
+`;

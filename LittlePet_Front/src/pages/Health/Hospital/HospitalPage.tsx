@@ -56,6 +56,7 @@ const HospitalPage: React.FC = () => {
   }, [areaId, fetchHospitalsByRegion]);
 
   if (!hospitalsByRegion) return <div>Loading...</div>;
+
   return (
     <>
       <Banner src={banner} />
@@ -63,7 +64,7 @@ const HospitalPage: React.FC = () => {
         <TopActions>
           <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
             <AreaText>서울시 {selectedArea}</AreaText>
-            <ArrowIcon src={arrowIcon} view={view} />
+            <ArrowIcon src={arrowIcon} view={isModalOpen} />
           </AreaModalButton>
           <MapButton
             to='/health/hospital/map'
@@ -117,22 +118,37 @@ const HospitalPage: React.FC = () => {
           ))}
         </FilterContainer>
         <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
-          {hospitalsByRegion.map((item, idx) => (
-            <HospitalItem
-              imageSrc={item.imageUrl}
-              name={item.name}
-              hospitalId={item.id}
-              comments={0}
-              openStatus={item.closedDay}
-              rating={item.rating}
-            />
-          ))}
+          {hospitalsByRegion.map((item, idx) => {
+            const openingHoursArray = item.openingHours.split('\n');
+            const getTodayDay = () => {
+              const days = ['일', '월', '화', '수', '목', '금', '토'];
+              const today = new Date();
+              return days[today.getDay()]; // 오늘의 요일을 반환 (예: '월')
+            };
+            const today = getTodayDay();
+            // 오늘의 요일에 해당하는 항목을 선택
+            const todayOpeningHour = openingHoursArray.find((item) =>
+              item.startsWith(today)
+            );
+            return (
+              <HospitalItem
+                key={idx}
+                imageSrc={item.imageUrl}
+                name={item.name}
+                hospitalId={item.id}
+                comments={0}
+                openStatus={todayOpeningHour}
+                rating={item.rating}
+              />
+            );
+          })}
         </div>
         {isModalOpen && (
           <Overlay>
             <AreaModal
               onClose={() => setIsModalOpen(false)}
               onSelect={handleAreaSelect}
+              area={selectedArea}
             />
           </Overlay>
         )}

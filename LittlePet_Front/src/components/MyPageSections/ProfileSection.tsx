@@ -6,7 +6,6 @@ import defaultPhoto from '#/assets/기본 프로필.svg';
 import { AnimalIcons } from '#/components/icon';
 import { useUserStore } from '#/context/UserStore';
 
-
 const ProfileSection: React.FC = () => {
   const { user, pets = [], isLoading } = useUserStore();
   if (isLoading) return <div>Loading...</div>;

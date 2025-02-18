@@ -6,7 +6,6 @@ import { AnimalIcons } from '#/components/icon';
 interface CategoryDropdownProps {
   selectedCategory: string;
   onCategorySelect: (category: string) => void;
-  onIdSelect?: (id: number) => void;
 }
 
 //  동물별 아이콘을 매칭하는 객체 생성
@@ -23,7 +22,6 @@ const animalIcons: { [key: string]: string } = {
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   selectedCategory,
   onCategorySelect,
-  onIdSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const animals = [
@@ -38,7 +36,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   const handleCategoryClick = (name: string) => {
     onCategorySelect(name); // 부모 컴포넌트로 선택한 카테고리 전달
-    onIdSelect(id);
     setIsOpen(false); // 드롭다운 닫기
   };
 
@@ -61,7 +58,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                 key={index}
                 name={animal.title}
                 icon={animalIcons[animal.title]}
-                onClick={() => handleCategoryClick(animal.title, animal.id)}
+                onClick={() => handleCategoryClick(animal.title)}
               />
             ))}
           </DropdownMenu>

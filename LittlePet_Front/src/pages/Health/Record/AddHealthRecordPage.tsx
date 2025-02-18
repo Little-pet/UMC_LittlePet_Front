@@ -209,7 +209,7 @@ const AddHealthRecordPage: React.FC = () => {
       } else {
         alert('저장 실패! 다시 시도해주세요.');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(' 저장 오류:', error);
     }
   };

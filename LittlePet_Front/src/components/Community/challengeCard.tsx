@@ -76,7 +76,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const userFetch = async () => {
+  const userFetch = async (userId: number) => {
     try {
       const response = await axios.get(
         `https://umclittlepet.shop/api/users/${userId}`,

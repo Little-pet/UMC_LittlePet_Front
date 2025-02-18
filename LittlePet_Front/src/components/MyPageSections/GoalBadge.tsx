@@ -16,10 +16,9 @@ const badgeIconMapping: { [key: string]: string } = {
 };
 const userId = 4;
 const GoalBadgeComponent: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [badges, setBadges] = useState();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [badges, setBadges] = useState<string[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
-  const remainingPosts = 3;
   useEffect(() => {
     const fetchMissingBadge = async () => {
       try {
@@ -47,6 +46,7 @@ const GoalBadgeComponent: React.FC = () => {
       console.error(type, '목표 뱃지 조회 실패:', error);
     }
   };
+
   useEffect(() => {
     const fetchAllProgress = async () => {
       const progressData: { [key: string]: number } = {};
@@ -56,6 +56,7 @@ const GoalBadgeComponent: React.FC = () => {
           const result = await fetchProgress(badge);
           progressData[badge] = result || 0;
         } catch (error) {
+          console.log(error);
           progressData[badge] = 0;
           console.log(error);
         }
@@ -135,7 +136,7 @@ const Box = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const ArrowIcon = styled(({ isOpen, ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled(({ ...rest }) => <img {...rest} />)`
   width: 10px;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};

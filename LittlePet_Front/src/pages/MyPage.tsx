@@ -40,7 +40,7 @@ const MyPage: React.FC = () => {
         <StatsComponent user={stats} isLoading={isLoading} />
         <PetProfiles pets={pets} isLoading={isLoading} />
         <BadgeComponent badges={badges} isLoading={isLoading} />
-        <GoalBadgeComponent badges={badges} isLoading={isLoading} />
+        <GoalBadgeComponent />
       </ProfileContainer>
       <Menu></Menu>
     </Container>

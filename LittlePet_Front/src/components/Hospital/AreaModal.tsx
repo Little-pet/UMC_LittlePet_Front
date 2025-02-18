@@ -7,8 +7,9 @@ import { motion } from 'framer-motion';
 interface AreaModalProps {
   onClose: () => void;
   onSelect: (area: string, code: number) => void;
+  area: string;
 }
-const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect }) => {
+const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect, area }) => {
   const seoulDistricts = [
     { name: '강남구', code: 23 },
     { name: '강동구', code: 25 },
@@ -38,11 +39,12 @@ const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect }) => {
   ];
 
   // 선택된 지역 상태 관리
-  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [selectedArea, setSelectedArea] = useState<string | null>(area);
 
   const handleSelect = (area: string, code: number) => {
     setSelectedArea(area); // 선택된 지역 업데이트
     onSelect(area, code);
+    onClose();
   };
 
   const handleCurrentLocation = () => {

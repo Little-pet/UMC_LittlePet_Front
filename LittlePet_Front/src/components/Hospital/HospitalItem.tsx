@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
@@ -137,5 +137,5 @@ const CommentText = styled.div`
 const OpenStatus = styled.div`
   font-size: 12px;
   font-family: Pretendard-Medium;
-  color: #6ea8fe;
+  color: #737373;
 `;

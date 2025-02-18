@@ -4,28 +4,50 @@ interface Content {
   content: string;
   sequence: number;
 }
-export interface CommunityPost {
-  id: number;
-  title: string;
+
+interface Comment {
+  commentId: number;
   content: string;
-  userName: string;
-  likes: number;
-  commentNum: number;
-  views: number;
-  userBadges: string[];
-  postTitle: string;
   createdTime: string;
+  name: string;
+  replies?: Comment[];
   updatedTime: string;
+  userPets: string[];
+}
+export interface CommunityPost {
+  // 특정 글
+  commentNum: number;
+  comments: Comment[];
   contents: Content[];
-  comments: any[];
+  createdTime: string;
+  id: number;
+  likes: number;
+  petCategory: string;
+  postTitle: string;
+  updatedTime: string;
+  userBadges: string[];
+  userName: string;
+  views: number;
+}
+export interface CommunityPosts {
+  // 글 리스트
+  comments: number;
+  contents: Content[];
+  createdTime: string;
+  likes: number;
+  petCategory: string;
+  postId: number;
+  title: string;
+  userId: number;
+  userName: string;
+  views: number;
   category?: string;
 }
-
 interface CommunityStore {
-  posts: CommunityPost[];
-  currentPost: CommunityPost | null;
+  posts: CommunityPosts[]; // 글 리스트
+  currentPost: CommunityPost | null; // 특정 글
   isLoading: boolean;
-  popularPosts: CommunityPost[];
+  popularPosts: CommunityPosts[];
   // 커뮤니티 글 목록 조회 (기본값은 Q&A 카테고리, 최신순 등)
   fetchPosts: (category?: string, sort?: string) => Promise<void>;
   // 커뮤니티 특정 글 조회
@@ -52,7 +74,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
         }
       );
       if (response.data.isSuccess) {
-        const posts: CommunityPost[] = response.data.result || [];
+        const posts: CommunityPosts[] = response.data.result || [];
         set({ posts, isLoading: false });
         const postsWithCategory = posts.map((post) => ({ ...post, category }));
         const popularPosts = postsWithCategory.filter(
@@ -99,7 +121,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
       if (response.data.isSuccess) {
         // 삭제된 게시물을 제외한 나머지 게시물 목록으로 업데이트
         set((state) => ({
-          posts: state.posts.filter((post) => post.id !== postId),
+          posts: state.posts.filter((post) => post.postId !== postId),
           isLoading: false,
         }));
         console.log('커뮤니티 게시물 삭제 성공', response.data);
@@ -114,7 +136,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
     try {
       // 세 카테고리: Q&A, 일상, 챌린지
       const categories = ['Q&A', '일상', '챌린지'];
-      let allPosts: CommunityPost[] = [];
+      let allPosts: CommunityPosts[] = [];
       for (const category of categories) {
         const response = await axios.get(
           `https://umclittlepet.shop/api/post?category=${encodeURIComponent(
@@ -124,8 +146,8 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
         );
         if (response.data.isSuccess) {
           // 각 게시물에 카테고리 정보 추가
-          const posts: CommunityPost[] = (response.data.result || []).map(
-            (post: any) => ({ ...post, category })
+          const posts: CommunityPosts[] = (response.data.result || []).map(
+            (post: CommunityPosts) => ({ ...post, category })
           );
           allPosts = allPosts.concat(posts);
         }

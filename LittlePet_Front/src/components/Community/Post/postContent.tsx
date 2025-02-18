@@ -28,7 +28,7 @@ interface PostContentProps {
   badgeType: string[];
   animal: string;
   time: string;
-  footerData: string[];
+  footerData: number[];
   contents: Content[];
   likeCount: number;
   id: number;
@@ -73,7 +73,7 @@ const PostContent: React.FC<PostContentProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const { deletePost, isLoading } = useCommunityStore();
+  const { deletePost } = useCommunityStore();
   const { user, fetchUser } = useUserStore();
 
   const handleDelete = async () => {

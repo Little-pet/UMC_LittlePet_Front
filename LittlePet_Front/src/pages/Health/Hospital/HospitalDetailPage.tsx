@@ -51,7 +51,7 @@ const HospitalDetailPage = () => {
     useHospitalStore();
 
   useEffect(() => {
-    fetchHospitalDetail(hospitalId);
+    fetchHospitalDetail(Number(hospitalId));
   }, [hospitalId, fetchHospitalDetail]);
   if (!hospitalDetail) return <div>Loading...</div>;
   const isFavorited = scrappedHospitals.some(

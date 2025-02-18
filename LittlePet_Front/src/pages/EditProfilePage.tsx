@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
@@ -353,10 +352,4 @@ const SaveButton = styled.button`
   border-radius: 5px;
   text-align: center;
   margin-top: 89px;
-`;
-
-const LoadingContainer = styled.div`
-  font-size: 18px;
-  text-align: center;
-  margin-top: 50px;
 `;

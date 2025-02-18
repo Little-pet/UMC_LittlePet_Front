@@ -62,9 +62,7 @@ const DateContainer = styled.div`
   color: #737373;
 `;
 
-const StyledDatePicker = styled(
-  DatePicker as unknown as React.ComponentType<any>
-)`
+const StyledDatePicker = styled(DatePicker)`
   flex: 1; /* 내부 요소가 가득 차도록 */
   font-size: 14px;
   padding: 10px 15px; /* 좌측 여백 유지 */

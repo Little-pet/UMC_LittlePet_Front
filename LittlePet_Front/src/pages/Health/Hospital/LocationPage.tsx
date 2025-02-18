@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import LocationModal from '#/components/Hospital/LocationModal';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 const LocationPage = () => {
-  const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -32,7 +31,6 @@ const LocationPage = () => {
           height: '100%',
         }}
         level={3} // 지도의 확대 레벨
-        onCreate={setMap}
       >
         <MapMarker
           position={{ lat: info.latitude, lng: info.longitude }}
@@ -48,6 +46,7 @@ const LocationPage = () => {
 export default LocationPage;
 const Container = styled.div`
   width: 100%;
+  overflow: hidden;
   @media only screen and (min-width: 800px) {
     padding: 0 96px;
   }

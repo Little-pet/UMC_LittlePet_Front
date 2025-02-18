@@ -26,9 +26,9 @@ const EditPetPage: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
-  const [categoryId, setCategoryId] = useState<number>();
+
   const [birthDate, setBirthDate] = useState<string>('');
-  void categoryId;
+
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('이미지 변경');
@@ -192,7 +192,6 @@ const EditPetPage: React.FC = () => {
           <CategoryDropdown
             selectedCategory={categoryText}
             onCategorySelect={(category) => setCategoryText(category)}
-            onIdSelect={(id) => setCategoryId(id)}
           />
           <TagButtonContainer>
             {tags.map((tag, index) => (
