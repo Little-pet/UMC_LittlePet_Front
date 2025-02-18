@@ -15,6 +15,7 @@ import hamster from '@assets/animaldropdown/hamster.svg';
 import hedgehog from '@assets/animaldropdown/hedgehog.svg';
 import banner from '@assets/banner/banner-health.svg';
 import { getFormattedDate } from '@utils/dateUtils';
+import HealthSkeleton from '#/components/SkeletonUI/HealthSkeleton';
 
 /* API 요청 함수 (선택한 반려동물의 최신 건강 기록 조회) */
 const fetchHealthRecord = async (petId: number) => {
@@ -118,8 +119,7 @@ const HealthProfile: React.FC = () => {
     navigate(`/health/record/detail/${pet.petId}`);
   };
 
-  if (loading || isLoading)
-    return <Loading>반려동물 정보를 불러오는 중...</Loading>;
+  if (loading || isLoading) return <HealthSkeleton />;
 
   return (
     <ContainerWrapper>
@@ -270,11 +270,6 @@ const ContainerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-const Loading = styled.div`
-  text-align: center;
-  font-size: 16px;
-  margin-top: 20px;
 `;
 
 const PageTitle = styled.h1`

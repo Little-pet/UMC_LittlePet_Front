@@ -43,9 +43,7 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
   const imageContent = getFirstImageContent(contents);
   return (
     <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
-      <CardBackground
-        bgImage={imageContent ? imageContent.content : undefined}
-      />
+      {imageContent && <CardBackground bgImage={imageContent.content} />}
       <CardContent>
         <CardTitle>{title}</CardTitle>
         <MetaData>
@@ -76,15 +74,15 @@ const ViewIcon = styled.img`
   }
 `;
 const HeartIcon = styled.img`
-  height: 7px;
+  width: 16px;
   @media only screen and (min-width: 800px) {
-    height: 20px;
+    width: 23px;
   }
 `;
 const CommentIcon = styled.img`
-  height: 7px;
+  width: 12px;
   @media only screen and (min-width: 800px) {
-    height: 18px;
+    width: 17px;
   }
 `;
 // 최상위 카드
@@ -96,6 +94,8 @@ const CardWrapper = styled(Link)`
   overflow: hidden;
   margin-bottom: 13px;
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
   @media only screen and (min-width: 800px) {
     width: 300px;
     height: 220px;
@@ -116,10 +116,13 @@ const CardBackground = styled.div<{ bgImage?: string }>`
 
 // 하단 텍스트 및 메타 정보
 const CardContent = styled.div`
-  padding: 8px 12px;
+  padding: 11px 12px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  flex: 1;
+  box-sizing: border-box;
+  justify-content: space-between;
   @media only screen and (min-width: 800px) {
     padding: 20px 18px;
     gap: 15px;
