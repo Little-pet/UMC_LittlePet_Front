@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import thumbIcon from '#/assets/thumb-up.svg';
 import { useState } from 'react';
 import axios from 'axios';
+import { useAuthStore } from '#/context/AuthStore';
 interface LikeButtonProps {
   count: number; // 초기 좋아요 개수
   postId: number;
@@ -9,7 +10,7 @@ interface LikeButtonProps {
 
 const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
   const [likeCount, setLikeCount] = useState<number>(count);
-  const userId = 4;
+  const userId = useAuthStore((state) => state.userId);
   const handleLike = async () => {
     try {
       const response = await axios.post(

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
+import { useAuthStore } from '#/context/AuthStore';
 interface User {
   nickname: string;
   profilePhoto: string;
@@ -23,7 +24,7 @@ const EditProfilePage: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
   const [info, setInfo] = useState<User | null>(null);
-  const userId = 4;
+  const userId = useAuthStore((state) => state.userId);
 
   useEffect(() => {
     const fetchUser = async () => {

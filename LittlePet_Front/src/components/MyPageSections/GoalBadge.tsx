@@ -7,6 +7,7 @@ import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
 import arrowIcon from '#/assets/arrow.svg';
 import axios from 'axios';
+import { useAuthStore } from '#/context/AuthStore';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,
@@ -14,11 +15,12 @@ const badgeIconMapping: { [key: string]: string } = {
   챌린저: ChallengerBadge,
   인기스타: PopularBadge,
 };
-const userId = 4;
+
 const GoalBadgeComponent: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [badges, setBadges] = useState();
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
+  const userId = useAuthStore((state) => state.userId);
   const remainingPosts = 3;
   useEffect(() => {
     const fetchMissingBadge = async () => {

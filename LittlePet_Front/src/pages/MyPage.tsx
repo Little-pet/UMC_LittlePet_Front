@@ -7,9 +7,10 @@ import PetProfiles from '@components/MyPageSections/PetProfiles';
 import ProfileSection from '@components/MyPageSections/ProfileSection';
 import { useUserStore } from '#/context/UserStore';
 import GoalBadgeComponent from '@components/MyPageSections/GoalBadge';
+import { useAuthStore } from '#/context/AuthStore';
 
 const MyPage: React.FC = () => {
-  const userId = 4;
+  const userId = useAuthStore((state) => state.userId);
   const {
     user = {},
     fetchUser = () => {},
