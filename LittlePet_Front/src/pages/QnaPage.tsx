@@ -5,7 +5,7 @@ import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton'
 import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+//import { useQuery } from '@tanstack/react-query';
 import { useCommunityStore } from '#/context/CommunityStore';
 import CommunityPost from '#/components/SkeletonUI/CommunityPost';
 import {
