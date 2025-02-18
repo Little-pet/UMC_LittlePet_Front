@@ -11,7 +11,7 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import { useCommunityStore } from '#/context/CommunityStore';
 import { useUserStore } from '#/context/UserStore';
-
+import { useAuthStore } from '#/context/AuthStore';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,
@@ -75,13 +75,13 @@ const PostContent: React.FC<PostContentProps> = ({
   };
   const { deletePost } = useCommunityStore();
   const { user, fetchUser } = useUserStore();
-
+  const userId = useAuthStore();
   const handleDelete = async () => {
     await deletePost(id);
     navigate(-1);
   };
   useEffect(() => {
-    fetchUser(4);
+    fetchUser(userId);
   }, [fetchUser]);
 
   return (

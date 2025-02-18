@@ -7,6 +7,8 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
 import DeleteModal from '#/components/DeleteModal';
+
+import { useAuthStore } from '#/context/AuthStore';
 interface Pet {
   name: string;
   profilePhoto: string;
@@ -145,6 +147,7 @@ const EditPetPage: React.FC = () => {
         `https://umclittlepet.shop/api/pets/${petId}`
       );
       console.log('반려동물 프로필 삭제 성공', response.data);
+
       navigate('/mypage');
     } catch (error) {
       console.error('반려동물 프로필 삭제 실패:', error);

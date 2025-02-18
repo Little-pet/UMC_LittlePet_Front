@@ -40,12 +40,28 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const { user, pets } = useUserStore();
+  const { user, pets, fetchUser, isLoading, lastFetchedUserId } =
+    useUserStore();
+  const { userId, isLoggedIn } = useAuthStore();
   //console.log(parentId);
+
+  useEffect(() => {
+    if (userId && !isLoading && lastFetchedUserId !== userId) {
+      console.log(`fetchUser 실행됨! userId: ${userId}`);
+      fetchUser(userId);
+    }
+  }, [userId, fetchUser, isLoading, lastFetchedUserId]);
+
+  /* useEffect(() => {
+    console.log('🔍 현재 user 상태:', JSON.stringify(user, null, 2));
+    console.log('🔍 현재 pets 상태:', JSON.stringify(pets, null, 2));
+  }, [user, pets]);*/
+
   const author = user?.name;
   const animal = pets[0]?.petCategory;
-  const { userId, isLoggedIn } = useAuthStore();
+
   const navigate = useNavigate();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

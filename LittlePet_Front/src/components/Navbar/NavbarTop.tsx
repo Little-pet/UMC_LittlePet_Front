@@ -80,7 +80,7 @@ const NavbarTop: FC = () => {
       )}
 
       {/*  모바일에서만 사이드바 메뉴 표시 */}
-      <ResponsiveMenu open={open} />
+      <ResponsiveMenu open={open} onClose={() => setOpen(false)} />
     </>
   );
 };
@@ -145,7 +145,7 @@ const MenuItem = styled.li`
   list-style: none;
   @media (min-width: 768px) {
     font-size: 22px;
-    font-weight: 600;
+    font-family: 'Pretendard-SemiBold';
   }
 `;
 

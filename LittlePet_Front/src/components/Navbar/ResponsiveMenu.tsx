@@ -7,9 +7,10 @@ import { useAuthStore } from '#/context/AuthStore';
 
 interface ResponsiveMenuProps {
   open: boolean;
+  onClose: () => void;
 }
 
-const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
+const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open, onClose }) => {
   const navigate = useNavigate();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
@@ -21,6 +22,7 @@ const ResponsiveMenu: FC<ResponsiveMenuProps> = ({ open }) => {
   }, [open]);
 
   const handleLoginOrMyPageClick = () => {
+    onClose();
     navigate(isLoggedIn ? '/mypage' : '/login');
   };
 
