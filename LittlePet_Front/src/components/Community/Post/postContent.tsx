@@ -75,7 +75,7 @@ const PostContent: React.FC<PostContentProps> = ({
   };
   const { deletePost } = useCommunityStore();
   const { user, fetchUser } = useUserStore();
-  const userId = useAuthStore();
+  const userId = useAuthStore((state) => state.userId);
   const handleDelete = async () => {
     await deletePost(id);
     navigate(-1);
