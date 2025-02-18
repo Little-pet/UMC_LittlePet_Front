@@ -55,6 +55,7 @@ interface CommunityStore {
   // 커뮤니티 게시물 삭제
   deletePost: (postId: number) => Promise<void>;
   fetchPopularPosts: () => Promise<void>;
+  patchViews: (postId: number) => Promise<void>;
 }
 
 export const useCommunityStore = create<CommunityStore>((set) => ({
@@ -160,6 +161,18 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
       console.log('인기 게시물 조회 성공', popularPosts);
     } catch (error) {
       console.error('인기 게시물 조회 실패:', error);
+      set({ isLoading: false });
+    }
+  },
+  patchViews: async (postId: number) => {
+    try {
+      const response = await axios.patch(
+        `https://umclittlepet.shop/api/post/${postId}/view`,
+        { withCredentials: true }
+      );
+      console.log('게시물 조회수 증가 성공', response.data);
+    } catch (error) {
+      console.error('게시물 조회수 증가 실패:', error);
       set({ isLoading: false });
     }
   },
