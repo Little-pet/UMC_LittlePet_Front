@@ -108,7 +108,7 @@ const HealthProfile: React.FC = () => {
   const weightChangeText =
     roundedWeightDiff !== undefined
       ? roundedWeightDiff === 0
-        ? '유지'
+        ? ''
         : roundedWeightDiff > 0
           ? `${roundedWeightDiff}kg 증가`
           : `${Math.abs(roundedWeightDiff)}kg 감소`

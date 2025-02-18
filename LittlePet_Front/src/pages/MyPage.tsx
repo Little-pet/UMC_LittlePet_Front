@@ -12,7 +12,6 @@ import { useAuthStore } from '#/context/AuthStore';
 const MyPage: React.FC = () => {
   const userId = useAuthStore((state) => state.userId);
   const {
-    user = {},
     fetchUser = () => {},
     stats = {
       likeCount: 0,
@@ -25,12 +24,14 @@ const MyPage: React.FC = () => {
     pets = [],
     isLoading = false,
   } = useUserStore();
-  useEffect(() => {
-    if (!user && fetchUser) {
-      fetchUser(userId);
-    }
-  }, [userId, fetchUser, user]);
 
+  useEffect(() => {
+    console.log('✅ [MyPage] useEffect 실행됨', { userId, pets });
+
+    fetchUser(userId);
+  }, [userId, pets]);
+
+  console.log('🛠️ Zustand 상태 확인:', useUserStore.getState());
   if (isLoading) return <div>loading...</div>;
 
   return (
