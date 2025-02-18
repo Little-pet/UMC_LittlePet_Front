@@ -34,7 +34,7 @@ interface UserStore {
   isLoading: boolean;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
   pets: [],
   stats: null,
@@ -75,7 +75,6 @@ export const useUserStore = create<UserStore>((set) => ({
         }
 
         set({ isLoading: false }); //  isLoading 상태 업데이트
-        console.log('[UserStore] Zustand 상태 업데이트 완료:', get().pets);
       }
     } catch (error) {
       console.error('사용자 프로필 조회 실패:', error);
