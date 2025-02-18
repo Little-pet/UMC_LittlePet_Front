@@ -40,9 +40,10 @@ const FilterSection = ({ onSelect }) => {
           setView(!view);
         }}
       >
-        <DropDownText>{timeText}</DropDownText>
-
-        <ArrowIcon src={arrowIcon} view={view} />
+        <DropDownBox>
+          <DropDownText>{timeText}</DropDownText>
+          <ArrowIcon src={arrowIcon} view={view} />
+        </DropDownBox>
         {view && (
           <DropdownMenu>
             {times.map((time, index) => (
@@ -65,6 +66,9 @@ const FilterSection = ({ onSelect }) => {
 export default FilterSection;
 
 const DropdownContainer = styled.div`
+  position: relative;
+`;
+const DropDownBox = styled.div`
   text-decoration: none;
   display: flex;
   width: 112px;
@@ -75,9 +79,8 @@ const DropdownContainer = styled.div`
   box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
-  position: relative;
+  cursor: pointer;
 `;
-
 const DropDownText = styled.div`
   font-size: 14px;
   color: #262627;
@@ -101,6 +104,7 @@ const DropdownMenu = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
 `;
 const ArrowIcon = styled(({ ...rest }) => <img {...rest} />)`
   transition: transform 0.3s ease-in-out;
@@ -120,7 +124,6 @@ const MiddleActions = styled.div`
 const AreaModalButton = styled.div`
   display: flex;
   gap: 8px;
-  cursor: pointer;
 `;
 const AreaText = styled.div<{ color?: string }>`
   font-size: 22px;
