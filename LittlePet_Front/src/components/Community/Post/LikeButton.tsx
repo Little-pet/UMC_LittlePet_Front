@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import thumbIcon from '#/assets/thumb-up.svg';
-import { useState } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '#/context/AuthStore';
 interface LikeButtonProps {
@@ -10,7 +9,6 @@ interface LikeButtonProps {
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
-  const [likeCount, setLikeCount] = useState<number>(count);
   const userId = useAuthStore((state) => state.userId);
   const handleLike = async () => {
     try {
@@ -18,7 +16,8 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
         `https://umclittlepet.shop/api/like/${userId}/${postId}`
       );
       console.log('좋아요 등록/취소 성공:', response.data);
-      setLikeCount(response.data.result.likeNum);
+
+      window.location.reload();
     } catch (error) {
       console.error('좋아요 등록/취소 실패:', error);
     }
@@ -26,7 +25,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
   return (
     <LikeButtonWrapper onClick={handleLike}>
       <LikeIcon src={thumbIcon} />
-      <LikeCount>{likeCount}</LikeCount>
+      <LikeCount>{count}</LikeCount>
     </LikeButtonWrapper>
   );
 };

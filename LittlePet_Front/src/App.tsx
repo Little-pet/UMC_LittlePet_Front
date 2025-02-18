@@ -36,6 +36,7 @@ import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
 import EditPostPage from './pages/EditPostPage';
 import { useAuthStore } from '#/context/AuthStore';
+import BadgeModal from './components/MyPageSections/BadgeModal';
 
 // 라우터 설정
 const router = createBrowserRouter([
@@ -124,7 +125,7 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
   const [showSplash, setShowSplash] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const isFirstVisit = localStorage.getItem('isFirstVisit');
 
@@ -147,6 +148,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} />
+      {isModalOpen && <BadgeModal onClose={() => setIsModalOpen(false)} />}
     </QueryClientProvider>
   );
 };

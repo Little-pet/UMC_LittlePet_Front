@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ChallengeCard from '#/components/Community/challengeCard';
 import { useCommunityStore } from '#/context/CommunityStore';
 import { useAuthStore } from '#/context/AuthStore';
+import HomeChallenge from '../SkeletonUI/HomeChallenge';
 
 const ChallengeSection: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const ChallengeSection: React.FC = () => {
   useEffect(() => {
     fetchPosts('챌린지', '인기순');
   }, [fetchPosts]);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <HomeChallenge />;
   const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <ChallengeContainer>

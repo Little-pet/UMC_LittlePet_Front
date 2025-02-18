@@ -116,7 +116,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               </AnimalWrapper>
             </UserInfoWrapper>
             <div style={{ display: 'flex', gap: '4px' }}>
-              {badges?.map((badge, idx) => {
+              {badges?.slice(0, 2).map((badge, idx) => {
                 const icon = badgeIconMapping[badge.name];
                 if (!icon) return null;
                 return <BadgeIcon key={idx} src={icon} alt={badge.name} />;

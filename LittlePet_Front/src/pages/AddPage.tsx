@@ -7,6 +7,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import axios from 'axios';
 import { useAuthStore } from '#/context/AuthStore';
+import Toast from '#/components/Toast';
 // 최대 업로드 개수 & 파일 크기
 const MAX_IMAGES = 5;
 const MAX_SIZE = 20 * 1024 * 1024; // 20MB
@@ -34,6 +35,8 @@ const AddPage: React.FC = () => {
   const [textCount, setTextCount] = useState<number>(0);
   const [content, setContent] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [isToastVisible, setToastVisible] = useState<boolean>(false);
   const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = textCount > 0;
@@ -80,11 +83,11 @@ const AddPage: React.FC = () => {
       if (!file) return;
       // ✅ 파일 유효성 검사
       if (!VALID_TYPES.includes(file.type)) {
-        alert('지원되지 않는 파일 형식입니다.');
+        showToast('지원되지 않는 파일 형식입니다.');
         return;
       }
       if (file.size > MAX_SIZE) {
-        alert('파일 크기가 20MB를 초과할 수 없습니다.');
+        showToast('파일 크기가 20MB를 초과할 수 없습니다.');
         return;
       }
 
@@ -97,7 +100,7 @@ const AddPage: React.FC = () => {
 
       // 만약 현재 이미지 개수가 MAX_IMAGES 이상이면 삽입하지 않음
       if (currentImageCount >= MAX_IMAGES) {
-        alert(`최대 ${MAX_IMAGES}개의 이미지만 업로드할 수 있습니다.`);
+        showToast(`최대 ${MAX_IMAGES}개의 이미지만 업로드할 수 있습니다.`);
         return;
       }
 
@@ -166,22 +169,31 @@ const AddPage: React.FC = () => {
       prev.filter((imgData) => currentImageSrcs.includes(imgData.base64))
     );
   }, [content]);
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
+
+  const closeToast = () => {
+    setToastVisible(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (categoryText === '') {
-      alert('종 카테고리를 선택해주세요!');
+      showToast('종 카테고리를 선택해주세요!');
       return;
     }
     if (tagSelected.title === '') {
-      alert('글 카테고리를 선택해주세요!');
+      showToast('글 카테고리를 선택해주세요!');
       return;
     }
     if (!isTitleValid) {
-      alert('제목을 입력해주세요!');
+      showToast('제목을 입력해주세요!');
       return;
     }
     if (!isContentValid) {
-      alert('내용을 입력해주세요!');
+      showToast('내용을 입력해주세요!');
       return;
     }
     const parsedContents = parseContent(content);
@@ -270,6 +282,7 @@ const AddPage: React.FC = () => {
       },
     };
   }, []);
+
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
@@ -328,6 +341,13 @@ const AddPage: React.FC = () => {
           </ButtonWrapper>
         )}
       </Form>
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          isVisible={isToastVisible}
+          onClose={closeToast}
+        />
+      )}
     </Container>
   );
 };
