@@ -6,6 +6,7 @@ import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
+import { useAuthStore } from '#/context/AuthStore';
 const PetRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
   const [tagSelected, setTagSelected] = useState<string>('');
@@ -14,6 +15,7 @@ const PetRegistrationPage: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [categoryText, setCategoryText] = useState<string>('');
   const [birthDate, setBirthDate] = useState<string>('');
+  const userId = useAuthStore((state) => state.userId);
 
   // 파일 선택 핸들러
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +73,7 @@ const PetRegistrationPage: React.FC = () => {
     console.log(profileImage);
     try {
       const response = await axios.post(
-        `https://umclittlepet.shop/api/users/4/pets`,
+        `https://umclittlepet.shop/api/users/${userId}/pets`,
         formData,
         {
           headers: {

@@ -32,7 +32,7 @@ export const usePetStore = create<PetStore>((set, get) => ({
           pets: response.data.result,
           selectedPet: response.data.result[0],
         });
-        console.log(' Zustand 상태 업데이트됨:', usePetStore.getState().pets);
+        console.log(' Zustand 상태 업데이트됨=:', usePetStore.getState().pets);
         console.log(usePetStore.getState().selectedPet);
       }
     } catch (error) {

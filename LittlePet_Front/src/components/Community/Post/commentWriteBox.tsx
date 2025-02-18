@@ -3,10 +3,14 @@ import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/context/UserStore';
+<<<<<<< HEAD
 interface CommentWriteBoxProps {
   postId: number;
   parentId?: number | null;
 }
+=======
+import { useAuthStore } from '#/context/AuthStore';
+>>>>>>> feature/57/로그인-연동-수정
 // 실제 댓글 작성 컴포넌트
 const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   postId,
@@ -41,7 +45,7 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   //console.log(parentId);
   const author = user?.name;
   const animal = pets[0]?.petCategory;
-  const userId = 4;
+  const userId = useAuthStore((state) => state.userId);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isTextValid) {

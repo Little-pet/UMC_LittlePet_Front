@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Edit from '@assets/Edit.svg';
@@ -8,8 +8,10 @@ import { useUserStore } from '#/context/UserStore';
 
 const ProfileSection: React.FC = () => {
   const { user, pets = [], isLoading } = useUserStore();
-  if (isLoading) return <div>Loading...</div>;
-  if (!user) return <div>Loading...</div>;
+  useEffect(() => {
+    console.log(' Zustand 상태 확인:', useUserStore.getState());
+  }, [useUserStore().pets]);
+
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
@@ -39,6 +41,9 @@ const ProfileSection: React.FC = () => {
   };
   //console.log('펫', pets);
   //console.log(user);
+  if (isLoading || !user) {
+    return <div>데이터를 불러오는 중...</div>;
+  }
   return (
     <ProfileContainer>
       <ProfileImg
