@@ -3,11 +3,17 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import ChallengeCard from '#/components/Community/challengeCard';
 import { useCommunityStore } from '#/context/CommunityStore';
+import { useAuthStore } from '#/context/AuthStore';
 
 const ChallengeSection: React.FC = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuthStore();
   const handleNavigate = (): void => {
-    navigate('/community/add');
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      navigate('/community/add');
+    }
   };
   const { posts, fetchPosts, isLoading } = useCommunityStore();
   useEffect(() => {

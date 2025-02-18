@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import CommentWriteBox from './commentWriteBox';
+import { useAuthStore } from '#/context/AuthStore';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
@@ -22,6 +24,17 @@ const Comment: React.FC<CommentProps> = ({
   isOpen,
   toggleReplyBox,
 }) => {
+  const { isLoggedIn } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleReplyClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login'); // 로그인되지 않았으면 로그인 페이지로 이동
+      return;
+    }
+    toggleReplyBox(); //  로그인된 경우에만 답글 입력창 열기
+  };
+
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
@@ -60,7 +73,7 @@ const Comment: React.FC<CommentProps> = ({
       <Content>{content}</Content>
       <Footer>
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
-        <ReplyButton onClick={toggleReplyBox}>답글 쓰기</ReplyButton>
+        <ReplyButton onClick={handleReplyClick}>답글 쓰기</ReplyButton>
       </Footer>
       {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
     </CommentContainer>

@@ -2,13 +2,18 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import addIcon from '#/assets/add.svg';
+import { useAuthStore } from '#/context/AuthStore';
 
 // 커뮤니티 글 등록 버튼
 const MobileAddButton: React.FC = () => {
   const navigate = useNavigate();
-
+  const { isLoggedIn } = useAuthStore();
   const handleNavigate = (): void => {
-    navigate('/community/add');
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      navigate('/community/add');
+    }
   };
 
   return (

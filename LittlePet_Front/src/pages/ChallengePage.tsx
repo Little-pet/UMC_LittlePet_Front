@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
 import { useCommunityStore } from '#/context/CommunityStore';
 import ChallengePost from '#/components/SkeletonUI/ChallengePost';
+import { useAuthStore } from '#/context/AuthStore';
 
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
@@ -14,9 +15,14 @@ const ChallengePage: React.FC = () => {
     setSelected(filter);
   };
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuthStore();
 
   const handleNavigate = (): void => {
-    navigate('/community/add');
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      navigate('/community/add');
+    }
   };
 
   const { posts, fetchPosts, isLoading } = useCommunityStore();
