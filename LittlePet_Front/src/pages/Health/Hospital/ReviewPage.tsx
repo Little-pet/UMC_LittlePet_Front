@@ -2,9 +2,10 @@ import styled from 'styled-components';
 import penIcon from '#/assets/연필.svg';
 import 고슴도치 from '#/assets/고슴도치.png';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import ReviewItem from '#/components/Hospital/ReviewItem';
 import { useHospitalStore } from '#/context/hospitalStore';
+import { useAuthStore } from '#/context/AuthStore';
+import { useNavigate } from 'react-router-dom';
 // 타입 정의
 type FilterType = 'popular' | 'new';
 
@@ -14,6 +15,18 @@ const ReviewPage = () => {
   const handleClick = (filter: FilterType) => {
     setSelected(filter);
   };
+  const navigate = useNavigate();
+  const { isLoggedIn, checkLoginStatus } = useAuthStore();
+  const handleReviewClick = (e) => {
+    checkLoginStatus();
+    if (!isLoggedIn) {
+      e.preventDefault();
+      navigate('/login');
+    } else {
+      navigate(`/health/hospital/${hospitalDetail.id}/add`);
+    }
+  };
+
   return (
     <Container>
       <ContentWrapper>
@@ -22,7 +35,7 @@ const ReviewPage = () => {
             <Title>리뷰</Title>
             <Count>118</Count>
           </TitleWrapper>
-          <ReviewButton to={`/health/hospital/${hospitalDetail.id}/add`}>
+          <ReviewButton onClick={handleReviewClick}>
             <img src={penIcon} style={{ width: '13px' }} />
             <ReviewButtonText>리뷰 쓰기</ReviewButtonText>
           </ReviewButton>
@@ -98,7 +111,7 @@ const Count = styled.div`
   font-family: Pretendard-SemiBold;
   color: #737373;
 `;
-const ReviewButton = styled(Link)`
+const ReviewButton = styled.div`
   display: flex;
   gap: 5px;
   text-decoration: none;

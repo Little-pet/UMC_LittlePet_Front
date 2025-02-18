@@ -6,6 +6,7 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import axios from 'axios';
+import { useAuthStore } from '#/context/AuthStore';
 // 최대 업로드 개수 & 파일 크기
 const MAX_IMAGES = 5;
 const MAX_SIZE = 20 * 1024 * 1024; // 20MB
@@ -36,6 +37,7 @@ const AddPage: React.FC = () => {
   const quillRef = useRef<ReactQuill | null>(null);
   const isTitleValid = title.trim().length >= 1 && title.length <= 30;
   const isContentValid = textCount > 0;
+  const userId = useAuthStore((state) => state.userId);
 
   const tags = [
     {
@@ -213,8 +215,9 @@ const AddPage: React.FC = () => {
     console.log(postForm);
     console.log(postImgs);
     try {
+      console.log('userId', userId);
       const response = await axios.post(
-        `https://umclittlepet.shop/api/post/4`,
+        `https://umclittlepet.shop/api/post/${userId}`,
         formData,
         {
           headers: {
@@ -223,6 +226,7 @@ const AddPage: React.FC = () => {
           withCredentials: true,
         }
       );
+
       console.log('커뮤니티 게시물 생성 성공', response.data);
       navigate(`/community/${tagSelected.type}`);
     } catch (error) {

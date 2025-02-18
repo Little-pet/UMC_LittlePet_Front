@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/context/UserStore';
+import { useNavigate } from 'react-router-dom';
+
 interface CommentWriteBoxProps {
   postId: number;
   parentId?: number | null;
@@ -42,9 +44,15 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   //console.log(parentId);
   const author = user?.name;
   const animal = pets[0]?.petCategory;
-  const userId = useAuthStore((state) => state.userId);
+  const { userId, isLoggedIn } = useAuthStore();
+  const navigate = useNavigate();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
     if (!isTextValid) {
       alert('댓글을 입력해주세요!');
       return;
