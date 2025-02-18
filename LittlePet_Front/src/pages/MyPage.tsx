@@ -43,7 +43,7 @@ const MyPage: React.FC = () => {
         <BadgeComponent badges={badges} isLoading={isLoading} />
         <GoalBadgeComponent />
       </ProfileContainer>
-      <Menu></Menu>
+      <Menu />
     </Container>
   );
 };

@@ -6,8 +6,8 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
 import arrowIcon from '#/assets/arrow.svg';
-import axios from 'axios';
 import { useAuthStore } from '#/context/AuthStore';
+import { useBadgeStore } from '#/context/BadgeStore';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,
@@ -18,49 +18,25 @@ const badgeIconMapping: { [key: string]: string } = {
 
 const GoalBadgeComponent: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [badges, setBadges] = useState<string[]>([]);
-  const [progress, setProgress] = useState<{ [key: string]: number }>({});
+
+  const [progress, setProgress] = useState<{ [key: string]: string }>({});
   const userId = useAuthStore((state) => state.userId);
-  //const remainingPosts = 3;
+  const { fetchMissingBadge, fetchProgress, missingBadges } = useBadgeStore();
   useEffect(() => {
-    const fetchMissingBadge = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/badge/${userId}/missingbadge`,
-          { withCredentials: true }
-        );
-        console.log('획득하지 못한 뱃지 조회 성공', response.data);
-        setBadges(response.data.result);
-      } catch (error) {
-        console.error('획득하지 못한 뱃지 조회 실패:', error);
-      }
-    };
-    fetchMissingBadge();
+    fetchMissingBadge(userId);
   }, []);
-  const fetchProgress = async (type: string) => {
-    try {
-      const response = await axios.get(
-        `https://umclittlepet.shop/api/badge/${userId}/${type}/progress`,
-        { withCredentials: true }
-      );
-      console.log(type, '목표 뱃지 조회 성공', response.data);
-      return response.data.result;
-    } catch (error) {
-      console.error(type, '목표 뱃지 조회 실패:', error);
-    }
-  };
 
   useEffect(() => {
-    const fetchAllProgress = async () => {
-      const progressData: { [key: string]: number } = {};
+    const fetchAllProgress = async (): Promise<void> => {
+      const progressData: { [key: string]: string } = {};
       // badges 배열에 있는 각 badge에 대해 진행 상태를 가져옵니다.
-      for (const badge of badges ?? []) {
+      for (const badge of missingBadges ?? []) {
         try {
-          const result = await fetchProgress(badge);
-          progressData[badge] = result || 0;
+          const result = await fetchProgress(userId, badge);
+          progressData[badge] = result || '';
         } catch (error) {
           console.log(error);
-          progressData[badge] = 0;
+          progressData[badge] = '';
           console.log(error);
         }
       }
@@ -68,7 +44,7 @@ const GoalBadgeComponent: React.FC = () => {
     };
 
     fetchAllProgress();
-  }, [badges]);
+  }, [missingBadges]);
   return (
     <BadgeContainer isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       <Title>목표 뱃지</Title>
@@ -88,7 +64,7 @@ const GoalBadgeComponent: React.FC = () => {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            {(badges ?? []).map((badge, idx) => {
+            {(missingBadges ?? []).map((badge, idx) => {
               const icon = badgeIconMapping[badge];
               const word = progress[badge] ?? 0;
               const text = String(word);

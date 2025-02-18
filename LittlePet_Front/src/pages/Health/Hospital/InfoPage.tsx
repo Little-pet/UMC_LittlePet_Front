@@ -46,16 +46,19 @@ const InfoPage = () => {
       </div>
 
       <div>
-        {hospitalDetail.closedDay.split('\n').map((line, index) =>
-          index === 0 ? (
-            <Box key={index}>
-              <Icon src={boardIcon} />
-              <Text style={{ display: 'inline' }}>{line}</Text>
-            </Box>
-          ) : (
-            <ExtraText key={index}>{line}</ExtraText>
-          )
-        )}
+        {hospitalDetail.closedDay
+          .split('\n')
+          .filter(Boolean) // 빈 문자열 제거
+          .map((line, index) =>
+            index === 0 ? (
+              <Box key={index}>
+                <Icon src={boardIcon} />
+                <Text style={{ display: 'inline' }}>{line}</Text>
+              </Box>
+            ) : (
+              <ExtraText key={index}>{line}</ExtraText>
+            )
+          )}
       </div>
       <Box>
         <Icon src={callIcon} />

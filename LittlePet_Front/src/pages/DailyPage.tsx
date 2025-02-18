@@ -15,7 +15,7 @@ import {
   ItemList,
 } from '#/components/Community/styles/common';
 const DailyPage: React.FC = () => {
-  const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
+  const [selected, setSelected] = useState<'인기순' | '최신순'>('최신순');
   const handleClick = (filter: '인기순' | '최신순') => {
     setSelected(filter);
   };
@@ -42,16 +42,16 @@ const DailyPage: React.FC = () => {
         >
           <Header>
             <HeaderFilter
-              onClick={() => handleClick('인기순')}
-              isActive={selected === '인기순'}
-            >
-              인기순
-            </HeaderFilter>
-            <HeaderFilter
               onClick={() => handleClick('최신순')}
               isActive={selected === '최신순'}
             >
               최신순
+            </HeaderFilter>
+            <HeaderFilter
+              onClick={() => handleClick('인기순')}
+              isActive={selected === '인기순'}
+            >
+              인기순
             </HeaderFilter>
           </Header>
           <DesktopAddButton />
