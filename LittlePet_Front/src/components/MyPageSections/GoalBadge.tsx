@@ -21,7 +21,7 @@ const GoalBadgeComponent: React.FC = () => {
   const [badges, setBadges] = useState<string[]>([]);
   const [progress, setProgress] = useState<{ [key: string]: number }>({});
   const userId = useAuthStore((state) => state.userId);
-  const remainingPosts = 3;
+  //const remainingPosts = 3;
   useEffect(() => {
     const fetchMissingBadge = async () => {
       try {

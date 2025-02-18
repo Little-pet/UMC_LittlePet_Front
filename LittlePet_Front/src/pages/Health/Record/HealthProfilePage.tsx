@@ -56,7 +56,7 @@ const HealthProfile: React.FC = () => {
   }, [userId, isLoggedIn]);
 
   /* Tanstack Query 사용하여 최신 건강 기록 캐싱 */
-  const { data: healthRecord, isLoading: recordLoading } = useQuery({
+  const { data: healthRecord, isLoading } = useQuery({
     queryKey: ['healthRecord', selectedPet?.petId],
     queryFn: () =>
       selectedPet
@@ -118,7 +118,8 @@ const HealthProfile: React.FC = () => {
     navigate(`/health/record/detail/${pet.petId}`);
   };
 
-  if (loading) return <Loading>반려동물 정보를 불러오는 중...</Loading>;
+  if (loading || isLoading)
+    return <Loading>반려동물 정보를 불러오는 중...</Loading>;
 
   return (
     <ContainerWrapper>
@@ -522,10 +523,4 @@ const RecordText = styled.p`
   font-weight: 600;
   font-size: 14px;
   color: #262627;
-`;
-
-const LoadingContainer = styled.p`
-  font-size: 18px;
-  text-align: center;
-  margin-top: 50px;
 `;
