@@ -1,15 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import animalIcon from '#/assets/동물 아이콘.svg';
-import femaleIcon from '#/assets/성별여자.svg';
-import maleIcon from '#/assets/성별남자.svg';
 import vectorIcon from '#/assets/Vector.svg';
 import starIcon from '#/assets/star.svg';
 interface ReviewItemProps {
   name: string;
   rate: string | number;
   animal: string;
-  gender: string;
   imgs?: string[];
   content: string;
   date: string | number;
@@ -19,7 +16,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
   name,
   rate,
   animal,
-  gender,
   imgs,
   content,
   date,
@@ -38,11 +34,6 @@ const ReviewItem: React.FC<ReviewItemProps> = ({
             <img src={animalIcon} style={{ width: '14px', height: '14px' }} />
             <IconText>{animal}</IconText>
           </IconGroup>
-          {gender == 'female' ? (
-            <img src={femaleIcon} style={{ width: '8px' }} />
-          ) : (
-            <img src={maleIcon} style={{ width: '10px' }} />
-          )}
         </UserInfo>
       </Header>
       {imgs ? (
