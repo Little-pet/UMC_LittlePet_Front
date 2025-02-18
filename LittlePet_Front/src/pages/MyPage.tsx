@@ -26,12 +26,11 @@ const MyPage: React.FC = () => {
   } = useUserStore();
 
   useEffect(() => {
-    console.log('✅ [MyPage] useEffect 실행됨', { userId, pets });
+    console.log('[MyPage] useEffect 실행됨', { userId, pets });
 
     fetchUser(userId);
   }, [userId, pets]);
 
-  console.log('🛠️ Zustand 상태 확인:', useUserStore.getState());
   if (isLoading) return <div>loading...</div>;
 
   return (

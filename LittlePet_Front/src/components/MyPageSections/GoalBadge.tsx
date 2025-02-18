@@ -90,16 +90,23 @@ const GoalBadgeComponent: React.FC = () => {
           >
             {(badges ?? []).map((badge, idx) => {
               const icon = badgeIconMapping[badge];
-              const word = String(progress[badge] ?? 0);
-              const match = word.match(/(.*?)(\d+)(.*)/);
+              const word = progress[badge] ?? 0;
+              const text = String(word);
+              const match = text.match(/(.*?)(\d+)(.*)/);
 
               return (
                 <BadgeBox key={idx}>
                   <img src={icon} />
                   <Text>
-                    {match[1]}
-                    <HighlightedText>{match[2]}</HighlightedText>
-                    {match[3]}
+                    {match ? (
+                      <>
+                        {match[1]}
+                        <HighlightedText>{match[2]}</HighlightedText>
+                        {match[3]}
+                      </>
+                    ) : (
+                      word // 숫자가 없으면 그대로 출력
+                    )}
                   </Text>
                 </BadgeBox>
               );
