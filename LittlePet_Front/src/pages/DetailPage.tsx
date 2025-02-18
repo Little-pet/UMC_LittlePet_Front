@@ -10,7 +10,7 @@ import { useCommunityStore } from '#/context/CommunityStore';
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const numericPostId = Number(postId);
-  const { fetchPost, isLoading, currentPost } = useCommunityStore();
+  const { fetchPost, isLoading, currentPost, patchViews } = useCommunityStore();
   const { state } = useLocation();
   const { category, type } = state || {};
   const [openCommentId, setOpenCommentId] = useState<number | null>(null);
@@ -21,6 +21,7 @@ const DetailPage: React.FC = () => {
 
   useEffect(() => {
     fetchPost(numericPostId);
+    patchViews(numericPostId);
   }, [numericPostId]);
 
   if (isLoading) return <div>Loading...</div>;

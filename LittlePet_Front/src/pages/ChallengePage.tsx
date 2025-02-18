@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
 import { useCommunityStore } from '#/context/CommunityStore';
+import ChallengePost from '#/components/SkeletonUI/ChallengePost';
 
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'인기순' | '최신순'>('인기순');
@@ -22,7 +23,7 @@ const ChallengePage: React.FC = () => {
   useEffect(() => {
     fetchPosts('챌린지', selected);
   }, [fetchPosts, selected]);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <ChallengePost />;
   const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <Container>
