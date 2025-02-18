@@ -6,8 +6,21 @@ import mapIcon from '#/assets/map.svg';
 import HospitalItem from '#/components/Hospital/HospitalItem';
 import AreaModal from '#/components/Hospital/AreaModal';
 import banner from '@assets/banner/banner-health.svg';
+import FilterSection from '#/components/Hospital/FilterSection';
 import { useHospitalStore } from '#/context/hospitalStore';
-
+export interface Hospital {
+  id: number;
+  name: string;
+  address: string;
+  closedDay: string;
+  latitude?: number;
+  longitude?: number;
+  imageUrl: string;
+  openingHours: string;
+  phoneNumber: string;
+  rating: number;
+  open: boolean;
+}
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(
@@ -16,10 +29,9 @@ const HospitalPage: React.FC = () => {
   const [areaId, setAreaId] = useState<number>(
     Number(localStorage.getItem('areaId')) || 6
   );
-  const [view, setView] = useState<boolean>(false);
-  const [timeText, setTimeText] = useState<string>('');
 
-  const times = ['영업중', '24시간', '주말'];
+  const [hospitalList, setHospitalList] = useState<Hospital[]>();
+
   const filters = [
     {
       type: 'distance',
@@ -34,7 +46,7 @@ const HospitalPage: React.FC = () => {
       title: '평점 높은 순',
     },
   ];
-  const [selected, setSelected] = useState<string>('distance');
+  const [selected, setSelected] = useState<string>('');
   const handleClick = (type: string) => {
     setSelected(type);
   };
@@ -45,17 +57,11 @@ const HospitalPage: React.FC = () => {
     localStorage.setItem('areaId', code.toString());
   };
 
-  const handleTimeClick = (name: string) => {
-    setTimeText(name);
-    setView(false);
-  };
-  const { hospitalsByRegion, fetchHospitalsByRegion } = useHospitalStore();
+  const { fetchHospitalsByRegion } = useHospitalStore();
 
   useEffect(() => {
     fetchHospitalsByRegion(areaId);
   }, [areaId, fetchHospitalsByRegion]);
-
-  if (!hospitalsByRegion) return <div>Loading...</div>;
 
   return (
     <>
@@ -74,38 +80,9 @@ const HospitalPage: React.FC = () => {
             <MapText>지도보기</MapText>
           </MapButton>
         </TopActions>
-        <MiddleActions>
-          <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
-            <AreaText color='#6EA8FE'>
-              {timeText === '' ? '영업중' : timeText}
-            </AreaText>
-          </AreaModalButton>
 
-          <DropdownContainer
-            onClick={() => {
-              setView(!view);
-            }}
-          >
-            {timeText === '' ? (
-              <MapText>진료 시간 변경</MapText>
-            ) : (
-              <DropDownText>{timeText}</DropDownText>
-            )}
-            <ArrowIcon src={arrowIcon} view={view} />
-            {view && (
-              <DropdownMenu>
-                {times.map((time, index) => (
-                  <DropDownText
-                    onClick={() => handleTimeClick(time)}
-                    key={index}
-                  >
-                    {time}
-                  </DropDownText>
-                ))}
-              </DropdownMenu>
-            )}
-          </DropdownContainer>
-        </MiddleActions>
+        <FilterSection onSelect={setHospitalList} />
+
         <FilterContainer>
           {filters.map((filter, idx) => (
             <FilterButton
@@ -118,7 +95,7 @@ const HospitalPage: React.FC = () => {
           ))}
         </FilterContainer>
         <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
-          {hospitalsByRegion.map((item, idx) => {
+          {hospitalList?.map((item, idx) => {
             const openingHoursArray = item.openingHours.split('\n');
             const getTodayDay = () => {
               const days = ['일', '월', '화', '수', '목', '금', '토'];
@@ -186,16 +163,6 @@ const TopActions = styled.div`
   }
 `;
 
-const MiddleActions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 25px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
-  }
-`;
-
 const FilterContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -217,31 +184,13 @@ const MapButton = styled(Link)`
   align-items: center;
   justify-content: space-around;
 `;
-const DropdownContainer = styled.div`
-  text-decoration: none;
-  display: flex;
-  width: 112px;
-  height: 27px;
-  border-radius: 5px;
-  border: 1px solid #e6e6e6;
-  padding: 6px 10px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  cursor: pointer;
-`;
+
 const MapText = styled.div`
   font-size: 12px;
   font-family: Pretendard-SemiBold;
   color: #737373;
 `;
-const DropDownText = styled.div`
-  font-size: 14px;
-  color: #262627;
-  font-family: 'Pretendard-SemiBold';
-  align-self: center;
-`;
+
 const AreaText = styled.div<{ color?: string }>`
   font-size: 22px;
   font-family: Pretendard-SemiBold;
@@ -265,23 +214,7 @@ const Overlay = styled.div`
   justify-content: center;
   z-index: 999;
 `;
-const DropdownMenu = styled.ul`
-  position: absolute;
-  top: 18px;
-  right: 0px;
-  width: 112px;
-  height: 126px;
-  background: #ffffff;
-  border: 1px solid #e6e6e6;
-  border-radius: 5px;
-  padding: 18px 25px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
+
 const FilterButton = styled.button<{ isActive: boolean }>`
   border: none;
   padding: 6px 10px;

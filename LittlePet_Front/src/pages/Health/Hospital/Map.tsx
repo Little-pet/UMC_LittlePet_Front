@@ -6,6 +6,7 @@ import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useHospitalStore } from '#/context/hospitalStore';
+import FilterSection from '#/components/Hospital/FilterSection';
 // 타입 정의
 interface Hospital {
   id: number;
@@ -21,15 +22,11 @@ interface Hospital {
 }
 
 const MapPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
-  const [view, setView] = useState<boolean>(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [timeText, setTimeText] = useState<string>('');
   const { state } = useLocation();
   const [info, setInfo] = useState<Hospital | null>(null); // 선택된 마커 정보
   const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
   const { locationData } = state || {};
-
+  const [hospitalList, setHospitalList] = useState<Hospital[]>();
   const { hospitalsByRegion } = useHospitalStore();
   console.log(hospitalsByRegion);
   // 마커의 위치로 지도의 중심 좌표 이동하기
@@ -51,12 +48,7 @@ const MapPage: React.FC = () => {
   }, [map]);
 
   console.log(locationData);
-  const times = ['영업중', '24시간', '주말'];
 
-  const handleTimeClick = (name: string) => {
-    setTimeText(name);
-    setView(false);
-  };
   useEffect(() => {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
@@ -90,36 +82,7 @@ const MapPage: React.FC = () => {
         </Link>
         <AreaText>지도에서 찾기</AreaText>
       </Header>
-      <ControlBar>
-        <AreaModalButton onClick={() => setIsModalOpen(!isModalOpen)}>
-          <AreaText color='#6EA8FE'>
-            {timeText === '' ? '영업중' : timeText}
-          </AreaText>
-        </AreaModalButton>
-
-        <DropdownContainer
-          onClick={() => {
-            setView(!view);
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
-        >
-          {timeText === '' ? (
-            <MapText>진료 시간 변경</MapText>
-          ) : (
-            <DropDownText>{timeText}</DropDownText>
-          )}
-          <ArrowIcon src={arrowIcon} isDropdownOpen={isDropdownOpen} />
-          {view && (
-            <DropdownMenu>
-              {times.map((time, index) => (
-                <DropDownText onClick={() => handleTimeClick(time)} key={index}>
-                  {time}
-                </DropDownText>
-              ))}
-            </DropdownMenu>
-          )}
-        </DropdownContainer>
-      </ControlBar>
+      <FilterSection onSelect={setHospitalList} />
 
       <Map
         id='map'
@@ -134,7 +97,7 @@ const MapPage: React.FC = () => {
         level={3} // 지도의 확대 레벨
         onCreate={setMap}
       >
-        {hospitalsByRegion?.map((marker) => (
+        {hospitalList?.map((marker) => (
           <MapMarker
             key={marker.id}
             position={{ lat: marker.latitude, lng: marker.longitude }}
@@ -198,11 +161,7 @@ const DropdownContainer = styled.div`
   justify-content: space-between;
   position: relative;
 `;
-const MapText = styled.div`
-  font-size: 12px;
-  font-family: Pretendard-SemiBold;
-  color: #737373;
-`;
+
 const DropDownText = styled.div`
   font-size: 14px;
   color: #262627;
@@ -226,7 +185,7 @@ const DropdownMenu = styled.ul`
   top: 18px;
   right: 0px;
   width: 112px;
-  height: 126px;
+  height: 150px;
   background: #ffffff;
   border: 1px solid #e6e6e6;
   border-radius: 5px;

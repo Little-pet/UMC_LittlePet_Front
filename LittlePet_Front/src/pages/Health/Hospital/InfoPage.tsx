@@ -28,7 +28,12 @@ const InfoPage = () => {
       <div onClick={() => setIsOpen(!isOpen)}>
         <Box>
           <Icon src={clockIcon} />
-          <OpenStatus>진료중</OpenStatus>
+          {hospitalDetail.open === true ? (
+            <OpenStatus>진료중</OpenStatus>
+          ) : (
+            <CloseStatus>진료 종료</CloseStatus>
+          )}
+
           <Text>{todayOpeningHour}</Text>
           <ArrowIcon src={arrowIcon} isOpen={isOpen} />
         </Box>
@@ -95,11 +100,17 @@ const ExtraText = styled.div`
   height: 20px;
   display: flex;
   align-items: center;
+  align-self: center;
 `;
 const OpenStatus = styled.div`
   font-size: 12px;
   font-family: Pretendard-Medium;
   color: #6ea8fe;
+`;
+const CloseStatus = styled.div`
+  font-size: 12px;
+  font-family: Pretendard-Medium;
+  color: #737373;
 `;
 const ArrowIcon = styled.img<{ isOpen: boolean }>`
   width: 10px;

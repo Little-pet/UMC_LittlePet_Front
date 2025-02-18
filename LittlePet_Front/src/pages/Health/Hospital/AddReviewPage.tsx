@@ -5,13 +5,14 @@ import addIcon from '#/assets/추가 버튼.svg';
 import { useState, useEffect } from 'react';
 import CategoryDropdown from '@components/CategoryDropdown';
 import StarModal from '#/components/Hospital/StarModal';
+import { useHospitalStore } from '#/context/hospitalStore';
 const AddReviewPage = () => {
   const [categoryText, setCategoryText] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const [star, setStar] = useState<number | null>(null);
   const [content, setContet] = useState<string>('');
-
+  const { hospitalDetail } = useHospitalStore();
   useEffect(() => {
     if (star && content) {
       setValid(true);
@@ -23,7 +24,9 @@ const AddReviewPage = () => {
     <Container>
       <Title>리뷰작성</Title>
       <Form>
-        <HospitalName>{'>'} 로얄동물메디컬센터 본원</HospitalName>
+        <HospitalName>
+          {'>'} {hospitalDetail.name}
+        </HospitalName>
         <div style={{ display: 'flex', gap: '15px' }}>
           <StarButton onClick={() => setShowModal(true)}>
             <img src={starIcon} style={{ width: '22px' }} />

@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import penIcon from '#/assets/연필.svg';
 import 고슴도치 from '#/assets/고슴도치.png';
 import { useState } from 'react';
-
 import ReviewItem from '#/components/Hospital/ReviewItem';
+import { useHospitalStore } from '#/context/hospitalStore';
 import { useAuthStore } from '#/context/AuthStore';
 import { useNavigate } from 'react-router-dom';
 // 타입 정의
@@ -11,7 +11,7 @@ type FilterType = 'popular' | 'new';
 
 const ReviewPage = () => {
   const [selected, setSelected] = useState<FilterType>('popular');
-
+  const { hospitalDetail } = useHospitalStore();
   const handleClick = (filter: FilterType) => {
     setSelected(filter);
   };
@@ -23,7 +23,7 @@ const ReviewPage = () => {
       e.preventDefault();
       navigate('/login');
     } else {
-      navigate('/health/hospital/1/add');
+      navigate(`/health/hospital/${hospitalDetail.id}/add`);
     }
   };
 

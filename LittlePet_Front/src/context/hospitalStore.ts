@@ -12,12 +12,13 @@ export interface Hospital {
   openingHours: string;
   phoneNumber: string;
   rating: number;
+  open: boolean;
 }
 interface HospitalStore {
-  scrappedHospitals: Hospital[]; // 스크랩한 병원 목록
+  scrappedHospitals: Hospital[] | null; // 스크랩한 병원 목록
   hospitalDetail: Hospital | null; // 선택한 병원 상세 정보
-  hospitalsByRegion: Hospital[]; // 특정 지역의 병원 목록
-  hospitalsByFilter: Hospital[];
+  hospitalsByRegion: Hospital[] | undefined; // 특정 지역의 병원 목록
+  hospitalsByFilter: Hospital[] | undefined; // 필터링된 병원
   // 병원 상세 조회
   fetchHospitalDetail: (hospitalId: number) => Promise<void>;
   // 병원 스크랩
@@ -127,7 +128,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
         `https://umclittlepet.shop/api/hospitals/filter?filterType=${encodedFilter}`,
         { withCredentials: true }
       );
-      console.log('병원 필터링해서 조회 성공: ', response.data);
+      console.log(filter, '병원 필터링해서 조회 성공: ', response.data);
       if (response.data.isSuccess) {
         set({ hospitalsByFilter: response.data.result });
       }
