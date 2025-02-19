@@ -12,7 +12,7 @@ import { Hospital } from '#/context/hospitalStore';
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(
-    localStorage.getItem('selectedArea') || '동대문구'
+    localStorage.getItem('selectedArea') || '강남구'
   );
   const [areaId, setAreaId] = useState<number>(
     Number(localStorage.getItem('areaId')) || 6
@@ -21,18 +21,9 @@ const HospitalPage: React.FC = () => {
   const [hospitalList, setHospitalList] = useState<Hospital[]>();
 
   const filters = [
-    {
-      type: 'distance',
-      title: '가까운 순',
-    },
-    {
-      type: 'review',
-      title: '리뷰 많은 순',
-    },
-    {
-      type: 'rate',
-      title: '평점 높은 순',
-    },
+    { type: 'distance', title: '가까운 순' },
+    { type: 'review', title: '리뷰 많은 순' },
+    { type: 'rate', title: '평점 높은 순' },
   ];
   const [selected, setSelected] = useState<string>('');
   const handleClick = (type: string) => {

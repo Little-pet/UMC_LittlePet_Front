@@ -27,21 +27,9 @@ const PetRegistrationPage: React.FC = () => {
   };
 
   const tags = [
-    {
-      gender: 'FEMALE',
-      title: '암컷',
-      icon: '♀',
-    },
-    {
-      gender: 'MALE',
-      title: '수컷',
-      icon: '♂',
-    },
-    {
-      gender: 'OTHER',
-      title: '기타',
-      icon: null,
-    },
+    { gender: 'FEMALE', title: '암컷', icon: '♀' },
+    { gender: 'MALE', title: '수컷', icon: '♂' },
+    { gender: 'OTHER', title: '기타', icon: '⚥' },
   ];
 
   // 서버에 post할 객체
@@ -88,9 +76,7 @@ const PetRegistrationPage: React.FC = () => {
         `https://umclittlepet.shop/api/users/${userId}/pets`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         }
       );

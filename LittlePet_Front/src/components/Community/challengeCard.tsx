@@ -108,20 +108,19 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             src={profilePhoto === null ? profileIcon : profilePhoto}
           />
           <div>
+            <UserName>{name}</UserName>
+
             <UserInfoWrapper>
-              <UserName>{name}</UserName>
+              {badges?.slice(0, 1).map((badge, idx) => {
+                const icon = badgeIconMapping[badge.name];
+                if (!icon) return null;
+                return <BadgeIcon key={idx} src={icon} alt={badge.name} />;
+              })}
               <AnimalWrapper>
                 <AnimalImg src={getAnimalIcon(animal)} />
                 <AnimalText>{animal}</AnimalText>
               </AnimalWrapper>
             </UserInfoWrapper>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              {badges?.slice(0, 2).map((badge, idx) => {
-                const icon = badgeIconMapping[badge.name];
-                if (!icon) return null;
-                return <BadgeIcon key={idx} src={icon} alt={badge.name} />;
-              })}
-            </div>
           </div>
         </ProfileWrapper>
         <DescriptionWrapper>
@@ -217,7 +216,6 @@ const UserInfoWrapper = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-  height: 35px;
 `;
 
 const AnimalWrapper = styled.div`
@@ -237,7 +235,7 @@ const AnimalImg = styled.img`
 const UserName = styled.div`
   font-size: 12px;
   font-family: 'Pretendard-SemiBold';
-  //line-height: 35px;
+  line-height: 25px;
   color: #ffffff;
   @media (min-width: 768px) {
     font-size: 16px;
