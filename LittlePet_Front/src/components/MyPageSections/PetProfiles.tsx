@@ -109,10 +109,6 @@ const PetItem = styled.div`
 
 const AddButton = styled.img``;
 
-const LoadingMessage = styled.p`
-  font-size: 18px;
-  margin-top: 50px;
-`;
 const Box = styled.div`
   display: flex;
   width: 100%;
