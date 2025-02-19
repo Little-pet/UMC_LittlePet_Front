@@ -31,14 +31,12 @@ const MyPage: React.FC = () => {
     fetchUser(userId);
   }, [userId, pets]);
 
-  if (isLoading) return <div>loading...</div>;
-
   return (
     <Container>
       <Title>마이페이지</Title>
       <ProfileContainer>
-        <ProfileSection /*user={user} pets={pets} isLoading={isLoading}*/ />
-        <StatsComponent user={stats} isLoading={isLoading} />
+        <ProfileSection />
+        <StatsComponent user={stats} />
         <PetProfiles pets={pets} isLoading={isLoading} />
         <BadgeComponent badges={badges} isLoading={isLoading} />
         <GoalBadgeComponent />
@@ -57,6 +55,7 @@ const Container = styled.div`
   gap: 32px;
   width: 100%;
   padding: 0 25px;
+  margin-top: 5px;
   box-sizing: border-box;
   @media (min-width: 800px) {
     padding: 0 96px;

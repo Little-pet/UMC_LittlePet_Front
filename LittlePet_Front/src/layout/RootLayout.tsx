@@ -41,7 +41,7 @@ const NavbarContainer = styled.div`
   width: 100%;
   background-color: #fff;
   z-index: 10;
-  position: fixed;
+  //position: fixed;
   top: 0;
 `;
 
@@ -51,7 +51,7 @@ const MainContent = styled.main`
   justify-content: center;
   max-width: 100%;
   height: calc(100vh - 50px - 45px);
-  padding-top: 95px;
+  //padding-top: 95px;
   margin: 0;
 
   box-sizing: border-box;
