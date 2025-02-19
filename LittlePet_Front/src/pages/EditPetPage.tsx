@@ -8,7 +8,6 @@ import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagBut
 import axios from 'axios';
 import DeleteModal from '#/components/DeleteModal';
 
-import { useAuthStore } from '#/context/AuthStore';
 interface Pet {
   name: string;
   profilePhoto: string;

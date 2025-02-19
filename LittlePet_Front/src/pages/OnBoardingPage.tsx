@@ -7,7 +7,7 @@ const OnBoardingPage: React.FC = () => {
   //뒤로가기 핸들러
   const navigate = useNavigate();
   const handleRegister = () => {
-    navigate('/mypage'); // 마이페이지로
+    navigate('/pet-register'); // 마이페이지로
   };
   const handleHome = () => {
     navigate('/'); // 홈으로

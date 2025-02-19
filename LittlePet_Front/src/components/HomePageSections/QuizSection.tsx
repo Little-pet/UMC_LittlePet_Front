@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import participantsIcon from '#/assets/Participants.svg';
 import { quizData } from '#/mockData/quizdata';
@@ -10,22 +10,6 @@ const QuizSection: React.FC = () => {
   const [participantCount, setParticipantCount] = useState(1234);
   const [hasParticipated, setHasParticipated] = useState(false);
 
-  // 컴포넌트가 처음 렌더링될 때 로컬 스토리지에서 값 읽기
-  useEffect(() => {
-    const storedIndex = localStorage.getItem('quizSelectedIndex');
-    const storedHasParticipated = localStorage.getItem('hasParticipated');
-    const storedCount = localStorage.getItem('participantCount');
-
-    if (storedIndex) setSelectedIndex(Number(storedIndex));
-    if (storedHasParticipated === 'true') setHasParticipated(true);
-    if (storedCount) setParticipantCount(Number(storedCount));
-
-    if (storedIndex !== null) {
-      setShowAnswer(true);
-      setIsSelected(true);
-    }
-  }, []);
-
   // 사용자가 답을 선택했을 때 실행되는 함수
   const handleClick = (index: number) => {
     if (!hasParticipated) {
@@ -35,11 +19,6 @@ const QuizSection: React.FC = () => {
       setIsSelected(true);
       setParticipantCount(newCount);
       setHasParticipated(true);
-
-      // 로컬 스토리지에 상태 저장
-      localStorage.setItem('quizSelectedIndex', index.toString());
-      localStorage.setItem('hasParticipated', 'true');
-      localStorage.setItem('participantCount', newCount.toString());
     }
   };
 

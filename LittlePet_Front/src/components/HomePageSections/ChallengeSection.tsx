@@ -23,7 +23,7 @@ const ChallengeSection: React.FC = () => {
   const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <ChallengeContainer>
-      <ChallengeTitle>금주의 챌린저👑</ChallengeTitle>
+      <ChallengeTitle>금주의 챌린저 👑</ChallengeTitle>
       <ChallengeSubTitle>
         “우리 동물들... 연예인 닮은 모먼트를 찍어 공유하자!”
       </ChallengeSubTitle>
