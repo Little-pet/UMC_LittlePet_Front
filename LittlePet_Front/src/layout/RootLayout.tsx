@@ -41,6 +41,8 @@ const NavbarContainer = styled.div`
   width: 100%;
   background-color: #fff;
   z-index: 10;
+  position: fixed;
+  top: 0;
 `;
 
 const MainContent = styled.main`
@@ -49,8 +51,9 @@ const MainContent = styled.main`
   justify-content: center;
   max-width: 100%;
   height: calc(100vh - 50px - 45px);
-  padding: 0;
+  padding-top: 95px;
   margin: 0;
+
   box-sizing: border-box;
   overflow-y: auto; /* 세로 스크롤 */
   /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
