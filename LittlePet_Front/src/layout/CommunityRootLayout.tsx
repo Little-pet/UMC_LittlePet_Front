@@ -11,21 +11,9 @@ interface Category {
 const CommunityRootLayout: React.FC = () => {
   const location = useLocation();
   const categories: Category[] = [
-    {
-      type: 'qna',
-      title: 'Q&A',
-      path: '/community/qna',
-    },
-    {
-      type: 'daily',
-      title: '일상',
-      path: '/community/daily',
-    },
-    {
-      type: 'challenge',
-      title: '챌린지',
-      path: '/community/challenge',
-    },
+    { type: 'qna', title: 'Q&A', path: '/community/qna' },
+    { type: 'daily', title: '일상', path: '/community/daily' },
+    { type: 'challenge', title: '챌린지', path: '/community/challenge' },
   ];
 
   // ✅ `localStorage`에서 메뉴 상태 복원 (초기값: "qna")
@@ -108,7 +96,6 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
   @media (min-width: 800px) {
     font-size: 22px;
-    line-height: 35px;
     font-family: Pretendard-SemiBold;
   }
 `;

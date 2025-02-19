@@ -39,24 +39,22 @@ const NavbarTop: FC = () => {
         <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
           {/*  PC에서는 네비게이션 메뉴 항상 표시 */}
           <Menu>
-            {!open && (
-              <MenuContainer>
-                {NavbarMainMenu.map((item) => (
-                  <MenuItem key={item.id}>
-                    <MenuLink
-                      onClick={() => handleMenuClick(item.link)} // 페이지 이동 및 활성화 처리
-                      isActive={
-                        location.pathname === '/'
-                          ? item.link === '/home'
-                          : location.pathname.startsWith(item.link)
-                      }
-                    >
-                      {item.title}
-                    </MenuLink>
-                  </MenuItem>
-                ))}
-              </MenuContainer>
-            )}
+            <MenuContainer>
+              {NavbarMainMenu.map((item) => (
+                <MenuItem key={item.id}>
+                  <MenuLink
+                    onClick={() => handleMenuClick(item.link)} // 페이지 이동 및 활성화 처리
+                    isActive={
+                      location.pathname === '/'
+                        ? item.link === '/home'
+                        : location.pathname.startsWith(item.link)
+                    }
+                  >
+                    {item.title}
+                  </MenuLink>
+                </MenuItem>
+              ))}
+            </MenuContainer>
           </Menu>
 
           <IconContainer>
@@ -153,7 +151,8 @@ const MenuLink = styled.a<{ isActive: boolean }>`
   display: inline-block;
   padding: 4px 12px;
   cursor: pointer;
-  font-family: Pretendard-Medium;
+  font-size: 22px;
+  font-family: Pretendard-SemiBold;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
 `;

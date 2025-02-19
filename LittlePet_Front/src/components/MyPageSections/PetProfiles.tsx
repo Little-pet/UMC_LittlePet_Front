@@ -16,13 +16,20 @@ interface PetProfilesProps {
 
 const PetProfiles: React.FC<PetProfilesProps> = ({ pets, isLoading }) => {
   //const { pets, fetchPets } = usePetStore();
-  if (isLoading) return <LoadingMessage>로딩 중...</LoadingMessage>;
+
   const navigate = useNavigate();
 
   const handlePetClick = (petId: number) => {
     navigate(`/edit-pet/${petId}`);
   };
-
+  if (isLoading || !pets)
+    return (
+      <Box>
+        {new Array(3).fill('').map((_, i) => (
+          <Item key={i} />
+        ))}
+      </Box>
+    );
   /* const { isLoading } = useQuery({
     queryKey: ['pets', userId],
     queryFn: () => fetchPets(userId),
@@ -101,24 +108,30 @@ const PetItem = styled.div`
 `;
 
 const AddButton = styled.img``;
-/*const blink = keyframes`
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
-`;
-const SkeletonCard = styled.div`
-  width: 60px;
-  height: 60px;
-  background: #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-
-  animation: ${blink} 1.5s ease-in-out infinite;
-`;*/
 
 const LoadingMessage = styled.p`
   font-size: 18px;
   margin-top: 50px;
+`;
+const Box = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 20px;
+`;
+const Item = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  @keyframes skeleton-gradient {
+    0% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+      background-color: rgba(165, 165, 165, 0.3);
+    }
+    100% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+  }
+  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;
