@@ -176,8 +176,8 @@ const ButtonList = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 20px;
+  justify-content: center;
   @media (min-width: 800px) {
-    justify-content: center;
     margin-top: 42px;
   }
 `;
