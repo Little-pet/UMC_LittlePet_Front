@@ -109,7 +109,7 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   @media (min-width: 800px) {
     font-size: 22px;
     line-height: 35px;
-    font-weight: 600;
+    font-family: Pretendard-SemiBold;
   }
 `;
 const MainContent = styled.main<{ totalHeight: number }>`

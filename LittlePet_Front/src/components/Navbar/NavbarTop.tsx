@@ -153,7 +153,7 @@ const MenuLink = styled.a<{ isActive: boolean }>`
   display: inline-block;
   padding: 4px 12px;
   cursor: pointer;
-  font-family: 'Pretendard-Medium';
+  font-family: Pretendard-Medium;
   text-decoration: none;
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : '#262627')};
 `;

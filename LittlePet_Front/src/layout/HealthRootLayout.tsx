@@ -99,7 +99,7 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   @media (min-width: 800px) {
     font-size: 22px;
     line-height: 35px;
-    font-family: 'Pretendard-SemiBold';
+    font-family: Pretendard-SemiBold;
   }
 `;
 const MainContent = styled.main`
