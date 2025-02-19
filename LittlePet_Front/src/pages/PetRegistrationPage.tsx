@@ -63,7 +63,7 @@ const PetRegistrationPage: React.FC = () => {
       console.error('생년월일을 입력하세요.');
       return;
     }
-
+    console.log(`서버에 보낼 생년월일: ${formattedBirthDate}`);
     const petProfileRequest = {
       name,
       birthDay: formattedBirthDate,
