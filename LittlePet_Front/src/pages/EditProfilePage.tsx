@@ -107,8 +107,13 @@ const EditProfilePage: React.FC = () => {
   // 저장 버튼 클릭 시 사용자 정보 업데이트
   const handleSave = async () => {
     const isValidName = /^(?=.*\S).{1,10}$/.test(name);
+    const isValidIntro = /^(?=.*\S).{1,50}$/.test(bio);
     if (!isValidName) {
       showToast('닉네임은 공백포함 1~10자입니다!');
+      return;
+    }
+    if (!isValidIntro) {
+      showToast('자기소개는 공백포함 1~50자입니다!');
       return;
     }
 
@@ -134,10 +139,10 @@ const EditProfilePage: React.FC = () => {
           withCredentials: true,
         }
       );
-      console.log('반려동물 프로필 수정 성공', response.data);
+      console.log('사용자 프로필 수정 성공', response.data);
       navigate('/mypage');
     } catch (error) {
-      console.error('반려동물 프로필 수정 실패:', error);
+      console.error('사용자 프로필 수정 실패:', error);
     }
   };
 

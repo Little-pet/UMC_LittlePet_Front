@@ -5,6 +5,7 @@ import Logout from '@assets/Logout.svg';
 import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
 import Security from '@assets/Security.svg';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '#/context/AuthStore';
 
 import axios from 'axios';
@@ -27,6 +28,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, text, onClick }) => {
 };
 
 const SettingsPage: React.FC = () => {
+  const navigate = useNavigate();
   const { isLoggedIn, checkLoginStatus } = useAuthStore();
   const handleTermsOfService = () => {
     window.location.href =
@@ -47,6 +49,7 @@ const SettingsPage: React.FC = () => {
 
       // Zustand 상태 초기화
       checkLoginStatus();
+      navigate('/home');
     } catch (error) {
       console.error('로그아웃 실패:', error);
     }

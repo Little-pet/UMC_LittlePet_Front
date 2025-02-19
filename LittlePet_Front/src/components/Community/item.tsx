@@ -168,9 +168,9 @@ const Header = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 22px;
+  font-size: 16px;
   font-family: 'Pretendard-SemiBold';
-  color: #262627;
+  color: #6ea8fe;
 `;
 
 const SubHeader = styled.div`

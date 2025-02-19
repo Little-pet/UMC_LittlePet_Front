@@ -43,18 +43,9 @@ const AddPage: React.FC = () => {
   const userId = useAuthStore((state) => state.userId);
 
   const tags = [
-    {
-      type: 'qna',
-      title: 'Q&A',
-    },
-    {
-      type: 'daily',
-      title: '일상',
-    },
-    {
-      type: 'challenge',
-      title: '챌린지',
-    },
+    { type: 'qna', title: 'Q&A' },
+    { type: 'daily', title: '일상' },
+    { type: 'challenge', title: '챌린지' },
   ];
   // 태그 클릭
   const handleTagClick = (tag: Tag) => {
@@ -219,9 +210,7 @@ const AddPage: React.FC = () => {
     const formData = new FormData();
     formData.append(
       'postForm',
-      new Blob([JSON.stringify(postForm)], {
-        type: 'application/json',
-      })
+      new Blob([JSON.stringify(postForm)], { type: 'application/json' })
     );
 
     postImgs.forEach((imgData) => {
@@ -236,9 +225,7 @@ const AddPage: React.FC = () => {
         `https://umclittlepet.shop/api/post/${userId}`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         }
       );
@@ -398,20 +385,24 @@ const Divider = styled.hr`
   margin: 1px 0;
 `;
 const ButtonWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
+  padding-bottom: 5px;
+  @media only screen and (min-width: 800px) {
+    justify-content: flex-end;
+  }
 `;
 const SubmitButton = styled.button`
   height: 48px;
   box-sizing: border-box;
-  width: 87.5%;
+  width: 100%;
   border-radius: 5px;
   background-color: #6ea8fe;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  bottom: 20px;
+
   cursor: pointer;
   border: none;
   @media only screen and (min-width: 800px) {
@@ -429,7 +420,8 @@ const ButtonText = styled.div`
 const StyledQuill = styled(ReactQuill)`
   .ql-container {
     padding: 10px;
-    height: 360px;
+    min-height: 360px;
+    height: auto;
   }
   .ql-editor {
     border: none;
@@ -437,18 +429,6 @@ const StyledQuill = styled(ReactQuill)`
     font-size: 16px;
     line-height: 22px;
     padding: 0 !important;
-    height: 340px;
-    overflow-y: auto; /* 세로 스크롤 */
-    /* 크롬, 사파리, 오페라, 엣지에서 스크롤바 숨기기 */
-    ::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* 인터넷 익스플로러에서 스크롤바 숨기기 */
-    -ms-overflow-style: none;
-
-    /* 파이어폭스에서 스크롤바 숨기기 */
-    scrollbar-width: none;
   }
   .ql-editor.ql-blank::before {
     font-style: normal;

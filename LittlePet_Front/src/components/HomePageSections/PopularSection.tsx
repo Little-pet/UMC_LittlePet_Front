@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { ContentWrapper, ItemList } from '#/components/Community/styles/common';
 import Item from '#/components/Community/item';
 import { useCommunityStore } from '#/context/CommunityStore';
-
 const PopularSection: React.FC = () => {
   const { popularPosts, fetchPopularPosts, isLoading } = useCommunityStore();
   useEffect(() => {
@@ -56,8 +55,8 @@ const Popular = styled.div``;
 const PopularTitle = styled.h1`
   font-weight: 700;
   font-size: 26px;
-  margin-top: 44px;
-  margin-bottom: 34px;
+  margin-top: 40px;
+  margin-bottom: 0px;
   padding-left: 25px;
   @media (min-width: 768px) {
     padding: 0 96px;
