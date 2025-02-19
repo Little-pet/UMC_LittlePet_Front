@@ -25,10 +25,8 @@ const DetailPage: React.FC = () => {
     patchViews(numericPostId);
   }, [numericPostId]);
 
-  if (isLoading) return <CommunityDetail />;
-
   const data = currentPost;
-
+  if (isLoading || !data) return <CommunityDetail />;
   return (
     <Container>
       <PostContent
