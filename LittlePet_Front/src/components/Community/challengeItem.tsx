@@ -41,6 +41,7 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
     return null;
   };
   const imageContent = getFirstImageContent(contents);
+
   return (
     <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
       {imageContent && <CardBackground bgImage={imageContent.content} />}
@@ -106,7 +107,8 @@ const CardWrapper = styled(Link)`
 const CardBackground = styled.div<{ bgImage?: string }>`
   height: 61%;
   background-color: #d9d9d9;
-  background-image: url(${(props) => props.bgImage});
+  background-image: ${(props) =>
+    props.bgImage ? `url("${props.bgImage}")` : 'none'};
   background-size: cover;
   background-position: center;
   @media only screen and (min-width: 800px) {
@@ -137,6 +139,7 @@ const CardTitle = styled.div`
   color: #262627;
   @media only screen and (min-width: 800px) {
     font-size: 15px;
+    line-height: 17px;
   }
 `;
 
