@@ -8,19 +8,7 @@ import AreaModal from '#/components/Hospital/AreaModal';
 import banner from '@assets/banner/banner-health.svg';
 import FilterSection from '#/components/Hospital/FilterSection';
 import { useHospitalStore } from '#/context/hospitalStore';
-export interface Hospital {
-  id: number;
-  name: string;
-  address: string;
-  closedDay: string;
-  latitude?: number;
-  longitude?: number;
-  imageUrl: string;
-  openingHours: string;
-  phoneNumber: string;
-  rating: number;
-  open: boolean;
-}
+import { Hospital } from '#/context/hospitalStore';
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(

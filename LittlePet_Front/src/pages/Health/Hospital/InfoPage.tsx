@@ -117,6 +117,7 @@ const CloseStatus = styled.div`
 `;
 const ArrowIcon = styled.img<{ isOpen: boolean }>`
   width: 10px;
+  cursor: pointer;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
