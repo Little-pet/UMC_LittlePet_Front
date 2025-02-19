@@ -9,6 +9,7 @@ import banner from '@assets/banner/banner-health.svg';
 import FilterSection from '#/components/Hospital/FilterSection';
 import { useHospitalStore } from '#/context/hospitalStore';
 import { Hospital } from '#/context/hospitalStore';
+import { useQuery } from '@tanstack/react-query';
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(
@@ -46,7 +47,16 @@ const HospitalPage: React.FC = () => {
   };
 
   const { fetchHospitalsByRegion } = useHospitalStore();
-
+  const { data, isLoading, isError } = useQuery(
+    ['hospitalsByRegion', areaId],
+    () => fetchHospitalsByRegion(areaId),
+    {
+      enabled: !!areaId,
+      staleTime: 1000 * 60 * 5, // 5분 동안 데이터 유지
+      cacheTime: 1000 * 60 * 10, // 10분 후 캐시 삭제
+      refetchOnWindowFocus: false, // 포커스 변경 시 refetch 방지
+    }
+  );
   useEffect(() => {
     fetchHospitalsByRegion(areaId);
   }, [areaId, fetchHospitalsByRegion]);

@@ -29,7 +29,7 @@ const ChallengePage: React.FC = () => {
   useEffect(() => {
     fetchPosts('챌린지', selected);
   }, [fetchPosts, selected]);
-  if (isLoading) return <ChallengePost />;
+  if (true) return <ChallengePost />;
   const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <Container>

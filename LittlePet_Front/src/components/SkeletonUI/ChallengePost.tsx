@@ -11,7 +11,7 @@ const ChallengePost = () => {
           <Header />
         </HeaderWrapper>
         <ChallengeWrapper>
-          {new Array(2).fill('').map((_, i) => (
+          {new Array(3).fill('').map((_, i) => (
             <Card key={i} />
           ))}
         </ChallengeWrapper>
@@ -65,6 +65,9 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  @media (min-width: 800px) {
+    margin-left: 96px;
+  }
 `;
 const Banner = styled.img`
   width: 100%;
@@ -129,6 +132,7 @@ export const HeaderFilter = styled.div`
 `;
 
 const ChallengeWrapper = styled.div`
+  width: 100%;
   display: flex;
   gap: 10px;
   padding-left: 25px;
@@ -139,6 +143,7 @@ const Card = styled.div`
   width: 200px;
   height: 240px;
   border-radius: 10px;
+  flex-shrink: 0;
   @keyframes skeleton-gradient {
     0% {
       background-color: rgba(165, 165, 165, 0.1);
@@ -165,9 +170,6 @@ const HeaderWrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 0 25px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
-  }
 `;
 const ItemList = styled.div`
   display: flex;
