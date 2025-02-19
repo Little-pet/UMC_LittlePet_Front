@@ -115,9 +115,11 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
       console.error('지역별 병원 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ hospitalsByRegion: response.data.result });
+        return response.data.result;
       }
     } catch (error) {
       console.error('지역별 병원 조회 실패:', error);
+      return [];
     }
   },
   // 병원 필터링해서 조회
