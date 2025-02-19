@@ -70,15 +70,17 @@ const CareDetailRootLayout: React.FC = () => {
 export default CareDetailRootLayout;
 
 //Styled Components
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+`;
 
 const StickyNav = styled.div`
-  position: fixed;
-  top: 95px;
   background-color: white;
-  width: 100%;
+  position: fixed;
+  top: 94.5px;
   height: 45px;
-  z-index: 1000;
+  width: 100%;
+  border: 0;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -88,6 +90,7 @@ const StickyNav = styled.div`
   padding: 0 25px;
   @media (min-width: 800px) {
     height: 70px;
+    top: 103.5px;
   }
 `;
 
@@ -102,7 +105,7 @@ const NavButton = styled.button<{ isActive: boolean }>`
   padding: 0;
   @media (min-width: 800px) {
     height: 70px;
-    font-weight: 600;
+    font-family: Pretendard-SemiBold;
     font-size: 22px;
     line-height: 35px;
   }
