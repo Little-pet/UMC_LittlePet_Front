@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
+import Toast from '#/components/Toast';
 import { useAuthStore } from '#/context/AuthStore';
 interface User {
   nickname: string;
@@ -22,6 +23,8 @@ const EditProfilePage: React.FC = () => {
   const [profileImage, setProfileImage] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>('');
   const [isModified, setIsModified] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [isToastVisible, setToastVisible] = useState<boolean>(false);
   const [info, setInfo] = useState<User | null>(null);
   const userId = useAuthStore((state) => state.userId);
 
@@ -92,20 +95,28 @@ const EditProfilePage: React.FC = () => {
       );
     }
   };
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
+
+  const closeToast = () => {
+    setToastVisible(false);
+  };
 
   // 저장 버튼 클릭 시 사용자 정보 업데이트
   const handleSave = async () => {
-    const updatedUser = {
-      nickname: name,
-      phone,
-      introduction: bio,
-    };
+    const isValidName = /^(?=.*\S).{1,10}$/.test(name);
+    if (!isValidName) {
+      showToast('닉네임은 공백포함 1~10자입니다!');
+      return;
+    }
+
+    const updatedUser = { nickname: name, phone, introduction: bio };
     const formData = new FormData();
     formData.append(
       'request',
-      new Blob([JSON.stringify(updatedUser)], {
-        type: 'application/json',
-      })
+      new Blob([JSON.stringify(updatedUser)], { type: 'application/json' })
     );
     if (profileImage instanceof File) {
       formData.append('file', profileImage);
@@ -119,9 +130,7 @@ const EditProfilePage: React.FC = () => {
         `https://umclittlepet.shop/api/users/${info.userId}`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         }
       );
@@ -189,6 +198,13 @@ const EditProfilePage: React.FC = () => {
       <SaveButton onClick={handleSave} disabled={!isModified}>
         수정하기
       </SaveButton>
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          isVisible={isToastVisible}
+          onClose={closeToast}
+        />
+      )}
     </Container>
   );
 };

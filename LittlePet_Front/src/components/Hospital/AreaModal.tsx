@@ -11,31 +11,31 @@ interface AreaModalProps {
 }
 const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect, area }) => {
   const seoulDistricts = [
-    { name: '강남구', code: 23 },
-    { name: '강동구', code: 25 },
-    { name: '강북구', code: 9 },
-    { name: '강서구', code: 16 },
-    { name: '관악구', code: 21 },
-    { name: '광진구', code: 5 },
-    { name: '구로구', code: 17 },
-    { name: '금천구', code: 18 },
-    { name: '노원구', code: 11 },
-    { name: '도봉구', code: 10 },
-    { name: '동대문구', code: 6 },
-    { name: '동작구', code: 20 },
-    { name: '마포구', code: 14 },
-    { name: '서대문구', code: 13 },
-    { name: '서초구', code: 22 },
-    { name: '성동구', code: 4 },
-    { name: '성북구', code: 8 },
-    { name: '송파구', code: 24 },
-    { name: '양천구', code: 15 },
-    { name: '영등포구', code: 19 },
-    { name: '용산구', code: 3 },
-    { name: '은평구', code: 12 },
-    { name: '종로구', code: 1 },
-    { name: '중구', code: 2 },
-    { name: '중랑구', code: 7 },
+    { name: '강남구', code: 23, isValid: true },
+    { name: '강동구', code: 25, isValid: false },
+    { name: '강북구', code: 9, isValid: false },
+    { name: '강서구', code: 16, isValid: true },
+    { name: '관악구', code: 21, isValid: false },
+    { name: '광진구', code: 5, isValid: false },
+    { name: '구로구', code: 17, isValid: false },
+    { name: '금천구', code: 18, isValid: false },
+    { name: '노원구', code: 11, isValid: true },
+    { name: '도봉구', code: 10, isValid: false },
+    { name: '동대문구', code: 6, isValid: false },
+    { name: '동작구', code: 20, isValid: true },
+    { name: '마포구', code: 14, isValid: true },
+    { name: '서대문구', code: 13, isValid: true },
+    { name: '서초구', code: 22, isValid: false },
+    { name: '성동구', code: 4, isValid: true },
+    { name: '성북구', code: 8, isValid: false },
+    { name: '송파구', code: 24, isValid: true },
+    { name: '양천구', code: 15, isValid: true },
+    { name: '영등포구', code: 19, isValid: false },
+    { name: '용산구', code: 3, isValid: false },
+    { name: '은평구', code: 12, isValid: true },
+    { name: '종로구', code: 1, isValid: false },
+    { name: '중구', code: 2, isValid: false },
+    { name: '중랑구', code: 7, isValid: false },
   ];
 
   // 선택된 지역 상태 관리
@@ -60,11 +60,7 @@ const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect, area }) => {
           console.error('Error getting location:', error);
           alert('위치를 가져오는 데 실패했습니다.');
         },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
       alert('브라우저가 위치 정보를 지원하지 않습니다.');
@@ -90,8 +86,9 @@ const AreaModal: FC<AreaModalProps> = ({ onClose, onSelect, area }) => {
               key={idx}
               isSelected={selectedArea === area.name}
               onClick={() => handleSelect(area.name, area.code)}
+              isValid={area.isValid}
             >
-              {area.name}{' '}
+              {area.name}
               {selectedArea === area.name && <img src={checkIcon} />}
             </Item>
           ))}
@@ -161,7 +158,7 @@ const FixedItem = styled.div`
   justify-content: center;
   align-items: center;
 `;
-const Item = styled.div<{ isSelected: boolean }>`
+const Item = styled.div<{ isSelected: boolean; isValid: boolean }>`
   cursor: pointer;
   border-bottom: 1px solid #e6e6e6;
   border-left: 1px solid #e6e6e6;
@@ -174,6 +171,7 @@ const Item = styled.div<{ isSelected: boolean }>`
   align-items: center;
   justify-content: space-between;
   color: ${(props) => (props.isSelected ? '#6EA8FE' : '#333')};
+  background-color: ${(props) => (props.isValid ? 'white' : '#E6E6E6')};
 `;
 const ItemList = styled.div`
   flex-grow: 2;
