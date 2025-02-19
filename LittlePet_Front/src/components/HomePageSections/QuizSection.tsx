@@ -147,6 +147,7 @@ const Answers = styled.div`
 
 const Choice = styled.button<{ isCorrect?: boolean; isSelected?: boolean }>`
   height: 41px;
+  cursor: pointer;
   border-radius: 10px;
   border: 1px solid
     ${({ isCorrect, isSelected }) =>

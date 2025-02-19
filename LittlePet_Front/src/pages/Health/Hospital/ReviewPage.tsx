@@ -113,6 +113,7 @@ const ReviewButton = styled.div`
   display: flex;
   gap: 5px;
   text-decoration: none;
+  cursor: pointer;
 `;
 const Header = styled.ul`
   display: flex;

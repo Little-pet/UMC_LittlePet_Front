@@ -106,11 +106,11 @@ const DropdownMenu = styled.ul`
   justify-content: space-between;
   cursor: pointer;
 `;
-const ArrowIcon = styled(({ ...rest }) => <img {...rest} />)`
+const ArrowIcon = styled.img<{ view: boolean }>`
   transition: transform 0.3s ease-in-out;
-  transform: ${({ isDropdownOpen }) =>
-    isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  transform: ${({ view }) => (view ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
+
 const MiddleActions = styled.div`
   display: flex;
   align-items: center;
