@@ -5,8 +5,9 @@ import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
-import { useCommunityStore } from '#/context/CommunityStore';
+import { CommentType, useCommunityStore } from '#/context/CommunityStore';
 import CommunityDetail from '#/components/SkeletonUI/CommunityDetail';
+import { useAuthStore } from '#/context/AuthStore';
 
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -15,7 +16,8 @@ const DetailPage: React.FC = () => {
   const { state } = useLocation();
   const { category, type } = state || {};
   const [openCommentId, setOpenCommentId] = useState<number | null>(null);
-
+  const [comments, setComments] = useState<CommentType[]>();
+  const { isLoggedIn } = useAuthStore();
   const toggleReplyBox = (commentId: number) => {
     setOpenCommentId((prev) => (prev === commentId ? null : commentId));
   };
@@ -24,30 +26,24 @@ const DetailPage: React.FC = () => {
     fetchPost(numericPostId);
     patchViews(numericPostId);
   }, [numericPostId]);
-
+  useEffect(() => {
+    if (currentPost) {
+      setComments(currentPost.comments);
+    }
+  }, [currentPost]);
   const data = currentPost;
+
   if (isLoading || !data) return <CommunityDetail />;
+
   return (
     <Container>
-      <PostContent
-        title={data.postTitle}
-        author={data.userName}
-        badgeType={data.userBadges}
-        animal={data.petCategory}
-        time={data.updatedTime}
-        footerData={[data.views, data.likes, data.commentNum]}
-        contents={data.contents}
-        likeCount={data.likes}
-        id={data.id}
-        category={category}
-        categoryType={type}
-      />
+      <PostContent category={category} categoryType={type} />
       <CommentHeader>
         <Title>전체 댓글&nbsp;</Title>
         <Count>{`[${data.commentNum}]`}</Count>
       </CommentHeader>
       <CommentList>
-        {data.comments.map((comment, idx) => (
+        {comments?.map((comment, idx) => (
           <React.Fragment key={idx}>
             <Comment
               key={idx}
@@ -80,7 +76,9 @@ const DetailPage: React.FC = () => {
       <CommentHeader>
         <Title>댓글 쓰기</Title>
       </CommentHeader>
-      <CommentWriteBox postId={data.id} />
+      {isLoggedIn && (
+        <CommentWriteBox postId={data.id} /* setComments={setComments} */ />
+      )}
     </Container>
   );
 };

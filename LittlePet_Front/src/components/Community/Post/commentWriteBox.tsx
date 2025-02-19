@@ -4,10 +4,11 @@ import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/context/UserStore';
 import { useNavigate } from 'react-router-dom';
-
+import { CommentType } from '#/context/CommunityStore';
 interface CommentWriteBoxProps {
   postId: number;
   parentId?: number | null;
+  setComment?: (comment: CommentType) => void;
 }
 import { useAuthStore } from '#/context/AuthStore';
 // 실제 댓글 작성 컴포넌트
@@ -85,14 +86,12 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
         `https://umclittlepet.shop/api/community/${postId}/comments`,
         requestBody,
         {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         }
       );
       console.log('댓글 작성 성공', response.data);
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.error('댓글 작성 실패:', error);
     }
