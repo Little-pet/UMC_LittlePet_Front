@@ -2,7 +2,7 @@ import LikeButton from '#/components/Community/Post/LikeButton'; // 실제 컴�
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import vectorIcon from '#/assets/Vector.svg';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from '#/components/DeleteModal';
 import ChallengerBadge from '@assets/챌린저.svg';
