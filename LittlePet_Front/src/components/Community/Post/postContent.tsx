@@ -18,43 +18,30 @@ const badgeIconMapping: { [key: string]: string } = {
   소통천재: CommentBadge,
   챌린저: ChallengerBadge,
 };
-interface Content {
+/* interface Content {
   content: string;
   sequence: number;
-}
-interface PostContentProps {
-  title: string;
-  author: string;
-  badgeType: string[];
-  animal: string;
-  time: string;
-  footerData: number[];
-  contents: Content[];
-  likeCount: number;
-  id: number;
-  category: string;
-  categoryType: string;
-}
-const PostContent: React.FC<PostContentProps> = ({
-  title,
-  author,
-  badgeType,
-  animal,
-  time,
-  footerData,
-  contents,
-  likeCount,
-  id,
+} */
+
+const PostContent = ({
   category,
   categoryType,
+}: {
+  category: string;
+  categoryType: string;
 }) => {
+  const { deletePost, currentPost } = useCommunityStore();
+  const data = currentPost;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [like, setLike] = useState<number>(data.likes);
   const navigate = useNavigate();
-  const icon = badgeIconMapping[badgeType[0]];
+  const icon = badgeIconMapping[data.userBadges[0]];
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
   }
-
+  useEffect(() => {
+    setLike(data.likes);
+  }, [data]);
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
@@ -73,11 +60,11 @@ const PostContent: React.FC<PostContentProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const { deletePost } = useCommunityStore();
+
   const { user, fetchUser } = useUserStore();
   const userId = useAuthStore((state) => state.userId);
   const handleDelete = async () => {
-    await deletePost(id);
+    await deletePost(data.id);
     navigate(-1);
   };
   useEffect(() => {
@@ -87,41 +74,44 @@ const PostContent: React.FC<PostContentProps> = ({
   return (
     <ContentBox>
       <PostContentWrapper>
-        <Title>{title}</Title>
+        <Title>{data.postTitle}</Title>
         <InfoWrapper>
           <InfoSection>
-            <Text>{author}</Text>
+            <Text>{data.userName}</Text>
             <BadgeIcon src={icon} />
           </InfoSection>
           <InfoSection>
             <AnimalInfo>
               <img
-                src={getAnimalIcon(animal)}
+                src={getAnimalIcon(data.petCategory)}
                 style={{ width: '20px', height: '20px' }}
               />
-              <Text>{animal}</Text>
+              <Text>{data.petCategory}</Text>
             </AnimalInfo>
           </InfoSection>
-          <TimeText>{time.split(':').slice(0, 2).join(':')}</TimeText>
+          <TimeText>
+            {data.updatedTime.split(':').slice(0, 2).join(':')}
+          </TimeText>
         </InfoWrapper>
         <Footer>
-          {footerData.map((item, index) => (
-            <FooterContainer key={index}>
-              <FooterItem style={{ margin: '0' }}>
-                {index === 0 ? '조회' : index === 1 ? '좋아요' : '댓글'}&nbsp;
-              </FooterItem>
-              <FooterItem
-                style={{
-                  color: index === 1 ? '#C76B6B' : index === 2 ? '#6EA8FE' : '',
-                }}
-              >
-                {item}
-              </FooterItem>
-              {index !== 2 && <VectorIcon src={vectorIcon} />}
-            </FooterContainer>
-          ))}
+          <FooterContainer>
+            <FooterItem style={{ margin: '0' }}>{'조회'}&nbsp;</FooterItem>
+            <FooterItem>{data.views}</FooterItem>
+            <VectorIcon src={vectorIcon} />
+          </FooterContainer>
+          <FooterContainer>
+            <FooterItem style={{ margin: '0' }}>{'좋아요'}&nbsp;</FooterItem>
+            <FooterItem style={{ color: '#C76B6B' }}>{like}</FooterItem>
+            <VectorIcon src={vectorIcon} />
+          </FooterContainer>
+          <FooterContainer>
+            <FooterItem style={{ margin: '0' }}>{'댓글'}&nbsp;</FooterItem>
+            <FooterItem style={{ color: '#6EA8FE' }}>
+              {data.commentNum}
+            </FooterItem>
+          </FooterContainer>
         </Footer>
-        {contents.map((item, idx) =>
+        {data.contents.map((item, idx) =>
           isImageUrl(item.content) ? (
             <img key={idx} src={item.content} alt={`content-${idx}`} />
           ) : (
@@ -130,20 +120,20 @@ const PostContent: React.FC<PostContentProps> = ({
         )}
       </PostContentWrapper>
       <Container>
-        <LikeButton count={likeCount} postId={id} />
-        {user?.name == author ? (
+        <LikeButton count={like} postId={data.id} setLike={setLike} />
+        {user?.name == data.userName ? (
           <ActionGroup>
             <ActionText
               isClickable
               onClick={() =>
-                navigate(`/community/${categoryType}/${id}/edit-post`, {
+                navigate(`/community/${categoryType}/${data.id}/edit-post`, {
                   state: {
                     category,
                     categoryType,
-                    id,
-                    initialTitle: title,
-                    animal,
-                    contents,
+                    id: data.id,
+                    initialTitle: data.postTitle,
+                    animal: data.petCategory,
+                    contents: data.contents,
                   },
                 })
               }

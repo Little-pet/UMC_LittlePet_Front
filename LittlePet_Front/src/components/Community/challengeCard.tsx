@@ -96,6 +96,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     userFetch(userId);
   }, []);
 
+  if (profilePhoto === undefined || badges === undefined) return <Skeleton />;
   return (
     <CardContainer
       to={`/community/${type}/${postId}`}
@@ -281,4 +282,22 @@ const BadgeIcon = styled.img`
   width: auto;
   /* background-color: white;
   border-radius: 15px; */
+`;
+const Skeleton = styled.div`
+  width: 200px;
+  height: 240px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  @keyframes skeleton-gradient {
+    0% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+      background-color: rgba(165, 165, 165, 0.3);
+    }
+    100% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+  }
+  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;
