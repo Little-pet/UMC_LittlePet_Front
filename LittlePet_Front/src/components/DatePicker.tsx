@@ -36,8 +36,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       <StyledDatePicker
         selected={parsedDate}
         onChange={handleDateChange}
-        dateFormat={'yyyy.MM.dd (EEE)'} // ✅ 문자열로 명확하게 지정
-        locale={koLocale} // ✅ locale을 명확하게 설정
+        dateFormat={'yyyy.MM.dd (EEE)'} //  문자열로 명확하게 지정
+        locale={koLocale} //  locale을 명확하게 설정
       />
       <CalendarIconWrapper>
         <CalendarIcon src={CalendarIconSrc} alt='달력 아이콘' />
