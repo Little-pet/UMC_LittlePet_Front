@@ -236,6 +236,7 @@ const CategoryImg = styled.img`
   width: 100%;
   height: 100%;
   box-shadow: 0px 2px 5px 0px #00000026;
+  object-fit: cover; /* 컨테이너를 꽉 채우되 비율 유지 */
 `;
 
 const CategoryName = styled.div`
