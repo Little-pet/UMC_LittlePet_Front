@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import ChallengeCard from '#/components/Community/challengeCard';
-import { useCommunityStore } from '#/context/CommunityStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { useCommunityStore } from '#/store/CommunityStore';
+import { useAuthStore } from '#/store/AuthStore';
 import HomeChallenge from '../SkeletonUI/HomeChallenge';
 
 const ChallengeSection: React.FC = () => {

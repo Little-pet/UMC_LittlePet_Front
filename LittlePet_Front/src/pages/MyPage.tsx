@@ -5,9 +5,9 @@ import BadgeComponent from '@components/MyPageSections/BadgeLists';
 import Menu from '@components/MyPageSections/Menu';
 import PetProfiles from '@components/MyPageSections/PetProfiles';
 import ProfileSection from '@components/MyPageSections/ProfileSection';
-import { useUserStore } from '#/context/UserStore';
+import { useUserStore } from '#/store/UserStore';
 import GoalBadgeComponent from '@components/MyPageSections/GoalBadge';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 
 const MyPage: React.FC = () => {
   const userId = useAuthStore((state) => state.userId);

@@ -61,7 +61,7 @@ const ToastContainer = styled.div<{ isVisible: boolean }>`
   transform: translate(-50%, 0);
   background-color: #000000b2;
   box-shadow: 0px 2px 5px 0px #0000001a;
-  width: 85vw;
+  width: 343px;
   padding: 13px 56px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -73,10 +73,6 @@ const ToastContainer = styled.div<{ isVisible: boolean }>`
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   animation: ${({ isVisible }) => (isVisible ? slideDown : fadeOut)} 0.3s
     ease-in-out;
-  @media (min-width: 800px) {
-    height: 8vh;
-    width: 80vw;
-  }
 `;
 
 const ToastTextContainer = styled.div`
@@ -88,19 +84,11 @@ const ToastTextContainer = styled.div`
 
 const WarningIcon = styled.img`
   height: 24px;
-  @media (min-width: 800px) {
-    line-height: 35px;
-    height: 2.2vh;
-  }
 `;
 
 const WarningMessage = styled.p`
   color: white;
   font-size: 14px;
   font-weight: 600;
-
-  @media (min-width: 800px) {
-    font-size: 1.5vw;
-    line-height: 35px;
-  }
+  white-space: nowrap;
 `;

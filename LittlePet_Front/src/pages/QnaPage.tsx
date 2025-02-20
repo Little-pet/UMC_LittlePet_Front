@@ -4,9 +4,9 @@ import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
 import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 //import { useQuery } from '@tanstack/react-query';
-import { useCommunityStore } from '#/context/CommunityStore';
+import { useCategoryPosts } from '#/hooks/useCategoryPosts';
 import CommunityPost from '#/components/SkeletonUI/CommunityPost';
 import {
   Container,
@@ -20,12 +20,29 @@ const QnaPage: React.FC = () => {
   const handleClick = (filter: '인기순' | '최신순') => {
     setSelected(filter);
   };
-  const { posts, fetchPosts, isLoading } = useCommunityStore();
+  const { data, fetchNextPage, hasNextPage, isLoading } =
+    useCategoryPosts('Q&A');
+
+  const observerRef = useRef(null);
+
   useEffect(() => {
-    fetchPosts('Q&A', selected);
-  }, [fetchPosts, selected]);
+    if (observerRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            console.log(' [IntersectionObserver] fetchNextPage 실행!');
+            fetchNextPage();
+          }
+        },
+        { threshold: 1 }
+      );
+      observer.observe(observerRef.current);
+      return () => observer.disconnect();
+    }
+  }, [hasNextPage, fetchNextPage]);
 
   if (isLoading) return <CommunityPost banner={banner} />;
+
   return (
     <Container>
       <Banner src={banner} />
@@ -58,24 +75,26 @@ const QnaPage: React.FC = () => {
           <DesktopAddButton />
         </div>
         <ItemList>
-          {posts.map((post, id) => (
-            <Item
-              key={id}
-              title='Q&A'
-              type='qna'
-              postId={post.postId}
-              subText={post.petCategory}
-              description={post.title}
-              contents={post.contents}
-              footerData={[
-                post.userName,
-                post.createdTime.substring(5, 10),
-                post.views,
-                post.likes,
-                post.comments,
-              ]}
-            />
-          ))}
+          {data?.pages
+            .flatMap((page) => page.posts)
+            .map((post, id) => (
+              <Item
+                key={id}
+                title='Q&A'
+                type='qna'
+                postId={post.postId}
+                subText={post.petCategory}
+                description={post.title}
+                contents={post.contents}
+                footerData={[
+                  post.userName,
+                  post.createdTime.substring(5, 10),
+                  post.views,
+                  post.likes,
+                  post.comments,
+                ]}
+              />
+            ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

@@ -53,7 +53,7 @@ const PetDetailPage: React.FC = () => {
     <Container>
       <TitleContainer>
         <Title>{petDetail.title}</Title>
-        <Date>{petDetail.createdAt} </Date>
+
         <PetImage src={petDetail.featureImagePath} alt={petDetail.species} />
       </TitleContainer>
 
