@@ -142,7 +142,9 @@ const CommentIcon = styled.img`
 `;
 // 최상위 카드
 const CardWrapper = styled(Link)`
-  width: 165px;
+  //max-width: 250px; /* 최대 크기 고정 */
+  width: 100%;
+
   height: 140px;
   border-radius: 10px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
@@ -152,7 +154,7 @@ const CardWrapper = styled(Link)`
   display: flex;
   flex-direction: column;
   @media only screen and (min-width: 800px) {
-    width: 300px;
+    min-width: 300px;
     height: 220px;
   }
 `;
