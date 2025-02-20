@@ -54,16 +54,19 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
     <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
       {imageContent && <CardBackground bgImage={imageContent.content} />}
       <CardContent>
-        {/*  <CardTitle>{title}</CardTitle> */}
         {(() => {
-          if (isMobile) {
-            const truncated =
-              title.length > 19 ? title.slice(0, 16) + '...' : title;
-            return <CardTitle>{truncated}</CardTitle>;
+          if (imageContent) {
+            if (isMobile) {
+              const truncated =
+                title.length > 19 ? title.slice(0, 16) + '...' : title;
+              return <CardTitle>{truncated}</CardTitle>;
+            } else {
+              const truncated =
+                title.length > 23 ? title.slice(0, 20) + '...' : title;
+              return <CardTitle>{truncated}</CardTitle>;
+            }
           } else {
-            const truncated =
-              title.length > 23 ? title.slice(0, 20) + '...' : title;
-            return <CardTitle>{truncated}</CardTitle>;
+            return <CardTitle>{title}</CardTitle>;
           }
         })()}
         <MetaData>
