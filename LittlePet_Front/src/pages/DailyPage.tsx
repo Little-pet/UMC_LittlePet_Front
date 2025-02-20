@@ -20,8 +20,10 @@ const DailyPage: React.FC = () => {
     setSelected(filter);
   };
 
-  const { data, fetchNextPage, hasNextPage, isLoading } =
-    useCategoryPosts('일상');
+  const { data, fetchNextPage, hasNextPage, isLoading } = useCategoryPosts(
+    '일상',
+    selected
+  );
   const observerRef = useRef(null);
 
   useEffect(() => {

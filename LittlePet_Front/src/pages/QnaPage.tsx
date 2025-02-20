@@ -20,8 +20,10 @@ const QnaPage: React.FC = () => {
   const handleClick = (filter: '인기순' | '최신순') => {
     setSelected(filter);
   };
-  const { data, fetchNextPage, hasNextPage, isLoading } =
-    useCategoryPosts('Q&A');
+  const { data, fetchNextPage, hasNextPage, isLoading } = useCategoryPosts(
+    'Q&A',
+    selected
+  );
 
   const observerRef = useRef(null);
 

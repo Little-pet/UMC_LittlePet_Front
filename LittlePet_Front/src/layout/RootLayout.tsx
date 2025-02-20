@@ -41,7 +41,7 @@ const NavbarContainer = styled.div`
   width: 100%;
   background-color: #fff;
   z-index: 10;
-  //position: fixed;
+  position: fixed;
   top: 0;
 `;
 
