@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import CommentWriteBox from './commentWriteBox';
 import { useAuthStore } from '#/context/AuthStore';
+import { CommentType } from '#/context/CommunityStore';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
@@ -13,6 +14,8 @@ interface CommentProps {
   parent: number;
   isOpen: boolean;
   toggleReplyBox: () => void;
+  setComments?: (comments: CommentType[]) => void;
+  setCommentNum?: (num: number) => void;
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
@@ -23,6 +26,8 @@ const Comment: React.FC<CommentProps> = ({
   parent,
   isOpen,
   toggleReplyBox,
+  setComments,
+  setCommentNum,
 }) => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
@@ -75,7 +80,14 @@ const Comment: React.FC<CommentProps> = ({
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
         <ReplyButton onClick={handleReplyClick}>답글 쓰기</ReplyButton>
       </Footer>
-      {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
+      {isOpen && (
+        <CommentWriteBox
+          postId={postId}
+          parentId={parent}
+          setComments={setComments}
+          setCommentNum={setCommentNum}
+        />
+      )}
     </CommentContainer>
   );
 };

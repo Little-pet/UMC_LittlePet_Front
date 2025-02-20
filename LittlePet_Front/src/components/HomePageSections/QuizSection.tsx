@@ -143,6 +143,8 @@ const Choice = styled.button<{ isCorrect?: boolean; isSelected?: boolean }>`
   background-color: #ffffff;
   font-family: 'Pretendard';
   font-weight: 500;
+  display: flex;
+  align-items: center;
   @media (min-width: 768px) {
     height: 60px;
     padding: 16px 24px;

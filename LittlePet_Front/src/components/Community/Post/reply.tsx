@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
 import CommentWriteBox from './commentWriteBox';
+import { CommentType } from '#/context/CommunityStore';
 interface ReplyProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름
@@ -12,6 +13,8 @@ interface ReplyProps {
   postId: number;
   isOpen: boolean;
   toggleReplyBox: () => void;
+  setComments?: (comments: CommentType[]) => void;
+  setCommentNum?: (num: number) => void;
 }
 const Reply: React.FC<ReplyProps> = ({
   userName,
@@ -22,6 +25,8 @@ const Reply: React.FC<ReplyProps> = ({
   postId,
   isOpen,
   toggleReplyBox,
+  setComments,
+  setCommentNum,
 }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
@@ -64,7 +69,14 @@ const Reply: React.FC<ReplyProps> = ({
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
         <ReplyButton onClick={toggleReplyBox}>답글 쓰기</ReplyButton>
       </Footer>
-      {isOpen && <CommentWriteBox postId={postId} parentId={parent} />}
+      {isOpen && (
+        <CommentWriteBox
+          postId={postId}
+          parentId={parent}
+          setComments={setComments}
+          setCommentNum={setCommentNum}
+        />
+      )}
     </CommentContainer>
   );
 };
