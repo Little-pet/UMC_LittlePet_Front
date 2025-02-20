@@ -1,47 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import styled from 'styled-components';
 
+//  API 요청 함수 (React Query에서 사용할 함수)
+const fetchPetDetail = async (speciesId: string) => {
+  const response = await axios.get(
+    `https://umclittlepet.shop/api/animal-categories/species`,
+    {
+      params: { 'species-id': speciesId },
+    }
+  );
+  return response.data.result;
+};
+
 const PetDetailPage: React.FC = () => {
-  const { speciesId } = useParams<{ speciesId: string }>(); //  URL에서 speciesId 가져오기
-  const [petDetail, setPetDetail] = useState<{
-    id: number;
-    species: string;
-    title: string;
-    features: string;
-    foodInfo: string;
-    environment: string;
-    playMethods: string;
-    featureImagePath: string;
-    petBigCategoryId: number;
-    petBigCategoryName: string;
-    createdAt: string;
-    updatedAt: string;
-  } | null>(null);
+  const { speciesId } = useParams<{ speciesId: string }>(); // URL에서 speciesId 가져오기
 
-  useEffect(() => {
-    const fetchPetDetail = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/animal-categories/species`,
-          {
-            params: { 'species-id': speciesId }, // Query Parameter로 전달
-          }
-        );
-        setPetDetail(response.data.result);
-      } catch (error) {
-        console.error('소동물 상세 정보를 불러오는 데 실패했습니다.', error);
-      }
-    };
+  //  React Query로 데이터 요청 (Infinity 설정 적용)
+  const {
+    data: petDetail,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['petDetail', speciesId],
+    queryFn: () => fetchPetDetail(speciesId!),
+    enabled: !!speciesId, // speciesId가 존재할 때만 실행
+    staleTime: Infinity, //  항상 신선한 상태로 유지 (다시 요청하지 않음)
+    gcTime: Infinity, //  캐시에서 절대 삭제되지 않음
+  });
 
-    fetchPetDetail();
-  }, [speciesId]);
+  //  로딩 중 상태 처리
+  if (isLoading) return <p>로딩 중...</p>;
+  if (isError || !petDetail) return <p>데이터를 불러오는 데 실패했습니다.</p>;
 
-  if (!petDetail) {
-    return <p>로딩 중...</p>;
-  }
-
+  //  Outlet Context에서 스크롤 참조 가져오기
   const { featureRef, foodRef, environmentRef, playRef } = useOutletContext<{
     featureRef: React.RefObject<HTMLDivElement>;
     foodRef: React.RefObject<HTMLDivElement>;
@@ -53,7 +47,6 @@ const PetDetailPage: React.FC = () => {
     <Container>
       <TitleContainer>
         <Title>{petDetail.title}</Title>
-
         <PetImage src={petDetail.featureImagePath} alt={petDetail.species} />
       </TitleContainer>
 
@@ -123,21 +116,11 @@ const Title = styled.div`
   }
 `;
 
-const Date = styled.div`
-  height: 22px;
-  font-weight: 500;
-  font-size: 12px;
-  color: #737373;
-  @media (min-width: 800px) {
-    font-size: 22px;
-    line-height: 22px;
-  }
-`;
-
 const PetImage = styled.img`
   width: 100%;
   border-radius: 5px;
 `;
+
 const Content = styled.div`
   margin-top: 20px;
   display: flex;

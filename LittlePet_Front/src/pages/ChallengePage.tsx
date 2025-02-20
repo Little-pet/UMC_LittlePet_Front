@@ -41,7 +41,7 @@ const ChallengePage: React.FC = () => {
             fetchNextPage();
           }
         },
-        { threshold: 1 }
+        { threshold: 0.5 }
       );
       observer.observe(observerRef.current);
       return () => observer.disconnect();

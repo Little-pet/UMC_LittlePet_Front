@@ -6,7 +6,7 @@ import { usePopularPosts } from '#/hooks/usePopularPosts';
 import ChallengeItem from '#/components/Community/challengeItem';
 const PopularSection: React.FC = () => {
   const isPC = window.innerWidth >= 800;
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePopularPosts('popular');
   const popularPosts = data?.pages.flatMap((page: any) => page.posts) || [];
 
@@ -14,16 +14,28 @@ const PopularSection: React.FC = () => {
   //모바일에선 무한스크롤 감지
   useEffect(() => {
     if (!isPC && observerRef.current) {
+      let timer: number | null = null;
+
       const observer = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) {
-            fetchNextPage();
+          if (entries[0].isIntersecting && hasNextPage) {
+            if (timer) clearTimeout(timer); // 기존 타이머 제거
+
+            timer = setTimeout(() => {
+              console.log(' [IntersectionObserver] fetchNextPage 실행!');
+              fetchNextPage();
+            }, 150);
           }
         },
-        { threshold: 1 }
+        { threshold: 0.5 }
       );
+
       observer.observe(observerRef.current);
-      return () => observer.disconnect();
+
+      return () => {
+        observer.disconnect();
+        if (timer) clearTimeout(timer);
+      };
     }
   }, [isPC, hasNextPage, fetchNextPage]);
 
@@ -111,8 +123,6 @@ const PopularTitle = styled.h1`
     font-size: 36px;
   }
 `;
-
-const LoadingMessage = styled.p``;
 
 const ButtonContainer = styled.div`
   display: flex;
