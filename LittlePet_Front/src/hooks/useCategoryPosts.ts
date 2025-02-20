@@ -2,69 +2,68 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 //  API 요청 함수 (카테고리별 최신순 글 불러오기)
+
+// ✅ 카테고리별 게시글을 무한스크롤 방식으로 가져오는 함수
 const fetchCategoryPosts = async ({
-  pageParam = 0,
+  pageParam = null,
   category,
+  sortType = '최신순',
 }: {
-  pageParam: number;
+  pageParam: number | null;
   category: string;
+  sortType: '최신순' | '인기순';
 }) => {
   const isPC = window.innerWidth >= 800;
   const deviceType = isPC ? 'pc' : 'mobile';
 
-  let allPosts: any[] = [];
+  // ✅ API 요청 URL
+  let url = `https://umclittlepet.shop/api/post?category=${encodeURIComponent(
+    category
+  )}&size=15&sort=${encodeURIComponent(sortType)}&deviceType=${deviceType}`;
 
-  //  최신순 정렬
-  let url = `https://umclittlepet.shop/api/post?category=${encodeURIComponent(category)}&size=100&sort=${encodeURIComponent('최신순')}&deviceType=${deviceType}`;
-  url += `&pageNum=0`;
+  // ✅ 무한스크롤: 첫 페이지가 아니면 `cursorId` 추가
+  if (pageParam) {
+    url += `&cursorId=${pageParam}`;
+  }
 
   const response = await axios.get(url, { withCredentials: true });
 
-  if (response.data.isSuccess) {
-    allPosts = response.data.result || [];
-  }
-
-  console.log(' [fetchCategoryPosts] 최종 allPosts.length:', allPosts.length);
-
-  //  15개씩 가져오기 (페이지네이션 적용)
-  const startIdx = pageParam * 15;
-  const paginatedPosts = allPosts.slice(startIdx, startIdx + 15);
+  const allPosts = response.data.isSuccess ? response.data.result || [] : [];
 
   console.log(
-    ' [fetchCategoryPosts] paginatedPosts.length:',
-    paginatedPosts.length
+    `📌 [fetchCategoryPosts] ${category} - ${sortType} 불러옴:`,
+    allPosts.length
   );
-  console.log(' [fetchCategoryPosts] pageParam:', pageParam);
 
-  //  `nextCursor` 설정 (데이터가 남아있으면 증가)
-  const newCursor = startIdx + 15 < allPosts.length ? pageParam + 1 : null;
-  console.log(' [fetchCategoryPosts] nextCursor:', newCursor);
+  // ✅ 인기순이면 좋아요 개수 기준으로 내림차순 정렬
+  if (sortType === '인기순') {
+    allPosts.sort((a, b) => b.likes - a.likes);
+  }
+
+  // ✅ 다음 페이지를 위한 `nextCursor` 설정
+  const nextCursor =
+    allPosts.length > 0 ? allPosts[allPosts.length - 1].postId : null;
+  console.log('📌 [fetchCategoryPosts] nextCursor:', nextCursor);
 
   return {
-    posts: paginatedPosts,
-    nextCursor: newCursor,
+    posts: allPosts,
+    nextCursor,
   };
 };
 
-// 커스텀 훅: 커뮤니티 카테고리별 최신순 게시글
-export const useCategoryPosts = (category: string) => {
+// ✅ `useCategoryPosts` 커스텀 훅: 무한스크롤로 최신순/인기순 적용
+export const useCategoryPosts = (
+  category: string,
+  sortType: '최신순' | '인기순' = '최신순'
+) => {
   return useInfiniteQuery({
-    queryKey: ['categoryPosts', category], //  카테고리별로 캐싱
-    queryFn: ({ pageParam }) => fetchCategoryPosts({ pageParam, category }),
-    getNextPageParam: (lastPage, allPages) => {
-      console.log(' [getNextPageParam] lastPage:', lastPage);
-      console.log(' [getNextPageParam] allPages.length:', allPages.length);
-
-      if (!lastPage || lastPage.posts.length < 15) {
-        console.log(
-          ' [getNextPageParam] 다음 페이지 없음 (lastPage.posts.length < 15)'
-        );
-        return undefined;
-      }
-
-      console.log(' [getNextPageParam] 다음 페이지 있음:', lastPage.nextCursor);
-      return lastPage.nextCursor ?? allPages.length;
+    queryKey: ['categoryPosts', category, sortType], // ✅ 카테고리별로 캐싱
+    queryFn: ({ pageParam }) =>
+      fetchCategoryPosts({ pageParam, category, sortType }),
+    getNextPageParam: (lastPage) => {
+      console.log('📌 [getNextPageParam] lastPage:', lastPage);
+      return lastPage.nextCursor ?? undefined;
     },
-    initialPageParam: 0,
+    initialPageParam: null,
   });
 };

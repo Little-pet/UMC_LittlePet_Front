@@ -6,9 +6,9 @@ import { usePopularPosts } from '#/hooks/usePopularPosts';
 import ChallengeItem from '#/components/Community/challengeItem';
 const PopularSection: React.FC = () => {
   const isPC = window.innerWidth >= 800;
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePopularPosts('popular');
-  const popularPosts = data?.pages.flatMap((page) => page.posts) || [];
+  const popularPosts = data?.pages.flatMap((page: any) => page.posts) || [];
 
   const observerRef = useRef(null);
   //모바일에선 무한스크롤 감지
@@ -26,11 +26,6 @@ const PopularSection: React.FC = () => {
       return () => observer.disconnect();
     }
   }, [isPC, hasNextPage, fetchNextPage]);
-
-  //  로딩 중일 때 표시
-  if (isLoading) {
-    return <LoadingMessage>Loading...</LoadingMessage>;
-  }
 
   return (
     <Popular>
@@ -116,8 +111,6 @@ const PopularTitle = styled.h1`
     font-size: 36px;
   }
 `;
-
-const LoadingMessage = styled.p``;
 
 const ButtonContainer = styled.div`
   display: flex;
