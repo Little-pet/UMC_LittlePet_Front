@@ -11,9 +11,21 @@ interface Category {
 const CommunityRootLayout: React.FC = () => {
   const location = useLocation();
   const categories: Category[] = [
-    { type: 'qna', title: 'Q&A', path: '/community/qna' },
-    { type: 'daily', title: '일상', path: '/community/daily' },
-    { type: 'challenge', title: '챌린지', path: '/community/challenge' },
+    {
+      type: 'qna',
+      title: 'Q&A',
+      path: '/community/qna',
+    },
+    {
+      type: 'daily',
+      title: '일상',
+      path: '/community/daily',
+    },
+    {
+      type: 'challenge',
+      title: '챌린지',
+      path: '/community/challenge',
+    },
   ];
 
   // ✅ `localStorage`에서 메뉴 상태 복원 (초기값: "qna")
@@ -26,7 +38,7 @@ const CommunityRootLayout: React.FC = () => {
   };
   useEffect(() => {
     if (location.pathname === '/community') {
-      // ✅ `/community` 진입 시 기본값 `qna` 설정
+      //  `/community` 진입 시 기본값 `qna` 설정
       setSelected('qna');
       localStorage.setItem('selectedCategory', 'qna');
     }
@@ -80,8 +92,10 @@ const Header = styled.div`
   padding: 0 25px;
   border-bottom: 0.5px solid #d9d9d9;
   box-sizing: border-box;
+
   @media (min-width: 800px) {
     min-height: 70px;
+    margin-top: 9px;
   }
 `;
 const ItemContainer = styled.div`
@@ -96,6 +110,7 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
   color: ${({ isActive }) => (isActive ? '#6EA8FE' : 'black')};
   @media (min-width: 800px) {
     font-size: 22px;
+    line-height: 35px;
     font-family: Pretendard-SemiBold;
   }
 `;

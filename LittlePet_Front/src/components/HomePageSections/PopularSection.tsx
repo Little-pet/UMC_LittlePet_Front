@@ -6,7 +6,7 @@ import { usePopularPosts } from '#/hooks/usePopularPosts';
 import ChallengeItem from '#/components/Community/challengeItem';
 const PopularSection: React.FC = () => {
   const isPC = window.innerWidth >= 800;
-  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePopularPosts('popular');
   const popularPosts = data?.pages.flatMap((page: any) => page.posts) || [];
 
@@ -111,8 +111,6 @@ const PopularTitle = styled.h1`
     font-size: 36px;
   }
 `;
-
-const LoadingMessage = styled.p``;
 
 const ButtonContainer = styled.div`
   display: flex;
