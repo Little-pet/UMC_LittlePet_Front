@@ -23,7 +23,7 @@ const DailyPage: React.FC = () => {
   useEffect(() => {
     fetchPosts('일상', selected);
   }, [fetchPosts, selected]);
-  if (isLoading) return <CommunityPost />;
+  if (isLoading) return <CommunityPost banner={banner} />;
 
   return (
     <Container>

@@ -46,6 +46,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 }) => {
   const [profilePhoto, setProfilePhoto] = useState<string>();
   const [badges, setBadges] = useState<Badge[]>();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 800);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
   }
@@ -126,11 +134,19 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
         </ProfileWrapper>
         <DescriptionWrapper>
           {(() => {
-            const truncated =
-              descriptionTitle.length > 15
-                ? descriptionTitle.slice(0, 13) + '...'
-                : descriptionTitle;
-            return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            if (isMobile) {
+              const truncated =
+                descriptionTitle.length > 15
+                  ? descriptionTitle.slice(0, 12) + '...'
+                  : descriptionTitle;
+              return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            } else {
+              const truncated =
+                descriptionTitle.length > 20
+                  ? descriptionTitle.slice(0, 17) + '...'
+                  : descriptionTitle;
+              return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            }
           })()}
 
           {(() => {
@@ -139,11 +155,19 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             );
             if (nonImageContents.length > 0) {
               const firstItem = nonImageContents[0];
-              const truncated =
-                firstItem.content.length > 20
-                  ? firstItem.content.slice(0, 18) + '...'
-                  : firstItem.content;
-              return <DescriptionText>{truncated}</DescriptionText>;
+              if (isMobile) {
+                const truncated =
+                  firstItem.content.length > 21
+                    ? firstItem.content.slice(0, 18) + '...'
+                    : firstItem.content;
+                return <DescriptionText>{truncated}</DescriptionText>;
+              } else {
+                const truncated =
+                  firstItem.content.length > 32
+                    ? firstItem.content.slice(0, 29) + '...'
+                    : firstItem.content;
+                return <DescriptionText>{truncated}</DescriptionText>;
+              }
             }
             return null;
           })()}
@@ -300,4 +324,8 @@ const Skeleton = styled.div`
     }
   }
   animation: skeleton-gradient 1.5s infinite ease-in-out;
+  @media (min-width: 800px) {
+    width: 400px;
+    height: 480px;
+  }
 `;
