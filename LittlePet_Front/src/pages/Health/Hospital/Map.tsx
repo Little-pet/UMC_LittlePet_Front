@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
-import { useHospitalStore } from '#/context/hospitalStore';
 import FilterSection from '#/components/Hospital/FilterSection';
 // 타입 정의
 interface Hospital {
@@ -21,50 +20,58 @@ interface Hospital {
 const { kakao } = window;
 const MapPage: React.FC = () => {
   const { state } = useLocation();
-  const container = useRef(null); // 지도 컨테이너 접근
   const [hospitalList, setHospitalList] = useState<Hospital[]>();
   const [info, setInfo] = useState<Hospital | null>(null); // 선택된 마커 정보
-  const { hospitalsByRegion } = useHospitalStore();
   const { locationData } = state || {};
-  //const [map, setMap] = useState<kakao.maps.Map | null>(null); // map 상태 관리
+
   useEffect(() => {
+    const mapContainer = document.getElementById('map');
     const position = new kakao.maps.LatLng(33.450701, 126.570667);
     const options = {
       center: position, // 지도의 중심 좌표
       level: 3, // 지도 확대 레벨
     };
-    const map = new kakao.maps.Map(container.current, options); // 지도 생성
-    //setMap(newMap); // map 상태에 저장
+    const map = new kakao.maps.Map(mapContainer, options); // 지도 생성
 
     // 장소 검색 객체를 생성합니다
     const ps = new kakao.maps.services.Places();
     // 키워드로 장소를 검색합니다
-    ps.keywordSearch('이태원 맛집', placesSearchCB);
-    //console.log(typeof locationData);
-    console.log(hospitalList);
-    console.log(hospitalsByRegion);
+    ps.keywordSearch(locationData, placesSearchCB);
+
     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-    function placesSearchCB(status) {
+    function placesSearchCB(data, status) {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
-        //const bounds = new kakao.maps.LatLngBounds();
+        const bounds = new kakao.maps.LatLngBounds();
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         if (map) {
-          //map.setBounds(bounds);
+          data.forEach((place) => {
+            const latLng = new kakao.maps.LatLng(place.y, place.x);
+            bounds.extend(latLng); // 지도 범위에 추가
+          });
+          map.setBounds(bounds);
         }
       }
     }
-    //const imageSrc =
-    ('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png');
-    //const imageSize = new kakao.maps.Size(24, 35);
-    //const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-  }, [locationData]);
-  console.log(import.meta.env.VITE_KAKAOMAP_APP_KEY);
-  // map과 hospitalList가 변경될 때마다 실행
-  /*   console.log(info); */
-  //console.log(markers);
+
+    if (hospitalList) {
+      hospitalList.forEach((el) => {
+        const marker = new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(el.latitude, el.longitude),
+          title: el.name,
+        });
+
+        kakao.maps.event.addListener(marker, 'click', () => {
+          map.panTo(marker.getPosition()); // 부드럽게 마커 위치로 이동
+          setInfo(el);
+        });
+      });
+    }
+  }, [locationData, hospitalList]);
+
   return (
     <Container>
       <Header>
@@ -77,7 +84,7 @@ const MapPage: React.FC = () => {
         <AreaText>지도에서 찾기</AreaText>
       </Header>
       <FilterSection onSelect={setHospitalList} />
-      <Map ref={container}></Map>
+      <Map id='map'></Map>
       {info && (
         <InfoModal
           info={info}

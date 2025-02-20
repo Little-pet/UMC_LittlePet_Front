@@ -16,6 +16,7 @@ interface CommentProps {
   toggleReplyBox: () => void;
   setComments?: (comments: CommentType[]) => void;
   setCommentNum?: (num: number) => void;
+  setOpenCommentId?: (num: number) => void;
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
@@ -28,6 +29,7 @@ const Comment: React.FC<CommentProps> = ({
   toggleReplyBox,
   setComments,
   setCommentNum,
+  setOpenCommentId,
 }) => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
@@ -86,6 +88,7 @@ const Comment: React.FC<CommentProps> = ({
           parentId={parent}
           setComments={setComments}
           setCommentNum={setCommentNum}
+          setOpenCommentId={setOpenCommentId}
         />
       )}
     </CommentContainer>

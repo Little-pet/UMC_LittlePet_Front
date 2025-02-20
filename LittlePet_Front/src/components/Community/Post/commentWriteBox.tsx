@@ -11,6 +11,7 @@ interface CommentWriteBoxProps {
   parentId?: number | null;
   setComments?: (comments: CommentType[]) => void;
   setCommentNum?: (num: number) => void;
+  setOpenCommentId?: (num: number) => void;
 }
 import { useAuthStore } from '#/context/AuthStore';
 // 실제 댓글 작성 컴포넌트
@@ -19,6 +20,7 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   parentId,
   setComments,
   setCommentNum,
+  setOpenCommentId,
 }) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
@@ -106,8 +108,9 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
       );
       console.log('댓글 작성 성공', response.data);
       setCommentText('');
-      setComments(response.data.commentList);
+      setComments(response.data.comments);
       setCommentNum(response.data.commentNum);
+      setOpenCommentId(null);
       //window.location.reload();
     } catch (error) {
       console.error('댓글 작성 실패:', error);

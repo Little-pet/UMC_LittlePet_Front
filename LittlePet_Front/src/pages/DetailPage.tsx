@@ -63,21 +63,16 @@ const DetailPage: React.FC = () => {
               toggleReplyBox={() => toggleReplyBox(comment.commentId)}
               setComments={setComments}
               setCommentNum={setCommentNum}
+              setOpenCommentId={setOpenCommentId}
             />
             {comment.replies.length > 0 &&
               comment.replies.map((reply, replyIdx) => (
                 <Reply
                   key={replyIdx}
-                  parent={comment.commentId}
                   userName={reply.name}
                   animal={reply.userPets[0]}
                   content={reply.content}
                   time={reply.createdTime}
-                  postId={numericPostId}
-                  isOpen={openCommentId === reply.commentId}
-                  toggleReplyBox={() => toggleReplyBox(reply.commentId)}
-                  setComments={setComments}
-                  setCommentNum={setCommentNum}
                 />
               ))}
           </React.Fragment>

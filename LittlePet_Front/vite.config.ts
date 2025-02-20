@@ -14,8 +14,6 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env': env, //  Vite 환경 변수 바인딩
     },
-    server: {
-      host: true,
-    },
+    server: { host: true },
   };
 });
