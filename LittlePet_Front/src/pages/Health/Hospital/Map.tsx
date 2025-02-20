@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
-import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { useHospitalStore } from '#/context/hospitalStore';
 import FilterSection from '#/components/Hospital/FilterSection';
 // 타입 정의
@@ -19,55 +18,51 @@ interface Hospital {
   phoneNumber: string;
   rating: number;
 }
-
+const { kakao } = window;
 const MapPage: React.FC = () => {
   const { state } = useLocation();
-  const [info, setInfo] = useState<Hospital | null>(null); // 선택된 마커 정보
-  const [map, setMap] = useState<kakao.maps.Map | null>(null); // 카카오맵 객체
-  const { locationData } = state || {};
+  const container = useRef(null); // 지도 컨테이너 접근
   const [hospitalList, setHospitalList] = useState<Hospital[]>();
+  const [info, setInfo] = useState<Hospital | null>(null); // 선택된 마커 정보
   const { hospitalsByRegion } = useHospitalStore();
-  console.log(hospitalsByRegion);
-  // 마커의 위치로 지도의 중심 좌표 이동하기
-  const moveLatLng = (x, y) => {
-    const newLatLng = new kakao.maps.LatLng(x, y);
-    map?.setLevel(3);
-    map?.panTo(newLatLng);
-    const infowindow = new kakao.maps.InfoWindow({
-      position: new kakao.maps.LatLng(x, y),
-      content: 'open me plz.',
-    });
-
-    infowindow.close();
-  };
-
-  // 클릭한 마커로 중심 좌표 이동 및 검색 수행 함수
+  const { locationData } = state || {};
+  //const [map, setMap] = useState<kakao.maps.Map | null>(null); // map 상태 관리
   useEffect(() => {
-    if (!map) return;
-  }, [map]);
+    const position = new kakao.maps.LatLng(33.450701, 126.570667);
+    const options = {
+      center: position, // 지도의 중심 좌표
+      level: 3, // 지도 확대 레벨
+    };
+    const map = new kakao.maps.Map(container.current, options); // 지도 생성
+    //setMap(newMap); // map 상태에 저장
 
-  console.log(locationData);
-
-  useEffect(() => {
-    if (!map) return;
+    // 장소 검색 객체를 생성합니다
     const ps = new kakao.maps.services.Places();
-
-    ps.keywordSearch(`${locationData}`, (data, status) => {
+    // 키워드로 장소를 검색합니다
+    ps.keywordSearch('이태원 맛집', placesSearchCB);
+    //console.log(typeof locationData);
+    console.log(hospitalList);
+    console.log(hospitalsByRegion);
+    // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+    function placesSearchCB(status) {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds();
-        for (let i = 0; i < data.length; i++) {
-          bounds.extend(
-            new kakao.maps.LatLng(Number(data[i].y), Number(data[i].x))
-          );
-        }
+        //const bounds = new kakao.maps.LatLngBounds();
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds);
+        if (map) {
+          //map.setBounds(bounds);
+        }
       }
-    });
-  }, [map]);
+    }
+    //const imageSrc =
+    ('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png');
+    //const imageSize = new kakao.maps.Size(24, 35);
+    //const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+  }, [locationData]);
+  console.log(import.meta.env.VITE_KAKAOMAP_APP_KEY);
+  // map과 hospitalList가 변경될 때마다 실행
   /*   console.log(info); */
   //console.log(markers);
   return (
@@ -82,31 +77,7 @@ const MapPage: React.FC = () => {
         <AreaText>지도에서 찾기</AreaText>
       </Header>
       <FilterSection onSelect={setHospitalList} />
-
-      <Map
-        id='map'
-        center={{
-          lat: 37.566826,
-          lng: 126.9786567,
-        }}
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-        level={3} // 지도의 확대 레벨
-        onCreate={setMap}
-      >
-        {hospitalList?.map((marker) => (
-          <MapMarker
-            key={marker.id}
-            position={{ lat: marker.latitude, lng: marker.longitude }}
-            onClick={() => {
-              setInfo(marker);
-              moveLatLng(marker.latitude, marker.longitude);
-            }}
-          ></MapMarker>
-        ))}
-      </Map>
+      <Map ref={container}></Map>
       {info && (
         <InfoModal
           info={info}
@@ -145,4 +116,9 @@ const AreaText = styled.div<{ color?: string }>`
   font-size: 22px;
   font-family: Pretendard-SemiBold;
   color: ${(props) => props.color || '#262627'}; /* 기본값 설정 */
+`;
+const Map = styled.div`
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 `;
