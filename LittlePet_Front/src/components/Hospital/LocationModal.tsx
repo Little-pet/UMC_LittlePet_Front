@@ -50,14 +50,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
   );
 };
 export default LocationModal;
-const RealContainer = styled(motion.div)`
-  width: 100%;
-  padding: 0 25px;
-  box-sizing: border-box;
-  @media only screen and (min-width: 800px) {
-    padding: 0 250px;
-  }
-`;
+
 const Container = styled(motion.div)`
   width: 100%;
   height: 232px;
