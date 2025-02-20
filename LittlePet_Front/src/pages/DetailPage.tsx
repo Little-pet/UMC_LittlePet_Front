@@ -5,9 +5,9 @@ import Comment from '#/components/Community/Post/comment';
 import styled from 'styled-components';
 import Reply from '#/components/Community/Post/reply';
 import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
-import { CommentType, useCommunityStore } from '#/context/CommunityStore';
+import { CommentType, useCommunityStore } from '#/store/CommunityStore';
 import CommunityDetail from '#/components/SkeletonUI/CommunityDetail';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();

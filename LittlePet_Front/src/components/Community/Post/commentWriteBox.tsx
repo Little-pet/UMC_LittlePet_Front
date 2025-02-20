@@ -2,10 +2,10 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
-import { useUserStore } from '#/context/UserStore';
+import { useUserStore } from '#/store/UserStore';
 import { useNavigate } from 'react-router-dom';
 import Toast from '#/components/Toast';
-import { CommentType } from '#/context/CommunityStore';
+import { CommentType } from '#/store/CommunityStore';
 interface CommentWriteBoxProps {
   postId: number;
   parentId?: number | null;
@@ -13,7 +13,7 @@ interface CommentWriteBoxProps {
   setCommentNum?: (num: number) => void;
   setOpenCommentId?: (num: number) => void;
 }
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 // 실제 댓글 작성 컴포넌트
 const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   postId,

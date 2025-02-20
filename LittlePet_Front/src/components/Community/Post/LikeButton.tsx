@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import thumbIcon from '#/assets/thumb-up.svg';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
+
 interface LikeButtonProps {
   count: number; // 초기 좋아요 개수
   postId: number;
@@ -15,6 +16,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId, setLike }) => {
   const { isLoggedIn, userId } = useAuthStore();
 
   const handleLike = async () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
     try {
       const response = await axios.post(
         `https://umclittlepet.shop/api/like/${userId}/${postId}`

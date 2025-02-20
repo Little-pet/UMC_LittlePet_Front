@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 
 interface ResponsiveMenuProps {
   open: boolean;
@@ -59,7 +59,7 @@ const MotionMenu = styled(motion.div)`
   background-color: #fff;
   color: black;
   z-index: 20;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     /* 태블릿 및 PC 화면에서는 작은 팝업으로 변경 */
     width: 272px;
     height: auto;

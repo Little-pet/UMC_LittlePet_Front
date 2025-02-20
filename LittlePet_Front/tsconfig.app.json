@@ -32,9 +32,10 @@
       "@utils/*": ["src/utils/*"],
       "@assets/*": ["src/assets/*"],
       "@mockData/*": ["src/mockData/*"],
-      "@context/*": ["src/context/*"],
+      "@context/*": ["src/store/*"],
       "@pages/*": ["src/pages/*"],
-      "@layout/*": ["src/layout/*"]
+      "@layout/*": ["src/layout/*"],
+      "@hooks/*": ["src/hooks/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

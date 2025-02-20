@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
+import { useHealthRecordsStore } from '#/store/useHealthRecordsStore';
+import { useLocation } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -27,9 +28,12 @@ import banner from '@assets/banner/banner-health.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const existingRecord = location.state?.recordData || null;
+
   const { petId } = useParams();
   const { recordDates, fetchRecordDates } = useHealthRecordsStore();
-
+  const [isFilled, setIsFilled] = useState(false);
   //현재 선택된 날짜 (쿼리에서 가져오거나 기본값)
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -39,7 +43,6 @@ const AddHealthRecordPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isToastVisible, setToastVisible] = useState(false);
 
-  // ✅ `setTimeout()` 제거하고 상태만 변경
   const showToast = (message: string) => {
     setToastMessage(message);
     setToastVisible(true);
@@ -98,18 +101,18 @@ const AddHealthRecordPage: React.FC = () => {
     { id: 'x', label: 'X' },
   ];
 
-  // 입력 데이터 상태 관리
+  // 입력 데이터 상태 관리(기존 데이터가 있다면 초기값으로 설정)
   const [formData, setFormData] = useState({
-    weight: 0,
-    mealAmount: null,
-    fecesStatus: null,
-    fecesColorStatus: null,
-    atypicalSymptom: null,
-    healthStatus: null,
-    hospitalVisit: null,
-    diagnosisName: null,
-    prescription: null,
-    otherSymptom: null,
+    weight: existingRecord?.weight || null,
+    mealAmount: existingRecord?.mealAmount || null,
+    fecesStatus: existingRecord?.fecesStatus || null,
+    fecesColorStatus: existingRecord?.fecesColorStatus || null,
+    atypicalSymptom: existingRecord?.atypicalSymptom || null,
+    healthStatus: existingRecord?.healthStatus || null,
+    hospitalVisit: existingRecord?.hospitalVisit ? 'o' : 'x',
+    diagnosisName: existingRecord?.diagnosisName || null,
+    prescription: existingRecord?.prescription || null,
+    otherSymptom: existingRecord?.otherSymptom || null,
   });
 
   // 입력 변경 핸들러
@@ -129,11 +132,33 @@ const AddHealthRecordPage: React.FC = () => {
     }));
   };
 
+  //필수 항목이 입력되었는지 확인
+  useEffect(() => {
+    const isHospitalVisit = formData.hospitalVisit === 'o';
+    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
+    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
+    const isFecesColorRequired =
+      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
+
+    // 모든 필수 항목이 채워져야 true
+    const allFilled =
+      formData.weight &&
+      formData.mealAmount &&
+      formData.fecesStatus &&
+      (!isFecesColorRequired || formData.fecesColorStatus) &&
+      formData.healthStatus &&
+      formData.hospitalVisit &&
+      (!isDiagnosisRequired || formData.diagnosisName) &&
+      (!isPrescriptionRequired || formData.prescription);
+
+    setIsFilled(allFilled);
+  }, [formData]);
+
   // 폼 제출 핸들러
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
-
+    const isHospitalVisit = formData.hospitalVisit === 'o';
     // 요청 데이터 확인용 로그
     console.log('요청 데이터 전처리 전:', formData);
 
@@ -141,23 +166,9 @@ const AddHealthRecordPage: React.FC = () => {
       return;
     }
 
-    const isHospitalVisit = formData.hospitalVisit === 'o';
-    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
-    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
-    const isFecesColorRequired =
-      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
-
-    if (
-      !formData.weight ||
-      !formData.mealAmount ||
-      isFecesColorRequired ||
-      !formData.healthStatus ||
-      !formData.fecesStatus ||
-      !formData.hospitalVisit ||
-      isDiagnosisRequired ||
-      isPrescriptionRequired
-    ) {
+    if (!isFilled) {
       showToast('필수 입력 항목을 확인해주세요!');
+
       return;
     }
 
@@ -193,14 +204,13 @@ const AddHealthRecordPage: React.FC = () => {
       );
 
       if (response.data.isSuccess) {
-        alert('건강 기록이 저장되었습니다!');
         await fetchRecordDates(petId);
 
         console.log('recordDates:', recordDates);
         console.log(
-          '🔄 Zustand에서 최신 recordDates 직접 확인:',
+          ' Zustand에서 최신 recordDates 직접 확인:',
           useHealthRecordsStore.getState().recordDates
-        ); // ✅ 최신 상태 직접 확인
+        ); // 최신 상태 직접 확인
         navigate(`/health/record/detail/${petId}?date=${date}`, {
           state: {
             selectedDate: date,
@@ -237,7 +247,6 @@ const AddHealthRecordPage: React.FC = () => {
                 name='weight'
                 value={formData.weight}
                 onChange={handleChange}
-                placeholder='0.00'
               />
               <Unit>kg</Unit>
             </WeightInputContainer>
@@ -470,6 +479,7 @@ const SelectGroup = styled.div`
 
 const SaveButton = styled.button`
   background-color: #6ea8fe;
+  cursor: 'pointer';
   color: white;
   height: 48px;
   font-family: 'Pretendard';
@@ -478,7 +488,7 @@ const SaveButton = styled.button`
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+
   @media (min-width: 800px) {
     width: 197px;
     height: 68px;

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Edit from '@assets/Edit.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
 import { AnimalIcons } from '#/components/icon';
-import { useUserStore } from '#/context/UserStore';
+import { useUserStore } from '#/store/UserStore';
 
 const ProfileSection: React.FC = () => {
   const { user, pets = [], isLoading } = useUserStore();

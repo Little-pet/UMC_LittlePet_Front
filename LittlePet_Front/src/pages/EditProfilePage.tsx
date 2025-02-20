@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
 import Toast from '#/components/Toast';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 interface User {
   nickname: string;
   profilePhoto: string;

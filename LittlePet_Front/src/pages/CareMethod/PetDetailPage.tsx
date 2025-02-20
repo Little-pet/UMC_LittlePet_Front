@@ -53,7 +53,7 @@ const PetDetailPage: React.FC = () => {
     <Container>
       <TitleContainer>
         <Title>{petDetail.title}</Title>
-        <Date>{petDetail.createdAt} </Date>
+
         <PetImage src={petDetail.featureImagePath} alt={petDetail.species} />
       </TitleContainer>
 
@@ -92,7 +92,7 @@ const Container = styled.div`
   margin: auto;
   padding: 20px;
   padding-top: 76px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     padding: 64px 96px;
     margin-top: 39px;
     box-sizing: border-box;

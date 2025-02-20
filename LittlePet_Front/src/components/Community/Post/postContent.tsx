@@ -9,9 +9,9 @@ import ChallengerBadge from '@assets/챌린저.svg';
 import LikeBadge from '@assets/소셜응원왕.svg';
 import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
-import { useCommunityStore } from '#/context/CommunityStore';
-import { useUserStore } from '#/context/UserStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { useCommunityStore } from '#/store/CommunityStore';
+import { useUserStore } from '#/store/UserStore';
+import { useAuthStore } from '#/store/AuthStore';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePetStore } from '#/context/petStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { usePetStore } from '#/store/petStore';
+import { useAuthStore } from '#/store/AuthStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -73,6 +73,7 @@ const HealthProfile: React.FC = () => {
   useEffect(() => {
     if (healthRecord) {
       console.log(' healthRecord 업데이트 감지!', healthRecord);
+
       setSelectedPetDetails({
         gender: healthRecord.gender || '정보 없음',
         birthDay:
@@ -92,8 +93,8 @@ const HealthProfile: React.FC = () => {
     양호: good,
     악화: bad,
   };
-  const healthStatus = healthRecord?.healthStatus || '정보 없음';
-  const healthBadgeImage = healthBadgeMap[healthStatus] || healthy;
+  const healthStatus = latestRecord?.healthStatus || '';
+  const healthBadgeImage = healthBadgeMap[healthStatus] || '';
 
   //동물 종 /** 건강 상태에 따른 뱃지 이미지 */
   const animalIconMap: { [key: string]: string } = {
@@ -105,12 +106,15 @@ const HealthProfile: React.FC = () => {
   const animalIcon = animalIconMap[animalCategory] || null;
 
   const roundedWeightDiff =
-    Math.round(healthRecord?.weightDifference * 10) / 10;
+    healthRecord && healthRecord.weightDifference !== undefined
+      ? Math.round(healthRecord.weightDifference * 10) / 10
+      : null;
+
   const weightChangeText =
-    roundedWeightDiff !== undefined
-      ? roundedWeightDiff === 0
-        ? ''
-        : roundedWeightDiff > 0
+    healthRecord && roundedWeightDiff
+      ? healthRecord.weightDifference === 0
+        ? '유지'
+        : healthRecord.weightDifference > 0
           ? `${roundedWeightDiff}kg 증가`
           : `${Math.abs(roundedWeightDiff)}kg 감소`
       : '데이터 없음';
@@ -209,7 +213,7 @@ const HealthProfile: React.FC = () => {
                   <Value>{latestRecord.atypicalSymptom || '없음'}</Value>
                 </RecordItem>
 
-                {healthRecord && latestRecord.diagnosisName && (
+                {
                   <RecordItem>
                     <Label>진료 내역</Label>
                     <HospitalRecordValue>
@@ -227,7 +231,7 @@ const HealthProfile: React.FC = () => {
                       </RecordRow>
                     </HospitalRecordValue>
                   </RecordItem>
-                )}
+                }
               </HealthRecord>
             </PetDetails>
           </>

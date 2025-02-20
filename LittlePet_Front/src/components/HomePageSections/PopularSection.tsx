@@ -1,15 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { ContentWrapper } from '#/components/Community/styles/common';
 import Item from '#/components/Community/item';
-import { useCommunityStore } from '#/context/CommunityStore';
+import { usePopularPosts } from '#/hooks/usePopularPosts';
 import ChallengeItem from '#/components/Community/challengeItem';
 const PopularSection: React.FC = () => {
-  const { popularPosts, fetchPopularPosts, isLoading } = useCommunityStore();
+  const isPC = window.innerWidth >= 800;
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
+    usePopularPosts('popular');
+  const popularPosts = data?.pages.flatMap((page) => page.posts) || [];
+
+  const observerRef = useRef(null);
+  //모바일에선 무한스크롤 감지
   useEffect(() => {
-    fetchPopularPosts();
-  }, [fetchPopularPosts]);
-  if (isLoading) return <div>Loading...</div>;
+    if (!isPC && observerRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 1 }
+      );
+      observer.observe(observerRef.current);
+      return () => observer.disconnect();
+    }
+  }, [isPC, hasNextPage, fetchNextPage]);
+
+  //  로딩 중일 때 표시
+  if (isLoading) {
+    return <LoadingMessage>Loading...</LoadingMessage>;
+  }
 
   return (
     <Popular>
@@ -61,6 +82,21 @@ const PopularSection: React.FC = () => {
           ))}
         </PcItemList>
       </ContentWrapper>
+
+      <ButtonContainer>
+        {/* PC는 "더보기" 버튼으로 페이징 */}
+        {isPC && hasNextPage && (
+          <MoreButton
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            더보기
+          </MoreButton>
+        )}
+      </ButtonContainer>
+
+      {/*  모바일에서는 Intersection Observer로 무한스크롤 */}
+      {!isPC && <ObserverDiv ref={observerRef} />}
     </Popular>
   );
 };
@@ -75,10 +111,41 @@ const PopularTitle = styled.h1`
   margin-top: 40px;
   margin-bottom: 0px;
   padding-left: 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     padding: 0 96px;
     font-size: 36px;
   }
+`;
+
+const LoadingMessage = styled.p``;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const MoreButton = styled.button`
+  background-color: #6ea8fe;
+  box-shadow: 0px 4px 5px 0px #00000026;
+  width: 268px;
+  height: 68px;
+  border-radius: 50px;
+
+  box-sizing: border-box;
+  font-size: 26px;
+  font-weight: 600;
+  display: flex;
+  line-height: 35px;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-top: 50px;
+  border: none;
+  white-space: no-wrap;
+`;
+
+const ObserverDiv = styled.div`
+  height: 20px;
+  width: 100%;
 `;
 
 export const MobileItemList = styled.div`

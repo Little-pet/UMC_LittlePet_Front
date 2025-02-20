@@ -7,8 +7,8 @@ import HospitalItem from '#/components/Hospital/HospitalItem';
 import AreaModal from '#/components/Hospital/AreaModal';
 import banner from '@assets/banner/banner-health.svg';
 import FilterSection from '#/components/Hospital/FilterSection';
-import { useHospitalStore } from '#/context/hospitalStore';
-import { Hospital } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
+import { Hospital } from '#/store/hospitalStore';
 const HospitalPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(

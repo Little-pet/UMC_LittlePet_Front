@@ -6,17 +6,22 @@ import dayjs from 'dayjs';
 
 interface MobileAddButtonProps {
   selectedDate: dayjs.Dayjs;
+  recordData?: unknown | null;
 }
 
 // 건강 기록 버튼
-const MobileAddButton: React.FC<MobileAddButtonProps> = ({ selectedDate }) => {
+const MobileAddButton: React.FC<MobileAddButtonProps> = ({
+  selectedDate,
+  recordData,
+}) => {
   const navigate = useNavigate();
   const { petId } = useParams<{ petId: string }>();
 
   const handleNavigate = (): void => {
     if (petId) {
       navigate(
-        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`
+        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`,
+        { state: { recordData } }
       );
     } else {
       console.error('petId를 찾을 수 없습니다.');

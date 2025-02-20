@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import CommentWriteBox from './commentWriteBox';
-import { useAuthStore } from '#/context/AuthStore';
-import { CommentType } from '#/context/CommunityStore';
+import { useAuthStore } from '#/store/AuthStore';
+import { CommentType } from '#/store/CommunityStore';
 interface CommentProps {
   userName: string; // 유저 이름
   animal: string; // 동물 이름

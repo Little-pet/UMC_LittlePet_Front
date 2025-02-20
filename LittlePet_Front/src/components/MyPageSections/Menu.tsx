@@ -6,7 +6,7 @@ import TermsOfService from '@assets/이용약관.svg';
 import CancelAccount from '@assets/CancelAccount.svg';
 import Security from '@assets/Security.svg';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 
 import axios from 'axios';
 

@@ -5,10 +5,12 @@ import dayjs from 'dayjs';
 
 interface DesktopAddButtonProps {
   selectedDate: dayjs.Dayjs;
+  recordData: any | null;
 }
 
 const DesktopAddButton: React.FC<DesktopAddButtonProps> = ({
   selectedDate,
+  recordData,
 }) => {
   const navigate = useNavigate();
   const { petId } = useParams<{ petId: string }>();
@@ -16,7 +18,8 @@ const DesktopAddButton: React.FC<DesktopAddButtonProps> = ({
   const handleNavigate = (): void => {
     if (petId) {
       navigate(
-        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`
+        `/health/record/add/${petId}?date=${selectedDate.format('YYYY-MM-DD')}`,
+        { state: { recordData } }
       );
     } else {
       console.error('petId를 찾을 수 없습니다.');

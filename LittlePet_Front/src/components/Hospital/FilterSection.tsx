@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import arrowIcon from '#/assets/arrow.svg';
 import styled from 'styled-components';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 
 const FilterSection = ({ onSelect }) => {
   const times = ['전체', '영업중', '24시간', '주말'];

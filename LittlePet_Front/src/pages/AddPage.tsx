@@ -6,7 +6,7 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import axios from 'axios';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 import Toast from '#/components/Toast';
 // 최대 업로드 개수 & 파일 크기
 const MAX_IMAGES = 5;
