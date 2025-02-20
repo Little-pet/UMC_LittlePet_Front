@@ -11,6 +11,7 @@ import abnormal from '@assets/이상.svg';
 import axios from 'axios';
 import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';
 import banner from '@assets/banner/banner-health.svg';
+import DeleteModal from '#/components/DeleteModal';
 
 // 한 주의 날짜를 가져오는 유틸리티 함수 (현재 날짜 기준 앞뒤 3일)
 const getSurroundingDates = (selectedDate: dayjs.Dayjs, range: number) => {
@@ -26,6 +27,7 @@ const PastRecordPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getPetName } = usePetStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   //petId에 해당하는 petName찾기
   const petName = getPetName(Number(petId));
@@ -158,10 +160,10 @@ const PastRecordPage: React.FC = () => {
         }
       );
       if (response.data.isSuccess) {
-        alert('건강 기록이 삭제되었습니다!');
         setRecordData(null);
         fetchRecordDates(petId);
         setIsRecorded(false);
+        navigate('/health');
       } else {
         alert('삭제 실패! 다시 시도해주세요.');
       }
@@ -236,13 +238,23 @@ const PastRecordPage: React.FC = () => {
             <MealValue>{recordData?.mealAmount || ''}</MealValue>
           </RecordItem>
           <RecordItem>
-            <Label>대변 상태</Label>
-            <Value>
-              {recordData?.fecesStatus && recordData?.fecesColorStatus
-                ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
-                : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
-              <FecesBadge src={fecesBadgeImage || ''} alt={fecesStatus || ''} />
-            </Value>
+            {recordData?.fecesStatus || recordData?.fecesColorStatus ? ( //  데이터가 없으면 렌더링하지 않음
+              <>
+                <Label>대변 상태</Label>
+                <Value>
+                  {recordData?.fecesStatus && recordData?.fecesColorStatus
+                    ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
+                    : recordData?.fecesStatus ||
+                      recordData?.fecesColorStatus ||
+                      ''}
+
+                  {/*  fecesBadgeImage가 존재할 때만 렌더링 */}
+                  {fecesBadgeImage && (
+                    <FecesBadge src={fecesBadgeImage} alt={fecesStatus || ''} />
+                  )}
+                </Value>
+              </>
+            ) : null}
           </RecordItem>
           <RecordItem>
             <Label>특이 증상</Label>
@@ -270,7 +282,7 @@ const PastRecordPage: React.FC = () => {
           <ButtonContainer>
             <DesktopAddButton selectedDate={selectedDate} />
             <DeleteButton
-              onClick={() => handleDelete()}
+              onClick={() => setIsModalOpen(!isModalOpen)}
               disabled={!isRecorded}
               isDisabled={!isRecorded}
             >
@@ -278,6 +290,14 @@ const PastRecordPage: React.FC = () => {
             </DeleteButton>
           </ButtonContainer>
         </HealthRecord>
+        {isModalOpen && (
+          <Overlay>
+            <DeleteModal
+              onClose={() => setIsModalOpen(false)}
+              onDelete={handleDelete}
+            />
+          </Overlay>
+        )}
         <MobileAddButton selectedDate={selectedDate} />
       </Container>
     </ContainerWrapper>
@@ -511,4 +531,17 @@ const DeleteButton = styled.button<{ isDisabled: boolean }>`
   @media only screen and (min-width: 800px) {
     width: 197px;
   }
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 `;

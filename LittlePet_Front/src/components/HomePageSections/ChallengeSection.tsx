@@ -70,7 +70,7 @@ const ChallengeContainer = styled.div`
   margin-top: 30px;
   padding-left: 25px;
   padding-right: 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     padding: 0 96px;
     gap: 25px;
   }
@@ -83,7 +83,7 @@ const ChallengeTitle = styled.h1`
   line-height: 35px;
   margin: 0;
   padding-right: 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 36px;
   }
 `;
@@ -95,7 +95,7 @@ const ChallengeSubTitle = styled.h2`
   line-height: 32px;
   margin: 0;
   padding-right: 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 28px;
   }
 `;
@@ -130,7 +130,7 @@ const ChallengeBanner = styled.div`
   padding: 16px;
   gap: 10px;
   position: relative;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 270px;
     padding: 80px;
   }
@@ -142,7 +142,7 @@ const BannerText = styled.div`
   padding-left: 8px;
   display: flex;
   flex-direction: column;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 101px;
     gap: 31px;
   }
@@ -153,7 +153,7 @@ const BannerTitle = styled.h1`
   font-size: 16px;
   line-height: 25px;
   margin: 0;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 36px;
     line-height: 35px;
   }
@@ -165,7 +165,7 @@ const BannerDescription = styled.p`
   line-height: 16px;
   color: #737373;
   margin: 0;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 28px;
     line-height: 35px;
   }

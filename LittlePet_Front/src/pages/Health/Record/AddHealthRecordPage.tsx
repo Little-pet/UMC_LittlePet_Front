@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
@@ -29,7 +29,7 @@ const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { petId } = useParams();
   const { recordDates, fetchRecordDates } = useHealthRecordsStore();
-
+  const [isFilled, setIsFilled] = useState(false);
   //현재 선택된 날짜 (쿼리에서 가져오거나 기본값)
   const date =
     searchParams.get('date') || new Date().toISOString().split('T')[0];
@@ -39,10 +39,16 @@ const AddHealthRecordPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isToastVisible, setToastVisible] = useState(false);
 
-  // ✅ `setTimeout()` 제거하고 상태만 변경
+  //인라인 경고 메시지
+  const [isWarningVisible, setWarningVisible] = useState(false);
+
   const showToast = (message: string) => {
     setToastMessage(message);
     setToastVisible(true);
+  };
+
+  const showWarning = () => {
+    setWarningVisible(true);
   };
 
   //식사량
@@ -100,7 +106,7 @@ const AddHealthRecordPage: React.FC = () => {
 
   // 입력 데이터 상태 관리
   const [formData, setFormData] = useState({
-    weight: 0,
+    weight: null,
     mealAmount: null,
     fecesStatus: null,
     fecesColorStatus: null,
@@ -129,11 +135,33 @@ const AddHealthRecordPage: React.FC = () => {
     }));
   };
 
+  //필수 항목이 입력되었는지 확인인
+  useEffect(() => {
+    const isHospitalVisit = formData.hospitalVisit === 'o';
+    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
+    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
+    const isFecesColorRequired =
+      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
+
+    // 모든 필수 항목이 채워져야 true
+    const allFilled =
+      formData.weight &&
+      formData.mealAmount &&
+      formData.fecesStatus &&
+      (!isFecesColorRequired || formData.fecesColorStatus) &&
+      formData.healthStatus &&
+      formData.hospitalVisit &&
+      (!isDiagnosisRequired || formData.diagnosisName) &&
+      (!isPrescriptionRequired || formData.prescription);
+
+    setIsFilled(allFilled);
+  }, [formData]);
+
   // 폼 제출 핸들러
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 기본 폼 제출 동작 방지
-
+    const isHospitalVisit = formData.hospitalVisit === 'o';
     // 요청 데이터 확인용 로그
     console.log('요청 데이터 전처리 전:', formData);
 
@@ -141,23 +169,9 @@ const AddHealthRecordPage: React.FC = () => {
       return;
     }
 
-    const isHospitalVisit = formData.hospitalVisit === 'o';
-    const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
-    const isPrescriptionRequired = isHospitalVisit && !formData.prescription;
-    const isFecesColorRequired =
-      formData.fecesStatus !== '대변 안 봄' && !formData.fecesColorStatus;
-
-    if (
-      !formData.weight ||
-      !formData.mealAmount ||
-      isFecesColorRequired ||
-      !formData.healthStatus ||
-      !formData.fecesStatus ||
-      !formData.hospitalVisit ||
-      isDiagnosisRequired ||
-      isPrescriptionRequired
-    ) {
+    if (!isFilled) {
       showToast('필수 입력 항목을 확인해주세요!');
+      showWarning();
       return;
     }
 
@@ -193,14 +207,13 @@ const AddHealthRecordPage: React.FC = () => {
       );
 
       if (response.data.isSuccess) {
-        alert('건강 기록이 저장되었습니다!');
         await fetchRecordDates(petId);
 
         console.log('recordDates:', recordDates);
         console.log(
-          '🔄 Zustand에서 최신 recordDates 직접 확인:',
+          ' Zustand에서 최신 recordDates 직접 확인:',
           useHealthRecordsStore.getState().recordDates
-        ); // ✅ 최신 상태 직접 확인
+        ); // 최신 상태 직접 확인
         navigate(`/health/record/detail/${petId}?date=${date}`, {
           state: {
             selectedDate: date,
@@ -237,7 +250,6 @@ const AddHealthRecordPage: React.FC = () => {
                 name='weight'
                 value={formData.weight}
                 onChange={handleChange}
-                placeholder='0.00'
               />
               <Unit>kg</Unit>
             </WeightInputContainer>
@@ -352,8 +364,14 @@ const AddHealthRecordPage: React.FC = () => {
               </InputGroup>
             </>
           )}
-
-          <SaveButton type='submit'>저장하기</SaveButton>
+          <SaveContainer>
+            {isWarningVisible && (
+              <Warning>필수 항목 입력을 확인해주세요!</Warning>
+            )}
+            <SaveButton type='submit' disabled={!isFilled}>
+              저장하기
+            </SaveButton>
+          </SaveContainer>
         </Form>
       </Container>
     </ContainerWrapper>
@@ -468,8 +486,26 @@ const SelectGroup = styled.div`
   gap: 8px;
 `;
 
+const SaveContainer = styled.div`
+  display: flex;
+  weight: 425px;
+  weight: 68px;
+  gap: 32px;
+  justify-content: flex-end;
+`;
+
+const Warning = styled.p`
+  font-size: 15px;
+  line-height: 20px;
+  color: #c76b6b;
+  @media (max-width: 800px) {
+    display: none;
+  }
+`;
+
 const SaveButton = styled.button`
-  background-color: #6ea8fe;
+  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#6EA8FE')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   color: white;
   height: 48px;
   font-family: 'Pretendard';
@@ -478,7 +514,7 @@ const SaveButton = styled.button`
   font-size: 16px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
+
   @media (min-width: 800px) {
     width: 197px;
     height: 68px;

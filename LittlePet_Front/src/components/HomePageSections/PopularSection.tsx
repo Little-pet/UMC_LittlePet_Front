@@ -59,7 +59,7 @@ const PopularTitle = styled.h1`
   margin-top: 44px;
   margin-bottom: 34px;
   padding-left: 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     padding: 0 96px;
     font-size: 36px;
   }

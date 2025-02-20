@@ -66,7 +66,7 @@ const Container = styled.div`
   margin-left: 25px;
   margin-right: 25px;
   padding: 0 25px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     padding: 0 96px;
   }
 `;
@@ -79,7 +79,7 @@ const QuizContainer = styled.div<{ isSelected?: boolean }>`
   flex-direction: column;
   gap: 10px;
   box-shadow: 0px 4px 10px #0000001a;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     gap: 24px;
     padding: 48px 64px;
     height: ${({ isSelected }) => (isSelected ? '561px' : '502px')};
@@ -97,7 +97,7 @@ const QuizTitle = styled.h1`
   font-weight: 700;
   line-height: 35px;
   margin: 0;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 36px;
   }
 `;
@@ -108,7 +108,7 @@ const Question = styled.h2`
   line-height: 35px;
   color: #737373;
   margin: 0;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 26px;
   }
 `;
@@ -118,7 +118,7 @@ const Answers = styled.div`
   height: 139px;
   display: flex;
   flex-direction: column;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 220px;
     gap: 20px;
   }
@@ -139,7 +139,7 @@ const Choice = styled.button<{ isCorrect?: boolean; isSelected?: boolean }>`
   background-color: #ffffff;
   font-family: 'Pretendard';
   font-weight: 500;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 60px;
     padding: 16px 24px;
     font-size: 24px;
@@ -151,7 +151,7 @@ const Explanation = styled.div`
   font-size: 12px;
   color: #6ea8fe;
   font-weight: 600;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 18px;
   }
 `;
@@ -160,7 +160,7 @@ const Participants = styled.div`
   height: 24px;
   display: flex;
   align-items: center;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 48px;
   }
 `;
@@ -168,7 +168,7 @@ const Participants = styled.div`
 const ParticipantsIcon = styled.img`
   width: 36px;
   height: 24px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     width: 48px;
   }
 `;
@@ -177,7 +177,7 @@ const ParticipantsText = styled.p`
   font-size: 12px;
   font-weight: 600;
   color: #737373;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 18px;
     line-height: 35px;
   }

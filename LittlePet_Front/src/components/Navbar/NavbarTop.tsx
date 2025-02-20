@@ -64,7 +64,7 @@ const NavbarTop: FC = () => {
             {/* 햄버거 아이콘: 모바일에서는 `X`로 변경되지만, PC에서는 그대로 유지 */}
             <HamburgerIcon onClick={() => setOpen(!open)}>
               <img
-                src={window.innerWidth < 768 && open ? close : hamburger}
+                src={window.innerWidth < 800 && open ? close : hamburger}
                 alt={open ? '닫기' : '햄버거'}
               />
             </HamburgerIcon>
@@ -90,7 +90,7 @@ export default NavbarTop;
 const Img = styled.img`
   width: 60px;
   margin-left: 12px;
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     display: none;
   }
 `;
@@ -105,7 +105,7 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     height: 104px;
   }
 `;
@@ -113,7 +113,7 @@ const Nav = styled.nav`
 const Logo = styled.img`
   width: 31px;
   height: auto;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     display: none;
   }
 `;
@@ -121,7 +121,7 @@ const Logo = styled.img`
 const LogoBlack = styled.img`
   width: 48px;
   height: auto;
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     display: none;
   }
 `;
@@ -129,7 +129,7 @@ const LogoBlack = styled.img`
 const Menu = styled.div`
   display: none;
   height: 50px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     display: flex;
   }
 `;
@@ -143,7 +143,7 @@ const MenuContainer = styled.ul`
 
 const MenuItem = styled.li`
   list-style: none;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 22px;
     font-family: 'Pretendard-SemiBold';
   }

@@ -208,7 +208,7 @@ const ProfileWrapper = styled.div`
 const ProfileImg = styled.img`
   width: 20px;
   height: 20px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     width: 50px;
     height: 50px;
   }
@@ -229,7 +229,7 @@ const AnimalWrapper = styled.div`
 const AnimalImg = styled.img`
   width: 20px;
   height: 20px;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     width: 26px;
     height: 26px;
   }
@@ -239,7 +239,7 @@ const UserName = styled.div`
   font-family: 'Pretendard-SemiBold';
   //line-height: 35px;
   color: #ffffff;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 16px;
   }
 `;
@@ -248,7 +248,7 @@ const AnimalText = styled.div`
   font-size: 10px;
   font-family: 'Pretendard-SemiBold';
   color: #ffffff;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 14px;
   }
 `;
@@ -262,7 +262,7 @@ const DescriptionTitle = styled.div`
   color: #ffffff;
   max-height: 28px;
   overflow: hidden;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 24px;
     line-height: 35px;
   }
@@ -273,7 +273,7 @@ const DescriptionText = styled.div`
   font-family: 'Pretendard-SemiBold';
   line-height: 21px;
   color: #ffffff;
-  @media (min-width: 768px) {
+  @media (min-width: 800px) {
     font-size: 16px;
     line-height: 35px;
   }
