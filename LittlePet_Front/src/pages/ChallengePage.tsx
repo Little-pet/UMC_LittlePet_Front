@@ -25,8 +25,10 @@ const ChallengePage: React.FC = () => {
     }
   };
 
-  const { data, fetchNextPage, hasNextPage, isLoading } =
-    useCategoryPosts('챌린지');
+  const { data, fetchNextPage, hasNextPage, isLoading } = useCategoryPosts(
+    '챌린지',
+    selected
+  );
 
   const observerRef = useRef(null);
 
