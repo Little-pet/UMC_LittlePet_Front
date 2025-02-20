@@ -5,19 +5,19 @@ interface Content {
   sequence: number;
 }
 
-interface Comment {
+export interface CommentType {
   commentId: number;
   content: string;
   createdTime: string;
   name: string;
-  replies?: Comment[];
+  replies?: CommentType[];
   updatedTime: string;
   userPets: string[];
 }
 export interface CommunityPost {
   // 특정 글
   commentNum: number;
-  comments: Comment[];
+  comments: CommentType[];
   contents: Content[];
   createdTime: string;
   id: number;
@@ -70,9 +70,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
       const encodedSort = encodeURIComponent(sort);
       const response = await axios.get(
         `https://umclittlepet.shop/api/post?category=${encodedCategory}&pageNum=0&size=10&sort=${encodedSort}&deviceType=pc`,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       if (response.data.isSuccess) {
         const posts: CommunityPosts[] = response.data.result || [];

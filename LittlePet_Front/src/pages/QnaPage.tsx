@@ -25,7 +25,7 @@ const QnaPage: React.FC = () => {
     fetchPosts('Q&A', selected);
   }, [fetchPosts, selected]);
 
-  if (isLoading) return <CommunityPost />;
+  if (isLoading) return <CommunityPost banner={banner} />;
   return (
     <Container>
       <Banner src={banner} />

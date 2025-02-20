@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import viewIcon from '#/assets/조회수.svg';
 import commentIcon from '#/assets/댓글.svg';
@@ -29,6 +30,13 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
   category,
   type,
 }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 800);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
   }
@@ -41,11 +49,23 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
     return null;
   };
   const imageContent = getFirstImageContent(contents);
+
   return (
     <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
       {imageContent && <CardBackground bgImage={imageContent.content} />}
       <CardContent>
-        <CardTitle>{title}</CardTitle>
+        {/*  <CardTitle>{title}</CardTitle> */}
+        {(() => {
+          if (isMobile) {
+            const truncated =
+              title.length > 19 ? title.slice(0, 16) + '...' : title;
+            return <CardTitle>{truncated}</CardTitle>;
+          } else {
+            const truncated =
+              title.length > 23 ? title.slice(0, 20) + '...' : title;
+            return <CardTitle>{truncated}</CardTitle>;
+          }
+        })()}
         <MetaData>
           <MetaText>{name}</MetaText>
           <MetaItem>
@@ -106,7 +126,8 @@ const CardWrapper = styled(Link)`
 const CardBackground = styled.div<{ bgImage?: string }>`
   height: 61%;
   background-color: #d9d9d9;
-  background-image: url(${(props) => props.bgImage});
+  background-image: ${(props) =>
+    props.bgImage ? `url("${props.bgImage}")` : 'none'};
   background-size: cover;
   background-position: center;
   @media only screen and (min-width: 800px) {
@@ -137,6 +158,7 @@ const CardTitle = styled.div`
   color: #262627;
   @media only screen and (min-width: 800px) {
     font-size: 15px;
+    line-height: 17px;
   }
 `;
 

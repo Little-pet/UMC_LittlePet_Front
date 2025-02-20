@@ -42,21 +42,9 @@ const EditPetPage: React.FC = () => {
   };
 
   const tags = [
-    {
-      gender: 'FEMALE',
-      title: '암컷',
-      icon: '♀',
-    },
-    {
-      gender: 'MALE',
-      title: '수컷',
-      icon: '♂',
-    },
-    {
-      gender: 'OTHER',
-      title: '기타',
-      icon: null,
-    },
+    { gender: 'FEMALE', title: '암컷', icon: '♀' },
+    { gender: 'MALE', title: '수컷', icon: '♂' },
+    { gender: 'OTHER', title: '기타', icon: '⚥' },
   ];
 
   const [info, setInfo] = useState<Pet | null>(null);
@@ -125,9 +113,7 @@ const EditPetPage: React.FC = () => {
         `https://umclittlepet.shop/api/pets/${petId}`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         }
       );

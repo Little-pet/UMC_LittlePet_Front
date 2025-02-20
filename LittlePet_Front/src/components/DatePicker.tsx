@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { format } from 'date-fns';
+import moment from 'moment';
 import { ko as koLocale } from 'date-fns/locale';
 import CalendarIconSrc from '../assets/Calender.svg'; // 이미지 경로 확인 필요
 
@@ -16,28 +17,32 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   selectedDate,
   onDateChange,
 }) => {
+  const today = moment().toDate();
+  const formattedDateStr = selectedDate ? selectedDate.replace(/\./g, '-') : '';
   // 문자열을 Date 객체로 변환
-  const parsedDate = selectedDate
-    ? new Date(selectedDate.replace(/\./g, '-')) // "yyyy.MM.dd" -> "yyyy-MM-dd"
-    : new Date();
+  const parsedDate = formattedDateStr
+    ? moment(formattedDateStr, 'YYYY-MM-DD').toDate()
+    : today;
 
+  const safeDate = moment(parsedDate).isValid() ? parsedDate : today;
   // 날짜 변경 핸들러 (배열 체크 추가)
-  const handleDateChange = (date: Date | Date[] | null) => {
-    if (date && !Array.isArray(date)) {
-      const formattedDate = format(date, 'yyyy.MM.dd (EEE)', {
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      // DatePicker에는 yyyy.MM.dd (EEE) 형식으로 표시
+      const displayDate = format(date, 'yyyy.MM.dd (EEE)', {
         locale: koLocale,
       });
-      onDateChange(formattedDate); // 부모 컴포넌트로 업데이트 전달
+      onDateChange(displayDate);
     }
   };
 
   return (
     <DateContainer>
       <StyledDatePicker
-        selected={parsedDate}
+        selected={safeDate}
         onChange={handleDateChange}
-        dateFormat={'yyyy.MM.dd (EEE)'} // ✅ 문자열로 명확하게 지정
-        locale={koLocale} // ✅ locale을 명확하게 설정
+        dateFormat={'yyyy.MM.dd (EEE)'} //  문자열로 명확하게 지정
+        locale={koLocale} //  locale을 명확하게 설정
       />
       <CalendarIconWrapper>
         <CalendarIcon src={CalendarIconSrc} alt='달력 아이콘' />

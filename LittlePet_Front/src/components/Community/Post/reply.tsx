@@ -72,7 +72,7 @@ const Reply: React.FC<ReplyProps> = ({
 export default Reply;
 const CommentContainer = styled.div`
   border-bottom: 1px solid #e6e6e6;
-  padding: 10px 25px;
+  padding: 16px 25px;
   padding-left: 50px;
   display: flex;
   flex-direction: column;

@@ -51,5 +51,5 @@ const SpanIcon = styled.span<{ gender?: string }>`
       ? '#FF5A5A'
       : gender === 'MALE'
         ? '#6EA8FE'
-        : '#737373'};
+        : '#9E6EBE'};
 `;

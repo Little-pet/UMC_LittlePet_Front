@@ -42,7 +42,7 @@ const ProfileSection: React.FC = () => {
   //console.log('펫', pets);
   //console.log(user);
   if (isLoading || !user) {
-    return <div>데이터를 불러오는 중...</div>;
+    return <Skeleton />;
   }
   return (
     <ProfileContainer>
@@ -147,4 +147,21 @@ const EditButton = styled.button`
   background-color: #fff;
   align-items: center;
   cursor: pointer;
+`;
+const Skeleton = styled.div`
+  height: 55px;
+  width: 100%;
+  border-radius: 10px;
+  @keyframes skeleton-gradient {
+    0% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+      background-color: rgba(165, 165, 165, 0.3);
+    }
+    100% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+  }
+  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;

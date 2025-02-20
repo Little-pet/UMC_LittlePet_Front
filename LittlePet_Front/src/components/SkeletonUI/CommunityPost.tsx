@@ -1,11 +1,10 @@
-import banner from '#/assets/banner/큐앤에이 배너.svg';
 import styled from 'styled-components';
 import {
   Container,
   ContentWrapper,
   ItemList,
 } from '#/components/Community/styles/common';
-const CommunityPost = () => {
+const CommunityPost = ({ banner }) => {
   return (
     <Container>
       <Banner src={banner} />
@@ -67,7 +66,7 @@ export const Header = styled.div`
   margin-left: 25px;
   gap: 8px;
   @media only screen and (min-width: 800px) {
-    margin-left: 90px;
+    margin-left: 96px;
   }
 `;
 export const HeaderFilter = styled.div`
@@ -110,6 +109,6 @@ const ItemContainer = styled.div`
   }
   animation: skeleton-gradient 1.5s infinite ease-in-out;
   @media only screen and (min-width: 800px) {
-    padding: 0 96px;
+    margin: 0 96px;
   }
 `;

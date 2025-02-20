@@ -1,4 +1,4 @@
-import banner from '#/assets/banner/큐앤에이 배너.svg';
+import banner from '#/assets/banner/챌린지 배너.svg';
 import styled from 'styled-components';
 
 const ChallengePost = () => {
@@ -137,6 +137,9 @@ const ChallengeWrapper = styled.div`
   gap: 10px;
   padding-left: 25px;
  overflow: hidden;
+  @media (min-width: 800px) {
+    padding: 0;
+  }
 }
 `;
 const Card = styled.div`
@@ -156,6 +159,10 @@ const Card = styled.div`
     }
   }
   animation: skeleton-gradient 1.5s infinite ease-in-out;
+  @media (min-width: 800px) {
+    width: 400px;
+    height: 480px;
+  }
 `;
 export const FilterBox = styled.div`
   display: flex;
@@ -170,6 +177,9 @@ const HeaderWrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 0 25px;
+  @media (min-width: 800px) {
+    padding: 0;
+  }
 `;
 const ItemList = styled.div`
   display: flex;

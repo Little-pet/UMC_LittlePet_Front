@@ -7,6 +7,7 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
 import { useAuthStore } from '#/context/AuthStore';
+import { format } from 'date-fns';
 
 const PetRegistrationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,21 +27,9 @@ const PetRegistrationPage: React.FC = () => {
   };
 
   const tags = [
-    {
-      gender: 'FEMALE',
-      title: '암컷',
-      icon: '♀',
-    },
-    {
-      gender: 'MALE',
-      title: '수컷',
-      icon: '♂',
-    },
-    {
-      gender: 'OTHER',
-      title: '기타',
-      icon: null,
-    },
+    { gender: 'FEMALE', title: '암컷', icon: '♀' },
+    { gender: 'MALE', title: '수컷', icon: '♂' },
+    { gender: 'OTHER', title: '기타', icon: '⚥' },
   ];
 
   // 서버에 post할 객체
@@ -54,9 +43,18 @@ const PetRegistrationPage: React.FC = () => {
   void {} as Pet;
 
   const handleSave = async () => {
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const formattedBirthDate = birthDate
+      ? birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3') // "yyyy.MM.dd" -> "yyyy-MM-dd"
+      : today;
+    if (!formattedBirthDate.trim()) {
+      console.error('생년월일을 입력하세요.');
+      return;
+    }
+    console.log(`서버에 보낼 생년월일: ${formattedBirthDate}`);
     const petProfileRequest = {
       name,
-      birthDay: birthDate.replace(/(\d{4})\.(\d{2})\.(\d{2}).*/, '$1-$2-$3'),
+      birthDay: formattedBirthDate,
       gender: tagSelected,
       categorySpecies: categoryText,
     };
@@ -70,6 +68,7 @@ const PetRegistrationPage: React.FC = () => {
     if (profileImage instanceof File) {
       formData.append('file', profileImage);
     }
+    console.log('생년월일', formattedBirthDate);
     console.log(petProfileRequest);
     console.log(profileImage);
     try {
@@ -77,9 +76,7 @@ const PetRegistrationPage: React.FC = () => {
         `https://umclittlepet.shop/api/users/${userId}/pets`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          headers: { 'Content-Type': 'multipart/form-data' },
           withCredentials: true,
         }
       );

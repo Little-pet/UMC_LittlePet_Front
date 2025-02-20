@@ -2,16 +2,19 @@ import React from 'react';
 import styled from 'styled-components';
 import thumbIcon from '#/assets/thumb-up.svg';
 import axios from 'axios';
-import { useAuthStore } from '#/context/AuthStore';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '#/context/AuthStore';
+
 interface LikeButtonProps {
   count: number; // 초기 좋아요 개수
   postId: number;
+  setLike: (num: number) => void;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
-  const { userId, isLoggedIn } = useAuthStore();
+const LikeButton: React.FC<LikeButtonProps> = ({ count, postId, setLike }) => {
   const navigate = useNavigate();
+  const { isLoggedIn, userId } = useAuthStore();
+
   const handleLike = async () => {
     if (!isLoggedIn) {
       navigate('/login');
@@ -21,14 +24,21 @@ const LikeButton: React.FC<LikeButtonProps> = ({ count, postId }) => {
         `https://umclittlepet.shop/api/like/${userId}/${postId}`
       );
       console.log('좋아요 등록/취소 성공:', response.data);
-
-      window.location.reload();
+      setLike(response.data.result.likeNum);
+      //window.location.reload();
     } catch (error) {
       console.error('좋아요 등록/취소 실패:', error);
     }
   };
+  const handleClick = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    } else {
+      handleLike();
+    }
+  };
   return (
-    <LikeButtonWrapper onClick={handleLike}>
+    <LikeButtonWrapper onClick={handleClick}>
       <LikeIcon src={thumbIcon} />
       <LikeCount>{count}</LikeCount>
     </LikeButtonWrapper>

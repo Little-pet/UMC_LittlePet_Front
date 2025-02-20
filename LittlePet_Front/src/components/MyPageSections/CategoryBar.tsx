@@ -17,7 +17,6 @@ interface UserActivity {
 
 interface StatsProps {
   user: UserActivity | null;
-  isLoading: boolean;
 }
 
 // 개별 항목 컴포넌트
@@ -30,9 +29,8 @@ const StatItem: React.FC<StatItemProps> = ({ label, value }) => {
   );
 };
 
-const StatsComponent: React.FC<StatsProps> = ({ user, isLoading }) => {
-  if (isLoading) return <LoadingMessage>로딩 중 ...</LoadingMessage>;
-  if (!user) return <div>Loading...</div>;
+const StatsComponent: React.FC<StatsProps> = ({ user }) => {
+  if (!user) return <Skeleton />;
   // user 데이터를 활용하여 statsData 구성
   const statsData = [
     { label: '글', value: user.postCount },
@@ -102,7 +100,20 @@ const Value = styled.div`
   white-space: nowrap; // 줄바꿈 금지
 `;
 
-const LoadingMessage = styled.p`
-  font-size: 18px;
-  margin-top: 50px;
+const Skeleton = styled.div`
+  height: 80px;
+  width: 100%;
+  border-radius: 10px;
+  @keyframes skeleton-gradient {
+    0% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+      background-color: rgba(165, 165, 165, 0.3);
+    }
+    100% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+  }
+  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;

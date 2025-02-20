@@ -29,7 +29,7 @@ const ChallengePage: React.FC = () => {
   useEffect(() => {
     fetchPosts('챌린지', selected);
   }, [fetchPosts, selected]);
-  if (true) return <ChallengePost />;
+  if (isLoading) return <ChallengePost />;
   const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   return (
     <Container>
@@ -217,11 +217,13 @@ const HeaderFilter = styled.li<{ isActive: boolean }>`
 `;
 const ItemList = styled.div`
   display: flex;
-  justify-content: space-between;
+  //justify-content: space-between;
+  gap: 13px;
   padding: 0 25px;
   flex-wrap: wrap;
   @media only screen and (min-width: 700px) {
     padding: 0 96px;
+    gap: 23px;
   }
 `;
 const Banner = styled.img`

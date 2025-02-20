@@ -77,7 +77,8 @@ const QuizContainer = styled.div<{ isSelected?: boolean }>`
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  box-sizing: border-box;
+  justify-content: space-between;
   box-shadow: 0px 4px 10px #0000001a;
   @media (min-width: 800px) {
     gap: 24px;
@@ -89,7 +90,10 @@ const QuizContainer = styled.div<{ isSelected?: boolean }>`
 const QuizQuesetion = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 4px;
+  @media (min-width: 768px) {
+    gap: 20px;
+  }
 `;
 
 const QuizTitle = styled.h1`
@@ -152,8 +156,10 @@ const Explanation = styled.div`
   color: #6ea8fe;
   font-weight: 600;
   @media (min-width: 800px) {
-    font-size: 18px;
-  }
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+ 
 `;
 
 const Participants = styled.div`

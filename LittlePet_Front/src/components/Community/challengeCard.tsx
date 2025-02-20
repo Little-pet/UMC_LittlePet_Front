@@ -46,6 +46,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 }) => {
   const [profilePhoto, setProfilePhoto] = useState<string>();
   const [badges, setBadges] = useState<Badge[]>();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 800);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 800);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   function isImageUrl(url: string): boolean {
     return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
   }
@@ -96,6 +104,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
     userFetch(userId);
   }, []);
 
+  if (profilePhoto === undefined || badges === undefined) return <Skeleton />;
   return (
     <CardContainer
       to={`/community/${type}/${postId}`}
@@ -108,29 +117,36 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             src={profilePhoto === null ? profileIcon : profilePhoto}
           />
           <div>
+            <UserName>{name}</UserName>
+
             <UserInfoWrapper>
-              <UserName>{name}</UserName>
+              {badges?.slice(0, 1).map((badge, idx) => {
+                const icon = badgeIconMapping[badge.name];
+                if (!icon) return null;
+                return <BadgeIcon key={idx} src={icon} alt={badge.name} />;
+              })}
               <AnimalWrapper>
                 <AnimalImg src={getAnimalIcon(animal)} />
                 <AnimalText>{animal}</AnimalText>
               </AnimalWrapper>
             </UserInfoWrapper>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              {badges?.slice(0, 2).map((badge, idx) => {
-                const icon = badgeIconMapping[badge.name];
-                if (!icon) return null;
-                return <BadgeIcon key={idx} src={icon} alt={badge.name} />;
-              })}
-            </div>
           </div>
         </ProfileWrapper>
         <DescriptionWrapper>
           {(() => {
-            const truncated =
-              descriptionTitle.length > 15
-                ? descriptionTitle.slice(0, 13) + '...'
-                : descriptionTitle;
-            return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            if (isMobile) {
+              const truncated =
+                descriptionTitle.length > 15
+                  ? descriptionTitle.slice(0, 12) + '...'
+                  : descriptionTitle;
+              return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            } else {
+              const truncated =
+                descriptionTitle.length > 20
+                  ? descriptionTitle.slice(0, 17) + '...'
+                  : descriptionTitle;
+              return <DescriptionTitle>{truncated}</DescriptionTitle>;
+            }
           })()}
 
           {(() => {
@@ -139,11 +155,19 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             );
             if (nonImageContents.length > 0) {
               const firstItem = nonImageContents[0];
-              const truncated =
-                firstItem.content.length > 20
-                  ? firstItem.content.slice(0, 18) + '...'
-                  : firstItem.content;
-              return <DescriptionText>{truncated}</DescriptionText>;
+              if (isMobile) {
+                const truncated =
+                  firstItem.content.length > 21
+                    ? firstItem.content.slice(0, 18) + '...'
+                    : firstItem.content;
+                return <DescriptionText>{truncated}</DescriptionText>;
+              } else {
+                const truncated =
+                  firstItem.content.length > 32
+                    ? firstItem.content.slice(0, 29) + '...'
+                    : firstItem.content;
+                return <DescriptionText>{truncated}</DescriptionText>;
+              }
             }
             return null;
           })()}
@@ -217,7 +241,6 @@ const UserInfoWrapper = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-  height: 35px;
 `;
 
 const AnimalWrapper = styled.div`
@@ -237,7 +260,7 @@ const AnimalImg = styled.img`
 const UserName = styled.div`
   font-size: 12px;
   font-family: 'Pretendard-SemiBold';
-  //line-height: 35px;
+  line-height: 25px;
   color: #ffffff;
   @media (min-width: 800px) {
     font-size: 16px;
@@ -283,4 +306,26 @@ const BadgeIcon = styled.img`
   width: auto;
   /* background-color: white;
   border-radius: 15px; */
+`;
+const Skeleton = styled.div`
+  width: 200px;
+  height: 240px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  @keyframes skeleton-gradient {
+    0% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+    50% {
+      background-color: rgba(165, 165, 165, 0.3);
+    }
+    100% {
+      background-color: rgba(165, 165, 165, 0.1);
+    }
+  }
+  animation: skeleton-gradient 1.5s infinite ease-in-out;
+  @media (min-width: 800px) {
+    width: 400px;
+    height: 480px;
+  }
 `;

@@ -83,7 +83,7 @@ const Comment: React.FC<CommentProps> = ({
 export default Comment;
 const CommentContainer = styled.div`
   border-bottom: 1px solid #e6e6e6;
-  padding: 10px 25px;
+  padding: 16px 25px;
   display: flex;
   flex-direction: column;
   gap: 5px;

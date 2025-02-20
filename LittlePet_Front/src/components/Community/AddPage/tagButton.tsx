@@ -25,7 +25,7 @@ const TagButton: React.FC<TagButtonProps> = ({
 );
 export default TagButton;
 const CategoryButtonWrapper = styled.div<{ isSelected: boolean }>`
-  padding: 5px 25px;
+  width: 77px;
   height: 35px;
   border: 1px solid ${({ isSelected }) => (isSelected ? '#6EA8FE' : '#737373')};
   border-radius: 5px;
