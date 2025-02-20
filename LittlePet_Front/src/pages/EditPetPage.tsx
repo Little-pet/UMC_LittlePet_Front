@@ -21,7 +21,7 @@ const EditPetPage: React.FC = () => {
   const { petId } = useParams<{ petId: string }>();
   //const { pets, deletePet, updatePet } = usePets();
   const navigate = useNavigate();
-  const [tagSelected, setTagSelected] = useState<string>(''); // ✅ 빈 문자열로 초기화
+  const [tagSelected, setTagSelected] = useState<string>('');
   // 반려동물 정보 상태 관리
   const [profileImage, setProfileImage] = useState<File>();
   const [previewImage, setPreviewImage] = useState<string>('');

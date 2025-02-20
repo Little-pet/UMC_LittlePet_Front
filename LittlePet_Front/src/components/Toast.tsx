@@ -43,7 +43,8 @@ const Toast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => {
   return ReactDOM.createPortal(
     <ToastContainer isVisible={isVisible}>
       <ToastTextContainer>
-        <WarningIcon src={warning} /> {message}
+        <WarningIcon src={warning} />
+        <WarningMessage>{message}</WarningMessage>
       </ToastTextContainer>
     </ToastContainer>,
     document.body // 최상위 레벨에서 렌더링
@@ -56,30 +57,50 @@ const ToastContainer = styled.div<{ isVisible: boolean }>`
   position: fixed;
   top: 54px;
   left: 50%;
+  height: 50px;
   transform: translate(-50%, 0);
   background-color: #000000b2;
   box-shadow: 0px 2px 5px 0px #0000001a;
-  width: 343px;
+  width: 85vw;
   padding: 13px 56px;
   box-sizing: border-box;
   border-radius: 10px;
   z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   animation: ${({ isVisible }) => (isVisible ? slideDown : fadeOut)} 0.3s
     ease-in-out;
+  @media (min-width: 800px) {
+    height: 8vh;
+    width: 80vw;
+  }
 `;
 
 const ToastTextContainer = styled.div`
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  height: 24px;
   display: flex;
   align-items: center;
   text-align: center;
-  justify-content: space-between;
+  gap: 20px;
 `;
 
 const WarningIcon = styled.img`
   height: 24px;
+  @media (min-width: 800px) {
+    line-height: 35px;
+    height: 2.2vh;
+  }
+`;
+
+const WarningMessage = styled.p`
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+
+  @media (min-width: 800px) {
+    font-size: 1.5vw;
+    line-height: 35px;
+  }
 `;
