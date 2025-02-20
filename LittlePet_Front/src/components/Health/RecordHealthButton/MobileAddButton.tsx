@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 interface MobileAddButtonProps {
   selectedDate: dayjs.Dayjs;
-  recordData: unknown | null;
+  recordData?: unknown | null;
 }
 
 // 건강 기록 버튼

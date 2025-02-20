@@ -16,6 +16,7 @@ const DetailPage: React.FC = () => {
   const { state } = useLocation();
   const { category, type } = state || {};
   const [openCommentId, setOpenCommentId] = useState<number | null>(null);
+  const [commentNum, setCommentNum] = useState<number>();
   const [comments, setComments] = useState<CommentType[]>();
   const { isLoggedIn } = useAuthStore();
   const toggleReplyBox = (commentId: number) => {
@@ -29,6 +30,7 @@ const DetailPage: React.FC = () => {
   useEffect(() => {
     if (currentPost) {
       setComments(currentPost.comments);
+      setCommentNum(currentPost.commentNum);
     }
   }, [currentPost]);
   const data = currentPost;
@@ -37,10 +39,14 @@ const DetailPage: React.FC = () => {
 
   return (
     <Container>
-      <PostContent category={category} categoryType={type} />
+      <PostContent
+        category={category}
+        categoryType={type}
+        commentNum={commentNum}
+      />
       <CommentHeader>
         <Title>전체 댓글&nbsp;</Title>
-        <Count>{`[${data.commentNum}]`}</Count>
+        <Count>{`[${commentNum}]`}</Count>
       </CommentHeader>
       <CommentList>
         {comments?.map((comment, idx) => (
@@ -55,6 +61,8 @@ const DetailPage: React.FC = () => {
               postId={numericPostId}
               isOpen={openCommentId === comment.commentId}
               toggleReplyBox={() => toggleReplyBox(comment.commentId)}
+              setComments={setComments}
+              setCommentNum={setCommentNum}
             />
             {comment.replies.length > 0 &&
               comment.replies.map((reply, replyIdx) => (
@@ -68,6 +76,8 @@ const DetailPage: React.FC = () => {
                   postId={numericPostId}
                   isOpen={openCommentId === reply.commentId}
                   toggleReplyBox={() => toggleReplyBox(reply.commentId)}
+                  setComments={setComments}
+                  setCommentNum={setCommentNum}
                 />
               ))}
           </React.Fragment>
@@ -77,7 +87,11 @@ const DetailPage: React.FC = () => {
         <Title>댓글 쓰기</Title>
       </CommentHeader>
       {isLoggedIn && (
-        <CommentWriteBox postId={data.id} /* setComments={setComments} */ />
+        <CommentWriteBox
+          postId={data.id}
+          setComments={setComments}
+          setCommentNum={setCommentNum}
+        />
       )}
     </Container>
   );

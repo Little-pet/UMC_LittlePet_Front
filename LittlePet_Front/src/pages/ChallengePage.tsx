@@ -239,14 +239,18 @@ const HeaderFilter = styled.li<{ isActive: boolean }>`
   }
 `;
 const ItemList = styled.div`
-  display: flex;
-  //justify-content: space-between;
-  gap: 13px;
+  //max-width: 100%;
   padding: 0 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  //margin: 0 auto;
+  gap: 13px;
   flex-wrap: wrap;
-  @media only screen and (min-width: 700px) {
+  @media only screen and (min-width: 800px) {
     padding: 0 96px;
-    gap: 23px;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    //justify-content: space-between;
   }
 `;
 const Banner = styled.img`

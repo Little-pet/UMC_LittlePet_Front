@@ -79,6 +79,7 @@ const Image = styled.img`
   width: 60px; /* 적절한 크기 설정 */
   height: 60px; /* 적절한 크기 설정 */
   border-radius: 8px;
+  object-fit: cover;
 `;
 
 const Details = styled.div`

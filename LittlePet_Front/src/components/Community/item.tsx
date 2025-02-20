@@ -217,6 +217,7 @@ const Image = styled.img`
   width: 84px;
   height: 68px;
   border-radius: 5px;
+  object-fit: cover; /* 컨테이너를 꽉 채우되 비율 유지 */
 `;
 const Footer = styled.div`
   height: 22px;

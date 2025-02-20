@@ -136,14 +136,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
           {(() => {
             if (isMobile) {
               const truncated =
-                descriptionTitle.length > 15
-                  ? descriptionTitle.slice(0, 12) + '...'
+                descriptionTitle.length > 13
+                  ? descriptionTitle.slice(0, 10) + '...'
                   : descriptionTitle;
               return <DescriptionTitle>{truncated}</DescriptionTitle>;
             } else {
               const truncated =
-                descriptionTitle.length > 20
-                  ? descriptionTitle.slice(0, 17) + '...'
+                descriptionTitle.length > 17
+                  ? descriptionTitle.slice(0, 14) + '...'
                   : descriptionTitle;
               return <DescriptionTitle>{truncated}</DescriptionTitle>;
             }
@@ -157,14 +157,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
               const firstItem = nonImageContents[0];
               if (isMobile) {
                 const truncated =
-                  firstItem.content.length > 21
-                    ? firstItem.content.slice(0, 18) + '...'
+                  firstItem.content.length > 17
+                    ? firstItem.content.slice(0, 14) + '...'
                     : firstItem.content;
                 return <DescriptionText>{truncated}</DescriptionText>;
               } else {
                 const truncated =
-                  firstItem.content.length > 32
-                    ? firstItem.content.slice(0, 29) + '...'
+                  firstItem.content.length > 25
+                    ? firstItem.content.slice(0, 22) + '...'
                     : firstItem.content;
                 return <DescriptionText>{truncated}</DescriptionText>;
               }

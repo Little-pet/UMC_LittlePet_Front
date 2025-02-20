@@ -160,9 +160,7 @@ const EditProfilePage: React.FC = () => {
             onChange={handleImageUpload}
             id='fileInput'
           />
-          <ProfileImg
-            src={previewImage === null ? defaultPhoto : previewImage}
-          />
+          <ProfileImg src={previewImage === '' ? defaultPhoto : previewImage} />
         </ProfileImgContainer>
         <EditIcon src={EditIconImg} alt='편집' />
       </ProfileWrapper>

@@ -4,20 +4,26 @@ import { AnimalIcons } from '#/components/icon';
 import axios from 'axios';
 import { useUserStore } from '#/store/UserStore';
 import { useNavigate } from 'react-router-dom';
+import Toast from '#/components/Toast';
 import { CommentType } from '#/store/CommunityStore';
 interface CommentWriteBoxProps {
   postId: number;
   parentId?: number | null;
-  setComment?: (comment: CommentType) => void;
+  setComments?: (comments: CommentType[]) => void;
+  setCommentNum?: (num: number) => void;
 }
 import { useAuthStore } from '#/store/AuthStore';
 // 실제 댓글 작성 컴포넌트
 const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   postId,
   parentId,
+  setComments,
+  setCommentNum,
 }) => {
   const [commentText, setCommentText] = useState<string>('');
   const [commentCount, setCommentCount] = useState<number>(0);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [isToastVisible, setToastVisible] = useState<boolean>(false);
   const isTextValid =
     commentText.trim().length >= 1 && commentText.length <= 500;
   useEffect(() => {
@@ -41,11 +47,19 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
         return AnimalIcons.snake;
     }
   };
+
   const { user, pets, fetchUser, isLoading, lastFetchedUserId } =
     useUserStore();
   const { userId, isLoggedIn } = useAuthStore();
   //console.log(parentId);
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
 
+  const closeToast = () => {
+    setToastVisible(false);
+  };
   useEffect(() => {
     if (userId && !isLoading && lastFetchedUserId !== userId) {
       console.log(`fetchUser 실행됨! userId: ${userId}`);
@@ -71,7 +85,7 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
       return;
     }
     if (!isTextValid) {
-      alert('댓글을 입력해주세요!');
+      showToast('댓글은 1~50자 사이입니다!');
       return;
     }
     const requestBody = {
@@ -91,6 +105,9 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
         }
       );
       console.log('댓글 작성 성공', response.data);
+      setCommentText('');
+      setComments(response.data.commentList);
+      setCommentNum(response.data.commentNum);
       //window.location.reload();
     } catch (error) {
       console.error('댓글 작성 실패:', error);
@@ -130,6 +147,13 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
           등록하기
         </RegisterButton>
       </ButtonWrapper>
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          isVisible={isToastVisible}
+          onClose={closeToast}
+        />
+      )}
     </CommentForm>
   );
 };

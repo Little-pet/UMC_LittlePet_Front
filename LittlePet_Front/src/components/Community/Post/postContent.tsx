@@ -26,9 +26,11 @@ const badgeIconMapping: { [key: string]: string } = {
 const PostContent = ({
   category,
   categoryType,
+  commentNum,
 }: {
   category: string;
   categoryType: string;
+  commentNum: number;
 }) => {
   const { deletePost, currentPost } = useCommunityStore();
   const data = currentPost;
@@ -106,9 +108,7 @@ const PostContent = ({
           </FooterContainer>
           <FooterContainer>
             <FooterItem style={{ margin: '0' }}>{'댓글'}&nbsp;</FooterItem>
-            <FooterItem style={{ color: '#6EA8FE' }}>
-              {data.commentNum}
-            </FooterItem>
+            <FooterItem style={{ color: '#6EA8FE' }}>{commentNum}</FooterItem>
           </FooterContainer>
         </Footer>
         {data.contents.map((item, idx) =>
