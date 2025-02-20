@@ -61,7 +61,7 @@ const MapPage: React.FC = () => {
     //const imageSize = new kakao.maps.Size(24, 35);
     //const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
   }, [locationData]);
-
+  console.log(import.meta.env.VITE_KAKAOMAP_APP_KEY);
   // map과 hospitalList가 변경될 때마다 실행
   /*   console.log(info); */
   //console.log(markers);
