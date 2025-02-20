@@ -8,7 +8,8 @@ const PopularSection: React.FC = () => {
   const isPC = window.innerWidth >= 800;
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     usePopularPosts('popular');
-  const popularPosts = data?.pages.flatMap((page) => page.allPosts) || [];
+  const popularPosts = data?.pages.flatMap((page) => page.posts) || [];
+
   const observerRef = useRef(null);
   //모바일에선 무한스크롤 감지
   useEffect(() => {
