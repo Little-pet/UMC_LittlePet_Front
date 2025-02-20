@@ -238,23 +238,17 @@ const PastRecordPage: React.FC = () => {
             <MealValue>{recordData?.mealAmount || ''}</MealValue>
           </RecordItem>
           <RecordItem>
-            {recordData?.fecesStatus || recordData?.fecesColorStatus ? ( //  데이터가 없으면 렌더링하지 않음
-              <>
-                <Label>대변 상태</Label>
-                <Value>
-                  {recordData?.fecesStatus && recordData?.fecesColorStatus
-                    ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
-                    : recordData?.fecesStatus ||
-                      recordData?.fecesColorStatus ||
-                      ''}
+            <Label>대변 상태</Label>
+            <Value>
+              {recordData?.fecesStatus && recordData?.fecesColorStatus
+                ? `${recordData.fecesStatus} • ${recordData.fecesColorStatus}`
+                : recordData?.fecesStatus || recordData?.fecesColorStatus || ''}
 
-                  {/*  fecesBadgeImage가 존재할 때만 렌더링 */}
-                  {fecesBadgeImage && (
-                    <FecesBadge src={fecesBadgeImage} alt={fecesStatus || ''} />
-                  )}
-                </Value>
-              </>
-            ) : null}
+              {/*  fecesBadgeImage가 존재할 때만 렌더링 */}
+              {fecesBadgeImage && (
+                <FecesBadge src={fecesBadgeImage} alt={fecesStatus || ''} />
+              )}
+            </Value>
           </RecordItem>
           <RecordItem>
             <Label>특이 증상</Label>
@@ -270,11 +264,11 @@ const PastRecordPage: React.FC = () => {
               <HospitalRecordValue>
                 <RecordRow>
                   <ListTitle>진단명</ListTitle>
-                  <RecordText>{recordData?.diagnosisName || '없음'}</RecordText>
+                  <RecordText>{recordData?.diagnosisName || ''}</RecordText>
                 </RecordRow>
                 <RecordRow>
                   <ListTitle>검사 및 처방 내역</ListTitle>
-                  <RecordText>{recordData?.prescription || '없음'}</RecordText>
+                  <RecordText>{recordData?.prescription || ''}</RecordText>
                 </RecordRow>
               </HospitalRecordValue>
             </RecordItem>
