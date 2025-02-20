@@ -1,73 +1,64 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import banner from '@assets/banner/banner-caremethod.svg';
 
-import axios from 'axios';
+// API 요청을 useQuery를 사용하여 관리하는 커스텀 훅
+const fetchAnimalCategories = async (): Promise<
+  {
+    categoryName: string;
+    petCategoryList: { id: number; species: string; imageUrl: string }[];
+  }[]
+> => {
+  const response = await axios.get(
+    'https://umclittlepet.shop/api/animal-categories'
+  );
+  return response.data.result;
+};
+const useGetAnimalCategories = () => {
+  return useQuery({
+    queryKey: ['getAnimalCategories'],
+    queryFn: fetchAnimalCategories,
+    gcTime: Infinity, // 데이터를 영구적으로 캐시
+    staleTime: Infinity, //  데이터가 항상 신선한 것으로 간주되어 재요청되지 않음
+  });
+};
+
 const CareMethodPage: React.FC = () => {
-  const [mainCategories, setMainCategories] = useState<string[]>([]);
-  const [subCategories, setSubCategories] = useState<{
-    [key: string]: number[];
-  }>({});
-  const [animals, setAnimals] = useState<
-    { id: number; name: string; image: string; link: string }[]
-  >([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const navigate = useNavigate();
+  const { data: categoryData, isLoading, isError } = useGetAnimalCategories();
 
-  // 백엔드 API 호출해서 데이터 가져오기
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get(
-          'https://umclittlepet.shop/api/animal-categories'
-        );
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
 
-        const categoryData = response.data.result; // "result" 배열 가져오기
+  //  데이터 가공 (대분류, 소분류, 동물 리스트 변환)
+  const mainCategories = categoryData
+    ? ['전체', ...categoryData.map((category: any) => category.categoryName)]
+    : [];
 
-        // 대분류 카테고리 설정 (예: ['전체', '설치류', '파충류', '조류', '기타'])
-        const fetchedCategories = categoryData.map(
-          (category: any) => category.categoryName
-        );
-        setMainCategories(['전체', ...fetchedCategories]);
-        response.data.result.forEach(() => {});
-        // 소분류 및 동물 리스트 변환
-        const subCategoryMap: { [key: string]: number[] } = { 전체: [] };
-        const animalList: {
-          id: number;
-          name: string;
-          image: string;
-          link: string;
-        }[] = [];
+  const subCategories: { [key: string]: number[] } = { 전체: [] };
+  const animals: { id: number; name: string; image: string; link: string }[] =
+    [];
 
-        categoryData.forEach((category: any) => {
-          subCategoryMap[category.categoryName] = category.petCategoryList.map(
-            (pet: any) => pet.id
-          );
-
-          category.petCategoryList.forEach((pet: any) => {
-            animalList.push({
-              id: pet.id,
-              name: pet.species,
-              image: pet.imageUrl,
-              link: `/caremethod/pet-detail/${pet.id}`, // 백엔드에서 링크 지원하면 여기에 추가
-            });
-          });
+  if (categoryData) {
+    categoryData.forEach((category: any) => {
+      subCategories[category.categoryName] = category.petCategoryList.map(
+        (pet: any) => pet.id
+      );
+      category.petCategoryList.forEach((pet: any) => {
+        animals.push({
+          id: pet.id,
+          name: pet.species,
+          image: pet.imageUrl,
+          link: `/caremethod/pet-detail/${pet.id}`,
         });
+      });
+    });
 
-        // "전체" 카테고리는 모든 동물 포함
-        subCategoryMap['전체'] = animalList.map((a) => a.id);
-
-        // 상태 업데이트
-        setSubCategories(subCategoryMap);
-        setAnimals(animalList);
-      } catch (error) {
-        console.error('카테고리 데이터를 불러오는 데 실패했습니다.', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+    // "전체" 카테고리는 모든 동물 포함
+    subCategories['전체'] = animals.map((a) => a.id);
+  }
 
   const allowedSpecies = [
     '햄스터',
@@ -78,13 +69,15 @@ const CareMethodPage: React.FC = () => {
     '뱀',
     '페럿',
   ];
+
   const handleAnimalClick = (link: string, species: string) => {
     if (allowedSpecies.includes(species)) {
-      console.log(`Navigating to: ${link}`); // 이동하는 URL 확인
       navigate(link);
     }
   };
 
+  if (isLoading) return <p>로딩 중...</p>;
+  if (isError) return <p>데이터를 불러오는 데 실패했습니다.</p>;
   return (
     <>
       <ContainerWrapper>
