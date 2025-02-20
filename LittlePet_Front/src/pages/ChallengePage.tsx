@@ -50,7 +50,7 @@ const ChallengePage: React.FC = () => {
   const topPosts = data?.pages
     .flatMap((page) => page.posts) //  모든 페이지의 posts를 하나의 배열로 합침
     .sort((a, b) => b.likes - a.likes) //  좋아요 순 정렬
-    .slice(0, 10); //  상위 10개만 선택
+    .slice(0, 3); //  상위 10개만 선택
 
   return (
     <Container>

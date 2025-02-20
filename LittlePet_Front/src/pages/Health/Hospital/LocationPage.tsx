@@ -16,19 +16,37 @@ const LocationPage = () => {
 
   useEffect(() => {
     const mapContainer = document.getElementById('map');
-    const position = new kakao.maps.LatLng(info.latitude, info.longitude);
+    const offsetY = 0.001;
+    const position = new kakao.maps.LatLng(
+      info.latitude - offsetY,
+      info.longitude
+    );
     const options = {
       center: position, // 지도의 중심 좌표
       level: 3, // 지도 확대 레벨
     };
     const map = new kakao.maps.Map(mapContainer, options); // 지도 생성
+    const imageSrc = '/MapPin.svg';
+    const imageSize = new kakao.maps.Size(36, 40); // 마커 이미지의 크기
+    const imgOptions = {};
+    const markerImage = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imgOptions
+    );
     const marker = new kakao.maps.Marker({
       map: map,
       position: new kakao.maps.LatLng(info.latitude, info.longitude),
       title: info.name,
+      image: markerImage, // 마커이미지 설정
     });
     kakao.maps.event.addListener(marker, 'click', () => {
-      map.panTo(marker.getPosition()); // 부드럽게 마커 위치로 이동
+      const markerPosition = marker.getPosition();
+      const adjustedPosition = new kakao.maps.LatLng(
+        markerPosition.getLat() - offsetY, // 위도를 조금 낮춰 지도 중심 이동
+        markerPosition.getLng()
+      );
+      map.panTo(adjustedPosition);
       setIsModalOpen(true);
     });
   }, [info]);

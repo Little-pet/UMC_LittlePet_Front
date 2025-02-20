@@ -5,11 +5,11 @@ import replyArrowIcon from '#/assets/reply-arrow.svg';
 
 interface ReplyProps {
   userName: string; // 유저 이름
-  animal: string; // 동물 이름
+  animals: string[]; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
 }
-const Reply: React.FC<ReplyProps> = ({ userName, animal, content, time }) => {
+const Reply: React.FC<ReplyProps> = ({ userName, animals, content, time }) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
@@ -34,8 +34,8 @@ const Reply: React.FC<ReplyProps> = ({ userName, animal, content, time }) => {
       <Header>
         <img src={replyArrowIcon} />
         <UserName>{userName}</UserName>
-        {animal && (
-          <UserInfo>
+        {animals?.map((animal, idx) => (
+          <UserInfo key={idx}>
             <IconGroup>
               <img
                 src={getAnimalIcon(animal)}
@@ -44,7 +44,7 @@ const Reply: React.FC<ReplyProps> = ({ userName, animal, content, time }) => {
               <IconText>{animal}</IconText>
             </IconGroup>
           </UserInfo>
-        )}
+        ))}
       </Header>
       <Content>{content}</Content>
       <Footer>

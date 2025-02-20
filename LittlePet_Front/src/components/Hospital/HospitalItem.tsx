@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
 import commentIcon from '#/assets/댓글.svg';
+import { useAuthStore } from '#/store/AuthStore';
 import { Link } from 'react-router-dom';
 import { useHospitalStore } from '#/store/hospitalStore';
 interface HospitalItemProps {
@@ -21,9 +22,12 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
   openStatus,
   rating,
 }) => {
+  const { userId, isLoggedIn } = useAuthStore();
   const { fetchScrappedHospitals, scrappedHospitals } = useHospitalStore();
   useEffect(() => {
-    fetchScrappedHospitals(4);
+    if (isLoggedIn) {
+      fetchScrappedHospitals(userId);
+    }
   }, [hospitalId, fetchScrappedHospitals]);
   if (!scrappedHospitals) return <div>Loading...</div>;
   const isFavorited = scrappedHospitals.some(

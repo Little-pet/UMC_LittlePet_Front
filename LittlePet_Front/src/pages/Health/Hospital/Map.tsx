@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
 import FilterSection from '#/components/Hospital/FilterSection';
+
 // 타입 정의
 interface Hospital {
   id: number;
@@ -27,6 +28,7 @@ const MapPage: React.FC = () => {
 
   useEffect(() => {
     const mapContainer = document.getElementById('map');
+    const offsetY = 0.01;
     const position = new kakao.maps.LatLng(33.450701, 126.570667);
     const options = {
       center: position, // 지도의 중심 좌표
@@ -49,7 +51,7 @@ const MapPage: React.FC = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         if (map) {
           data.forEach((place) => {
-            const latLng = new kakao.maps.LatLng(place.y, place.x);
+            const latLng = new kakao.maps.LatLng(place.y - offsetY, place.x);
             bounds.extend(latLng); // 지도 범위에 추가
           });
           map.setBounds(bounds);
@@ -59,14 +61,30 @@ const MapPage: React.FC = () => {
 
     if (hospitalList) {
       hospitalList.forEach((el) => {
+        const imageSrc = '/MapPin.svg';
+        const imageSize = new kakao.maps.Size(36, 40); // 마커 이미지의 크기
+        const imgOptions = {};
+        const markerImage = new kakao.maps.MarkerImage(
+          imageSrc,
+          imageSize,
+          imgOptions
+        );
         const marker = new kakao.maps.Marker({
           map: map,
           position: new kakao.maps.LatLng(el.latitude, el.longitude),
           title: el.name,
+          image: markerImage, // 마커이미지 설정
         });
 
         kakao.maps.event.addListener(marker, 'click', () => {
-          map.panTo(marker.getPosition()); // 부드럽게 마커 위치로 이동
+          const markerPosition = marker.getPosition();
+
+          const adjustedPosition = new kakao.maps.LatLng(
+            markerPosition.getLat() - offsetY, // 위도를 조금 낮춰 지도 중심 이동
+            markerPosition.getLng()
+          );
+
+          map.panTo(adjustedPosition);
           setInfo(el);
         });
       });

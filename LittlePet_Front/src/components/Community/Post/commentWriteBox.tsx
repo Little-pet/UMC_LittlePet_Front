@@ -75,8 +75,9 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
   }, [user, pets]);*/
 
   const author = user?.name;
-  const animal = pets[0]?.petCategory;
-
+  const uniquePets = Array.from(new Set(pets?.map((p) => p.petCategory))).map(
+    (category) => pets.find((p) => p.petCategory === category)
+  );
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -116,22 +117,23 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
       console.error('댓글 작성 실패:', error);
     }
   };
+  console.log(pets);
   return (
     <CommentForm onSubmit={handleSubmit}>
       <HeaderWrapper>
         <Header>
           <UserName>{author}</UserName>
-          {animal && (
-            <UserInfo>
+          {uniquePets?.map((animal, idx) => (
+            <UserInfo key={idx}>
               <IconGroup>
                 <img
-                  src={getAnimalIcon(animal)}
+                  src={getAnimalIcon(animal.petCategory)}
                   style={{ width: '20px', height: '20px' }}
                 />
-                <IconText>{animal}</IconText>
+                <IconText>{animal.petCategory}</IconText>
               </IconGroup>
             </UserInfo>
-          )}
+          ))}
         </Header>
         <InputSection>
           <CommentInput

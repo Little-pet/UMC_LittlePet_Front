@@ -7,7 +7,7 @@ import { useAuthStore } from '#/store/AuthStore';
 import { CommentType } from '#/store/CommunityStore';
 interface CommentProps {
   userName: string; // 유저 이름
-  animal: string; // 동물 이름
+  animals: string[]; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
   postId: number;
@@ -20,7 +20,7 @@ interface CommentProps {
 }
 const Comment: React.FC<CommentProps> = ({
   userName,
-  animal,
+  animals,
   content,
   time,
   postId,
@@ -65,8 +65,8 @@ const Comment: React.FC<CommentProps> = ({
     <CommentContainer>
       <Header>
         <UserName>{userName}</UserName>
-        {animal && (
-          <UserInfo>
+        {animals?.map((animal, idx) => (
+          <UserInfo key={idx}>
             <IconGroup>
               <img
                 src={getAnimalIcon(animal)}
@@ -75,7 +75,7 @@ const Comment: React.FC<CommentProps> = ({
               <IconText>{animal}</IconText>
             </IconGroup>
           </UserInfo>
-        )}
+        ))}
       </Header>
       <Content>{content}</Content>
       <Footer>

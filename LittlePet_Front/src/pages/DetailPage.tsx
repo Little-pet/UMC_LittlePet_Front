@@ -55,7 +55,7 @@ const DetailPage: React.FC = () => {
               key={idx}
               parent={comment.commentId}
               userName={comment.name}
-              animal={comment.userPets[0]}
+              animals={comment.userPets}
               content={comment.content}
               time={comment.updatedTime}
               postId={numericPostId}
@@ -70,7 +70,7 @@ const DetailPage: React.FC = () => {
                 <Reply
                   key={replyIdx}
                   userName={reply.name}
-                  animal={reply.userPets[0]}
+                  animals={reply.userPets}
                   content={reply.content}
                   time={reply.createdTime}
                 />

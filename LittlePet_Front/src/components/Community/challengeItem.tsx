@@ -144,8 +144,8 @@ const CommentIcon = styled.img`
 const CardWrapper = styled(Link)`
   //max-width: 250px; /* 최대 크기 고정 */
   width: 100%;
-
-  height: 140px;
+  aspect-ratio: 1.18 / 1;
+  //height: 140px;
   border-radius: 10px;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.13);
   overflow: hidden;
@@ -154,8 +154,8 @@ const CardWrapper = styled(Link)`
   display: flex;
   flex-direction: column;
   @media only screen and (min-width: 800px) {
-    min-width: 300px;
-    height: 220px;
+    /*  min-width: 300px;
+    height: 220px; */
   }
 `;
 
