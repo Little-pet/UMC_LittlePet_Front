@@ -32,7 +32,7 @@
       "@utils/*": ["src/utils/*"],
       "@assets/*": ["src/assets/*"],
       "@mockData/*": ["src/mockData/*"],
-      "@context/*": ["src/store/*"],
+      "@store/*": ["src/store/*"],
       "@pages/*": ["src/pages/*"],
       "@layout/*": ["src/layout/*"],
       "@hooks/*": ["src/hooks/*"]

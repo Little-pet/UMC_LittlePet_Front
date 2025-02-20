@@ -1,22 +1,23 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useRef } from 'react';
 import axios from 'axios';
 
 const fetchPopularPosts = async ({
   pageParam = 0,
   category,
-  context,
+  allPostsRef,
 }: {
   pageParam: number;
   category: string;
-  context?: any;
+  allPostsRef: React.MutableRefObject<any[]>;
 }) => {
   const isPC = window.innerWidth >= 800;
   const deviceType = isPC ? 'pc' : 'mobile';
 
-  // 이전 페이지의 데이터를 유지하도록 `context`에서 `allPosts` 가져오기
-  let allPosts: any[] = context?.allPosts || [];
+  // `allPostsRef`에서 기존 데이터 유지
+  let allPosts: any[] = allPostsRef.current;
 
-  // 첫 페이지(`pageParam = 0`)일 때만 새 데이터를 요청하여 `allPosts`를 초기화
+  // 첫 페이지(`pageParam === 0`)에서만 데이터 요청
   if (pageParam === 0 || allPosts.length === 0) {
     allPosts = [];
     const categories =
@@ -36,10 +37,13 @@ const fetchPopularPosts = async ({
             category: cat,
           }));
 
-        console.log(filteredPosts.length);
+        console.log(` ${cat}에서 가져온 게시물 개수:`, filteredPosts.length);
         allPosts = allPosts.concat(filteredPosts);
       }
     }
+
+    // `allPostsRef`에 전체 데이터 저장
+    allPostsRef.current = allPosts;
   }
 
   console.log(' [fetchPopularPosts] 최종 allPosts.length:', allPosts.length);
@@ -47,7 +51,7 @@ const fetchPopularPosts = async ({
   // 좋아요 많은 순으로 정렬
   allPosts.sort((a, b) => b.likes - a.likes);
 
-  //  15개씩 가져오기 (페이지네이션 적용)
+  // 15개씩 가져오기 (페이지네이션 적용)
   const startIdx = pageParam * 15;
   const paginatedPosts = allPosts.slice(startIdx, startIdx + 15);
 
@@ -55,7 +59,7 @@ const fetchPopularPosts = async ({
     ' [fetchPopularPosts] paginatedPosts.length:',
     paginatedPosts.length
   );
-  console.log(' [fetchPopularPosts] pageParam:', pageParam);
+  console.log('[fetchPopularPosts] pageParam:', pageParam);
 
   const newCursor = startIdx + 15 < allPosts.length ? pageParam + 1 : null;
   console.log(' [fetchPopularPosts] nextCursor:', newCursor);
@@ -63,28 +67,26 @@ const fetchPopularPosts = async ({
   return {
     posts: paginatedPosts,
     nextCursor: newCursor,
-    allPosts, //  `context`로 `allPosts` 유지
   };
 };
 
 export const usePopularPosts = (category: string) => {
+  //  `useRef`를 활용하여 `allPosts` 상태 유지
+  const allPostsRef = useRef<any[]>([]);
+
   return useInfiniteQuery({
     queryKey: ['communityPosts', category],
-    queryFn: ({ pageParam, context }) =>
-      fetchPopularPosts({ pageParam, category, context }),
-    getNextPageParam: (lastPage, allPages) => {
-      console.log(' [getNextPageParam] lastPage:', lastPage);
-      console.log(' [getNextPageParam] allPages.length:', allPages.length);
-
+    queryFn: ({ pageParam }) =>
+      fetchPopularPosts({ pageParam, category, allPostsRef }),
+    getNextPageParam: (lastPage) => {
       if (!lastPage || lastPage.posts.length < 15) {
         console.log(' [getNextPageParam] 다음 페이지 없음');
         return undefined;
       }
 
-      console.log(lastPage.nextCursor);
-      return lastPage.nextCursor ?? allPages.length;
+      console.log(' [getNextPageParam] 다음 페이지 있음:', lastPage.nextCursor);
+      return lastPage.nextCursor;
     },
     initialPageParam: 0,
-    context: {}, //  `context`를 유지하여 `allPosts`가 초기화되지 않도록 함
   });
 };
