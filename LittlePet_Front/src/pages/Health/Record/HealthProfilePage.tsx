@@ -213,7 +213,7 @@ const HealthProfile: React.FC = () => {
                   <Value>{latestRecord.atypicalSymptom || '없음'}</Value>
                 </RecordItem>
 
-                {healthRecord && latestRecord.diagnosisName && (
+                {
                   <RecordItem>
                     <Label>진료 내역</Label>
                     <HospitalRecordValue>
@@ -231,7 +231,7 @@ const HealthProfile: React.FC = () => {
                       </RecordRow>
                     </HospitalRecordValue>
                   </RecordItem>
-                )}
+                }
               </HealthRecord>
             </PetDetails>
           </>

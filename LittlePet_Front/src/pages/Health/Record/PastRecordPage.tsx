@@ -264,23 +264,27 @@ const PastRecordPage: React.FC = () => {
             <Label>건강 상태</Label>
             <Value>{recordData?.healthStatus || ''}</Value>
           </RecordItem>
-          {recordData && recordData?.diagnosisName && (
+          {
             <RecordItem>
               <Label>진료 내역</Label>
               <HospitalRecordValue>
                 <RecordRow>
                   <ListTitle>진단명</ListTitle>
-                  <RecordText>{recordData?.diagnosisName || ''}</RecordText>
+                  <RecordText>{recordData?.diagnosisName || '없음'}</RecordText>
                 </RecordRow>
                 <RecordRow>
                   <ListTitle>검사 및 처방 내역</ListTitle>
-                  <RecordText>{recordData?.prescription || ''}</RecordText>
+                  <RecordText>{recordData?.prescription || '없음'}</RecordText>
                 </RecordRow>
               </HospitalRecordValue>
             </RecordItem>
-          )}
+          }
           <ButtonContainer>
-            <DesktopAddButton selectedDate={selectedDate} />
+            <DesktopAddButton
+              selectedDate={selectedDate}
+              recordData={recordData}
+            />
+
             <DeleteButton
               onClick={() => setIsModalOpen(!isModalOpen)}
               disabled={!isRecorded}
@@ -298,7 +302,7 @@ const PastRecordPage: React.FC = () => {
             />
           </Overlay>
         )}
-        <MobileAddButton selectedDate={selectedDate} />
+        <MobileAddButton selectedDate={selectedDate} recordData={recordData} />
       </Container>
     </ContainerWrapper>
   );

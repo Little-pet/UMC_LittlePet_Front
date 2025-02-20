@@ -3,6 +3,7 @@ import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
+import { useLocation } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
 import SelectableButtonGroup from '#/components/Health/RecordHealthButton/SelectableButtonGroup';
@@ -27,6 +28,9 @@ import banner from '@assets/banner/banner-health.svg';
 
 const AddHealthRecordPage: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const existingRecord = location.state?.recordData || null;
+
   const { petId } = useParams();
   const { recordDates, fetchRecordDates } = useHealthRecordsStore();
   const [isFilled, setIsFilled] = useState(false);
@@ -106,16 +110,16 @@ const AddHealthRecordPage: React.FC = () => {
 
   // 입력 데이터 상태 관리
   const [formData, setFormData] = useState({
-    weight: null,
-    mealAmount: null,
-    fecesStatus: null,
-    fecesColorStatus: null,
-    atypicalSymptom: null,
-    healthStatus: null,
-    hospitalVisit: null,
-    diagnosisName: null,
-    prescription: null,
-    otherSymptom: null,
+    weight: existingRecord?.weight || null,
+    mealAmount: existingRecord?.mealAmount || null,
+    fecesStatus: existingRecord?.fecesStatus || null,
+    fecesColorStatus: existingRecord?.fecesColorStatus || null,
+    atypicalSymptom: existingRecord?.atypicalSymptom || null,
+    healthStatus: existingRecord?.healthStatus || null,
+    hospitalVisit: existingRecord?.hospitalVisit ? 'o' : 'x',
+    diagnosisName: existingRecord?.diagnosisName || null,
+    prescription: existingRecord?.prescription || null,
+    otherSymptom: existingRecord?.otherSymptom || null,
   });
 
   // 입력 변경 핸들러
@@ -135,7 +139,7 @@ const AddHealthRecordPage: React.FC = () => {
     }));
   };
 
-  //필수 항목이 입력되었는지 확인인
+  //필수 항목이 입력되었는지 확인
   useEffect(() => {
     const isHospitalVisit = formData.hospitalVisit === 'o';
     const isDiagnosisRequired = isHospitalVisit && !formData.diagnosisName;
