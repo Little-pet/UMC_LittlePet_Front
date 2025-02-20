@@ -97,7 +97,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
         `https://umclittlepet.shop/api/hospitals/users/{userId}?userId=${userId}`,
         { withCredentials: true }
       );
-      console.error('스크랩한 병원 조회 성공:', response.data);
+      console.log('스크랩한 병원 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ scrappedHospitals: response.data.result });
         return response.data.result;
@@ -114,7 +114,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
         `https://umclittlepet.shop/api/hospitals/search/{placeId}?placeId=${areaId}`,
         { withCredentials: true }
       );
-      console.error('지역별 병원 조회 성공:', response.data);
+      console.log('지역별 병원 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ hospitalsByRegion: response.data.result });
         return response.data.result;

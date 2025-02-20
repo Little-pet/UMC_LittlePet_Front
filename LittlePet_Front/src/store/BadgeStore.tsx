@@ -18,6 +18,7 @@ export const useBadgeStore = create<BadgeState>((set) => ({
         { withCredentials: true }
       );
       set({ missingBadges: response.data.result });
+      return response.data.result;
       console.log('획득하지 못한 뱃지 조회 성공', response.data);
     } catch (error) {
       console.error('획득하지 못한 뱃지 조회 실패:', error);

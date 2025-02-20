@@ -30,24 +30,7 @@ const PetProfiles: React.FC<PetProfilesProps> = ({ pets, isLoading }) => {
         ))}
       </Box>
     );
-  /* const { isLoading } = useQuery({
-    queryKey: ['pets', userId],
-    queryFn: () => fetchPets(userId),
-    staleTime: 0,
-    gcTime: 5 * 60 * 1000,
-  }); */
-  /*  if (true) {
-    return (
-      <Container>
-        {Array.from({ length: 3 }).map((_, idx) => (
-          <ProfileCard key={idx}>
-            <SkeletonCard />
-            <ProfileName>dd</ProfileName>
-          </ProfileCard>
-        ))}
-      </Container>
-    );
-  } */
+
   return (
     <Container>
       {pets.map((pet) => (

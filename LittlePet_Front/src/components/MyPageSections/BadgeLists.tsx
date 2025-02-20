@@ -47,10 +47,12 @@ const BadgeContainer = styled.div`
   align-items: center;
   height: 50px;
   width: 100%;
+  border-radius: 10px;
   background-color: #fafafa;
   padding: 12px 18px;
   gap: 12px;
   box-sizing: border-box;
+  align-items: center;
   @media only screen and (min-width: 800px) {
     gap: 80px;
   }
@@ -81,8 +83,14 @@ const BadgeList = styled.div`
 `;
 
 const BadgeIcon = styled.img`
-  height: 15px;
   width: auto;
+  height: auto;
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    transform: scale(1.05);
+  }
 `;
 
 const LoadingMessage = styled.p`

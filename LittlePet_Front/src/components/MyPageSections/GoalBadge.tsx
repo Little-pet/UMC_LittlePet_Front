@@ -8,6 +8,7 @@ import PopularBadge from '@assets/인기스타.svg';
 import arrowIcon from '#/assets/arrow.svg';
 import { useAuthStore } from '#/store/AuthStore';
 import { useBadgeStore } from '#/store/BadgeStore';
+import { useQuery } from '@tanstack/react-query';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,
@@ -21,16 +22,26 @@ const GoalBadgeComponent: React.FC = () => {
 
   const [progress, setProgress] = useState<{ [key: string]: string }>({});
   const userId = useAuthStore((state) => state.userId);
-  const { fetchMissingBadge, fetchProgress, missingBadges } = useBadgeStore();
+  const { fetchMissingBadge, fetchProgress } = useBadgeStore();
   useEffect(() => {
-    fetchMissingBadge(userId);
-  }, []);
+    if (userId) {
+      fetchMissingBadge(userId);
+    }
+  }, [userId]);
+
+  const { data } = useQuery({
+    queryKey: ['missingBadges', userId],
+    queryFn: () => (userId ? fetchMissingBadge(userId) : Promise.resolve(null)), // queryFn을 함수로 래핑
+    enabled: !!userId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
     const fetchAllProgress = async (): Promise<void> => {
       const progressData: { [key: string]: string } = {};
       // badges 배열에 있는 각 badge에 대해 진행 상태를 가져옵니다.
-      for (const badge of missingBadges ?? []) {
+      for (const badge of data ?? []) {
         try {
           const result = await fetchProgress(userId, badge);
           progressData[badge] = result || '';
@@ -44,27 +55,22 @@ const GoalBadgeComponent: React.FC = () => {
     };
 
     fetchAllProgress();
-  }, [missingBadges]);
+  }, [data]);
   return (
     <BadgeContainer isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
       <Title>목표 뱃지</Title>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-          width: '70%',
-        }}
-      >
+      <Bowl>
         <Box>
-          <Text>나의 목표 뱃지를 확인해볼까요?</Text>
+          <Text style={{ height: '26px', marginBottom: '5px' }}>
+            나의 목표 뱃지를 확인해볼까요?
+          </Text>
           <ArrowIcon src={arrowIcon} alt='arrow' isOpen={isOpen} />
         </Box>
         {isOpen && (
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            {(missingBadges ?? []).map((badge, idx) => {
+            {(data ?? []).map((badge, idx) => {
               const icon = badgeIconMapping[badge];
               const word = progress[badge] ?? 0;
               const text = String(word);
@@ -72,11 +78,11 @@ const GoalBadgeComponent: React.FC = () => {
 
               return (
                 <BadgeBox key={idx}>
-                  <img src={icon} />
+                  <BadgeIcon src={icon} />
                   <Text>
                     {match ? (
                       <>
-                        {match[1]}
+                        {match[1]}&nbsp;
                         <HighlightedText>{match[2]}</HighlightedText>
                         {match[3]}
                       </>
@@ -89,7 +95,7 @@ const GoalBadgeComponent: React.FC = () => {
             })}
           </div>
         )}
-      </div>
+      </Bowl>
     </BadgeContainer>
   );
 };
@@ -104,11 +110,19 @@ const BadgeContainer = styled.div<{ isOpen: boolean }>`
   width: 100%;
   background-color: #fafafa;
   padding: 12px 18px;
-  gap: 12px;
   box-sizing: border-box;
-  justify-content: flex-end;
+  border-radius: 10px;
 `;
-
+const Bowl = styled.div`
+  display: flex;
+  flex-direction: column;
+  //gap: 12px;
+  width: 70%;
+  margin-left: 75px;
+  @media only screen and (min-width: 800px) {
+    margin-left: 155px;
+  }
+`;
 const Title = styled.div`
   position: absolute;
   top: 17px;
@@ -124,6 +138,9 @@ const Box = styled.div`
 `;
 const ArrowIcon = styled(({ ...rest }) => <img {...rest} />)`
   width: 10px;
+  position: absolute;
+  top: 23.5px;
+  right: 18px;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
@@ -136,9 +153,35 @@ const Text = styled.div`
   font-size: 8px;
   font-family: Pretendard-SemiBold;
   color: #737373;
+  display: flex;
+  align-items: center;
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    font-size: 9px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    font-size: 10px;
+  }
 `;
 const HighlightedText = styled.span`
   font-size: 8px;
   font-family: Pretendard-SemiBold;
   color: #6ea8fe;
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    font-size: 9px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    font-size: 10px;
+  }
+`;
+const BadgeIcon = styled.img`
+  width: auto;
+  height: auto;
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    transform: scale(1.05);
+  }
 `;

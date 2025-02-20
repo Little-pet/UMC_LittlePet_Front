@@ -6,6 +6,7 @@ import EditIconImg from '@assets/EditPicture.svg';
 import defaultPhoto from '#/assets/기본 프로필.svg';
 import Toast from '#/components/Toast';
 import { useAuthStore } from '#/store/AuthStore';
+import { useQuery } from '@tanstack/react-query';
 interface User {
   nickname: string;
   profilePhoto: string;
@@ -28,21 +29,24 @@ const EditProfilePage: React.FC = () => {
   const [info, setInfo] = useState<User | null>(null);
   const userId = useAuthStore((state) => state.userId);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/users/update/${userId}`
-        );
-        console.log('프로필 조회 성공:', response.data);
-        setInfo(response.data.result); // 초기상태
-      } catch (error) {
-        console.error('프로필 조회 실패:', error);
-      }
-    };
+  const { data } = useQuery({
+    queryKey: ['userInfo', userId],
+    queryFn: () =>
+      userId
+        ? axios
+            .get(`https://umclittlepet.shop/api/users/update/${userId}`, {
+              withCredentials: true,
+            })
+            .then((response) => response.data.result) // 데이터를 반환
+        : Promise.resolve(null),
+    enabled: !!userId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 
-    fetchUser(); // 선언한 async 함수 실행
-  }, []);
+  useEffect(() => {
+    setInfo(data); // 초기상태
+  }, [data]);
 
   useEffect(() => {
     if (info) {

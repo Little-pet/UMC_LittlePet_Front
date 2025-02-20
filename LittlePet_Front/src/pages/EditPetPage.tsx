@@ -7,6 +7,7 @@ import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
 import DeleteModal from '#/components/DeleteModal';
+import { useQuery } from '@tanstack/react-query';
 
 interface Pet {
   name: string;
@@ -49,22 +50,23 @@ const EditPetPage: React.FC = () => {
 
   const [info, setInfo] = useState<Pet | null>(null);
 
+  const { data } = useQuery({
+    queryKey: ['petDetail', petId],
+    queryFn: () =>
+      petId
+        ? axios
+            .get(`https://umclittlepet.shop/api/pets/${petId}`, {
+              withCredentials: true,
+            })
+            .then((response) => response.data.result) // 데이터를 반환
+        : Promise.resolve(null), // queryFn을 함수로 래핑
+    enabled: !!petId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
   useEffect(() => {
-    const fetchPets = async () => {
-      try {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/pets/${petId}`
-        );
-        console.log('반려동물 단일 조회 성공:', response.data);
-        setInfo(response.data.result); // 초기상태
-      } catch (error) {
-        console.error('반려동물 단일 조회 실패:', error);
-      }
-    };
-
-    fetchPets(); // 선언한 async 함수 실행
-  }, []);
-
+    setInfo(data);
+  }, [data]);
   const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
