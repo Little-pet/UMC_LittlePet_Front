@@ -27,19 +27,30 @@ const DailyPage: React.FC = () => {
   const observerRef = useRef(null);
 
   useEffect(() => {
-    if (observerRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasNextPage) {
+    if (!observerRef.current) return;
+
+    let timer: number | null = null;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          if (timer) clearTimeout(timer);
+
+          timer = setTimeout(() => {
             console.log(' [IntersectionObserver] fetchNextPage 실행!');
             fetchNextPage();
-          }
-        },
-        { threshold: 1 }
-      );
-      observer.observe(observerRef.current);
-      return () => observer.disconnect();
-    }
+          }, 150); //  `debounce` 적용 (너무 자주 실행되지 않도록)
+        }
+      },
+      { threshold: 0.5 } //  감지 민감도
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => {
+      observer.disconnect();
+      if (timer) clearTimeout(timer);
+    };
   }, [hasNextPage, fetchNextPage]);
 
   if (isLoading) return <CommunityPost banner={banner} />;

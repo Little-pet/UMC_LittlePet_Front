@@ -14,16 +14,28 @@ const PopularSection: React.FC = () => {
   //모바일에선 무한스크롤 감지
   useEffect(() => {
     if (!isPC && observerRef.current) {
+      let timer: number | null = null;
+
       const observer = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) {
-            fetchNextPage();
+          if (entries[0].isIntersecting && hasNextPage) {
+            if (timer) clearTimeout(timer); // 기존 타이머 제거
+
+            timer = setTimeout(() => {
+              console.log(' [IntersectionObserver] fetchNextPage 실행!');
+              fetchNextPage();
+            }, 150);
           }
         },
-        { threshold: 1 }
+        { threshold: 0.5 }
       );
+
       observer.observe(observerRef.current);
-      return () => observer.disconnect();
+
+      return () => {
+        observer.disconnect();
+        if (timer) clearTimeout(timer);
+      };
     }
   }, [isPC, hasNextPage, fetchNextPage]);
 
