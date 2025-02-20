@@ -49,6 +49,15 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
     return null;
   };
   const imageContent = getFirstImageContent(contents);
+  const getFirstTextContent = (contents) => {
+    for (const item of contents) {
+      if (!isImageUrl(item.content)) {
+        return item;
+      }
+    }
+    return null;
+  };
+  const textContent = getFirstTextContent(contents);
 
   return (
     <CardWrapper to={`/community/${type}/${postId}`} state={{ category, type }}>
@@ -56,19 +65,42 @@ const ChallengeItem: React.FC<ChallengeItemProps> = ({
       <CardContent>
         {(() => {
           if (imageContent) {
-            if (isMobile) {
-              const truncated =
-                title.length > 19 ? title.slice(0, 16) + '...' : title;
-              return <CardTitle>{truncated}</CardTitle>;
-            } else {
-              const truncated =
-                title.length > 23 ? title.slice(0, 20) + '...' : title;
-              return <CardTitle>{truncated}</CardTitle>;
-            }
+            const truncated = isMobile
+              ? title.length > 18
+                ? title.slice(0, 15) + '...'
+                : title
+              : title.length > 21
+                ? title.slice(0, 18) + '...'
+                : title;
+            return <CardTitle>{truncated}</CardTitle>;
           } else {
-            return <CardTitle>{title}</CardTitle>;
+            const safeText = textContent?.content || ''; // textContent가 없을 경우 대비
+            const truncated = isMobile
+              ? safeText.length > 155
+                ? safeText.slice(0, 150) + '...'
+                : safeText
+              : safeText.length > 270
+                ? safeText.slice(0, 265) + '...'
+                : safeText;
+            const cutTitle = isMobile
+              ? title.length > 17
+                ? title.slice(0, 14) + '...'
+                : title
+              : title.length > 20
+                ? title.slice(0, 17) + '...'
+                : title;
+
+            return (
+              <>
+                <CardTitle>{cutTitle}</CardTitle>
+                <MetaText style={{ height: isMobile ? '80px' : '113px' }}>
+                  {truncated}
+                </MetaText>
+              </>
+            );
           }
         })()}
+
         <MetaData>
           <MetaText>{name}</MetaText>
           <MetaItem>
@@ -184,6 +216,7 @@ const MetaText = styled.div`
   font-size: 8px;
   font-family: 'Pretendard-Medium';
   color: #737373;
+  line-height: 10px;
   @media only screen and (min-width: 800px) {
     font-size: 12px;
   }
