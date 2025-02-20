@@ -123,7 +123,7 @@ const Title = styled.div`
   }
 `;
 
-const Date = styled.div`
+/* const Date = styled.div`
   height: 22px;
   font-weight: 500;
   font-size: 12px;
@@ -132,7 +132,7 @@ const Date = styled.div`
     font-size: 22px;
     line-height: 22px;
   }
-`;
+`; */
 
 const PetImage = styled.img`
   width: 100%;

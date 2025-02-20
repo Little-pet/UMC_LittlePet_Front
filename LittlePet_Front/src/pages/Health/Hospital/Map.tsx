@@ -17,7 +17,8 @@ interface Hospital {
   phoneNumber: string;
   rating: number;
 }
-const { kakao } = window;
+const { kakao } = window as any;
+
 const MapPage: React.FC = () => {
   const { state } = useLocation();
   const [hospitalList, setHospitalList] = useState<Hospital[]>();

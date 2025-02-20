@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import LocationModal from '#/components/Hospital/LocationModal';
-const { kakao } = window;
+const { kakao } = window as any;
+
 const LocationPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(true); // 모달 표시 여부
   const navigate = useNavigate();
