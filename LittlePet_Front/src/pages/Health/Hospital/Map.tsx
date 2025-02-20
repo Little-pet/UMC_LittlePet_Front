@@ -41,12 +41,14 @@ const MapPage: React.FC = () => {
     // 키워드로 장소를 검색합니다
     ps.keywordSearch('이태원 맛집', placesSearchCB);
     //console.log(typeof locationData);
+    console.log(hospitalList);
+    console.log(hospitalsByRegion);
     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-    function placesSearchCB(data, status, pagination) {
+    function placesSearchCB(status) {
       if (status === kakao.maps.services.Status.OK) {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds();
+        //const bounds = new kakao.maps.LatLngBounds();
 
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         if (map) {
@@ -54,10 +56,10 @@ const MapPage: React.FC = () => {
         }
       }
     }
-    const imageSrc =
-      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
-    const imageSize = new kakao.maps.Size(24, 35);
-    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+    //const imageSrc =
+    ('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png');
+    //const imageSize = new kakao.maps.Size(24, 35);
+    //const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
   }, [locationData]);
 
   // map과 hospitalList가 변경될 때마다 실행
