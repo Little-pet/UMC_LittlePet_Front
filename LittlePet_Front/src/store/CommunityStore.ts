@@ -54,7 +54,7 @@ interface CommunityStore {
   fetchPost: (postId: number) => Promise<void>;
   // 커뮤니티 게시물 삭제
   deletePost: (postId: number) => Promise<void>;
-  fetchPopularPosts: () => Promise<void>;
+
   patchViews: (postId: number) => Promise<void>;
 }
 
@@ -130,38 +130,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
       set({ isLoading: false });
     }
   },
-  fetchPopularPosts: async () => {
-    set({ isLoading: true });
-    try {
-      // 세 카테고리: Q&A, 일상, 챌린지
-      const categories = ['Q&A', '일상', '챌린지'];
-      let allPosts: CommunityPosts[] = [];
-      for (const category of categories) {
-        const response = await axios.get(
-          `https://umclittlepet.shop/api/post?category=${encodeURIComponent(
-            category
-          )}&pageNum=0&size=10&sort=${encodeURIComponent('최신순')}&deviceType=pc`,
-          { withCredentials: true }
-        );
-        if (response.data.isSuccess) {
-          // 각 게시물에 카테고리 정보 추가
-          const posts: CommunityPosts[] = (response.data.result || []).map(
-            (post: CommunityPosts) => ({ ...post, category })
-          );
-          allPosts = allPosts.concat(posts);
-        }
-      }
-      // 좋아요 30개 이상인 게시물 필터링, 좋아요 많은 순 정렬
-      const popularPosts = allPosts
-        .filter((post) => post.likes >= 30)
-        .sort((a, b) => b.likes - a.likes);
-      set({ popularPosts, isLoading: false });
-      console.log('인기 게시물 조회 성공', popularPosts);
-    } catch (error) {
-      console.error('인기 게시물 조회 실패:', error);
-      set({ isLoading: false });
-    }
-  },
+
   patchViews: async (postId: number) => {
     try {
       const response = await axios.patch(

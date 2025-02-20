@@ -6,8 +6,8 @@ import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
 import arrowIcon from '#/assets/arrow.svg';
-import { useAuthStore } from '#/context/AuthStore';
-import { useBadgeStore } from '#/context/BadgeStore';
+import { useAuthStore } from '#/store/AuthStore';
+import { useBadgeStore } from '#/store/BadgeStore';
 const badgeIconMapping: { [key: string]: string } = {
   글쓰기마스터: MasterWriterBadge,
   소셜응원왕: LikeBadge,

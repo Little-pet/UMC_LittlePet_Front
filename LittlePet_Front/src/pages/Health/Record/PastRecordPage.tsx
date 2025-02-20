@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
+import { useHealthRecordsStore } from '#/store/useHealthRecordsStore';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 import calendarIcon from '@assets/Calender.svg';
 import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddButton';
 import normal from '@assets/정상.svg';
-import { usePetStore } from '#/context/petStore';
+import { usePetStore } from '#/store/petStore';
 import abnormal from '@assets/이상.svg';
 import axios from 'axios';
 import DesktopAddButton from '#/components/Health/RecordHealthButton/DesktopAddButton';

@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import FavoriteBlankIcon from '#/assets/favorite_blank.svg';
 import FavoriteFullIcon from '#/assets/favorite_full.svg';
 import { useState, useEffect } from 'react';
-import { useHospitalStore } from '#/context/hospitalStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { useHospitalStore } from '#/store/hospitalStore';
+import { useAuthStore } from '#/store/AuthStore';
 import { useNavigate } from 'react-router-dom';
 // 카테고리에 있는 검색 버튼
 const FavoriteButton = ({ isSelected, hospitalId }) => {

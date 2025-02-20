@@ -5,7 +5,7 @@ import addIcon from '#/assets/추가 버튼.svg';
 import { useState, useEffect } from 'react';
 import CategoryDropdown from '@components/CategoryDropdown';
 import StarModal from '#/components/Hospital/StarModal';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 const AddReviewPage = () => {
   const [categoryText, setCategoryText] = useState<string>('');
   const [valid, setValid] = useState<boolean>(false);

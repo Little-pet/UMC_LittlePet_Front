@@ -35,7 +35,7 @@ import CareMethodPage from '#/pages/CareMethod/CareMethod';
 import PetDetailPage from '#/pages/CareMethod/PetDetailPage';
 import CareDetailRootLayout from '#/layout/CareDetailRootLayout';
 import EditPostPage from './pages/EditPostPage';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 import BadgeModal from './components/MyPageSections/BadgeModal';
 
 // 라우터 설정

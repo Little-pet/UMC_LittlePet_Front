@@ -4,7 +4,7 @@ import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
 import commentIcon from '#/assets/댓글.svg';
 import { Link } from 'react-router-dom';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 interface HospitalItemProps {
   imageSrc: string;
   name: string;

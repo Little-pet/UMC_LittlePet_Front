@@ -2,12 +2,12 @@ import ChallengeCard from '#/components/Community/challengeCard';
 import ChallengeItem from '#/components/Community/challengeItem';
 import styled from 'styled-components';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '#/assets/banner/챌린지 배너.svg';
-import { useCommunityStore } from '#/context/CommunityStore';
+import { useCategoryPosts } from '#/hooks/useCategoryPosts';
 import ChallengePost from '#/components/SkeletonUI/ChallengePost';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 
 const ChallengePage: React.FC = () => {
   const [selected, setSelected] = useState<'인기순' | '최신순'>('최신순');
@@ -25,12 +25,33 @@ const ChallengePage: React.FC = () => {
     }
   };
 
-  const { posts, fetchPosts, isLoading } = useCommunityStore();
+  const { data, fetchNextPage, hasNextPage, isLoading } =
+    useCategoryPosts('챌린지');
+
+  const observerRef = useRef(null);
+
   useEffect(() => {
-    fetchPosts('챌린지', selected);
-  }, [fetchPosts, selected]);
+    if (observerRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            console.log(' [IntersectionObserver] fetchNextPage 실행!');
+            fetchNextPage();
+          }
+        },
+        { threshold: 1 }
+      );
+      observer.observe(observerRef.current);
+      return () => observer.disconnect();
+    }
+  }, [hasNextPage, fetchNextPage]);
+
   if (isLoading) return <ChallengePost />;
-  const topPosts = [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
+  const topPosts = data?.pages
+    .flatMap((page) => page.posts) //  모든 페이지의 posts를 하나의 배열로 합침
+    .sort((a, b) => b.likes - a.likes) //  좋아요 순 정렬
+    .slice(0, 10); //  상위 10개만 선택
+
   return (
     <Container>
       <Banner src={banner} />
@@ -88,20 +109,22 @@ const ChallengePage: React.FC = () => {
           </HeaderFilter>
         </Header>
         <ItemList>
-          {posts.map((post, id) => (
-            <ChallengeItem
-              key={id}
-              type='challenge'
-              title={post.title}
-              name={post.userName}
-              postId={post.postId}
-              views={post.views}
-              likes={post.likes}
-              comments={post.comments}
-              contents={post.contents}
-              category='챌린지'
-            />
-          ))}
+          {data?.pages
+            .flatMap((page) => page.posts)
+            .map((post, id) => (
+              <ChallengeItem
+                key={id}
+                type='challenge'
+                title={post.title}
+                name={post.userName}
+                postId={post.postId}
+                views={post.views}
+                likes={post.likes}
+                comments={post.comments}
+                contents={post.contents}
+                category='챌린지'
+              />
+            ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

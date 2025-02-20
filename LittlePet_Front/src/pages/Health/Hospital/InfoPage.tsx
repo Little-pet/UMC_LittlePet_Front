@@ -4,7 +4,7 @@ import callIcon from '#/assets/전화.svg';
 import boardIcon from '#/assets/연중무휴 아이콘.svg';
 import arrowIcon from '#/assets/arrow.svg';
 import { useState } from 'react';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 const InfoPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { hospitalDetail } = useHospitalStore();

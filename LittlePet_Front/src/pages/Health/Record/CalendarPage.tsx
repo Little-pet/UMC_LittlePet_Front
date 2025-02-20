@@ -6,7 +6,7 @@ import MobileAddButton from '#/components/Health/RecordHealthButton/MobileAddBut
 import left from '#/assets/left.svg';
 import right from '#/assets/right.svg';
 import banner from '@assets/banner/banner-health.svg';
-import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
+import { useHealthRecordsStore } from '#/store/useHealthRecordsStore';
 // 요일 배열
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 

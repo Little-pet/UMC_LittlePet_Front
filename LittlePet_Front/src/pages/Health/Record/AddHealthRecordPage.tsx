@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Toast from '@components/Toast';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { useHealthRecordsStore } from '#/context/useHealthRecordsStore';
+import { useHealthRecordsStore } from '#/store/useHealthRecordsStore';
 import { useLocation } from 'react-router-dom';
 import SelectableButton from '#/components/Health/RecordHealthButton/SelectableButton';
 import FecesColorButton from '#/components/Health/RecordHealthButton/FecesColorButton';
@@ -43,16 +43,9 @@ const AddHealthRecordPage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isToastVisible, setToastVisible] = useState(false);
 
-  //인라인 경고 메시지
-  const [isWarningVisible, setWarningVisible] = useState(false);
-
   const showToast = (message: string) => {
     setToastMessage(message);
     setToastVisible(true);
-  };
-
-  const showWarning = () => {
-    setWarningVisible(true);
   };
 
   //식사량
@@ -108,7 +101,7 @@ const AddHealthRecordPage: React.FC = () => {
     { id: 'x', label: 'X' },
   ];
 
-  // 입력 데이터 상태 관리
+  // 입력 데이터 상태 관리(기존 데이터가 있다면 초기값으로 설정)
   const [formData, setFormData] = useState({
     weight: existingRecord?.weight || null,
     mealAmount: existingRecord?.mealAmount || null,
@@ -175,7 +168,7 @@ const AddHealthRecordPage: React.FC = () => {
 
     if (!isFilled) {
       showToast('필수 입력 항목을 확인해주세요!');
-      showWarning();
+
       return;
     }
 
@@ -368,14 +361,8 @@ const AddHealthRecordPage: React.FC = () => {
               </InputGroup>
             </>
           )}
-          <SaveContainer>
-            {isWarningVisible && (
-              <Warning>필수 항목 입력을 확인해주세요!</Warning>
-            )}
-            <SaveButton type='submit' disabled={!isFilled}>
-              저장하기
-            </SaveButton>
-          </SaveContainer>
+
+          <SaveButton type='submit'>저장하기</SaveButton>
         </Form>
       </Container>
     </ContainerWrapper>
@@ -490,26 +477,9 @@ const SelectGroup = styled.div`
   gap: 8px;
 `;
 
-const SaveContainer = styled.div`
-  display: flex;
-  weight: 425px;
-  weight: 68px;
-  gap: 32px;
-  justify-content: flex-end;
-`;
-
-const Warning = styled.p`
-  font-size: 15px;
-  line-height: 20px;
-  color: #c76b6b;
-  @media (max-width: 800px) {
-    display: none;
-  }
-`;
-
 const SaveButton = styled.button`
-  background-color: ${({ disabled }) => (disabled ? '#E6E6E6' : '#6EA8FE')};
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  background-color: #6ea8fe;
+  cursor: 'pointer';
   color: white;
   height: 48px;
   font-family: 'Pretendard';
