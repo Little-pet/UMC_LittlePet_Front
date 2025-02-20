@@ -100,6 +100,7 @@ const MenuItem = styled(Link)<{ isActive: boolean }>`
     font-size: 22px;
     line-height: 35px;
     font-family: Pretendard-SemiBold;
+    margin-top: 9px;
   }
 `;
 const MainContent = styled.main`
