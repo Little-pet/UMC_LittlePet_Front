@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePetStore } from '#/context/petStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { usePetStore } from '#/store/petStore';
+import { useAuthStore } from '#/store/AuthStore';
 import styled from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';

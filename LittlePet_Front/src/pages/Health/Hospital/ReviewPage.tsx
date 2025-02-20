@@ -3,8 +3,8 @@ import penIcon from '#/assets/연필.svg';
 import 고슴도치 from '#/assets/고슴도치.png';
 import { useState } from 'react';
 import ReviewItem from '#/components/Hospital/ReviewItem';
-import { useHospitalStore } from '#/context/hospitalStore';
-import { useAuthStore } from '#/context/AuthStore';
+import { useHospitalStore } from '#/store/hospitalStore';
+import { useAuthStore } from '#/store/AuthStore';
 import { useNavigate } from 'react-router-dom';
 // 타입 정의
 type FilterType = 'popular' | 'new';

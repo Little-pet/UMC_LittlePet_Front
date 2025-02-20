@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import commentIcon from '#/assets/댓글.svg';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 import HospitalSkeleton from '#/components/SkeletonUI/HospitalSkeleton';
 // 타입 정의
 interface Category {

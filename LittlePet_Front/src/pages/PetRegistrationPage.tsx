@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import EditIconImg from '@assets/EditPicture.svg';
+import defaultPhoto from '#/assets/기본 프로필.svg';
 import DatePicker from '#/components/DatePicker';
 import CategoryDropdown from '@components/CategoryDropdown';
 import GenderTagButton from '#/components/Health/RecordHealthButton/GenderTagButton';
 import axios from 'axios';
-import { useAuthStore } from '#/context/AuthStore';
+import { useAuthStore } from '#/store/AuthStore';
 import { format } from 'date-fns';
 
 const PetRegistrationPage: React.FC = () => {
@@ -105,7 +106,7 @@ const PetRegistrationPage: React.FC = () => {
             src={
               profileImage instanceof File
                 ? URL.createObjectURL(profileImage)
-                : profileImage
+                : profileImage || defaultPhoto
             }
           />
         </ProfileImgContainer>

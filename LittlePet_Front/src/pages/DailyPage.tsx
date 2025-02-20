@@ -1,11 +1,11 @@
 import SearchBar from '#/components/searchBar';
 import Item from '#/components/Community/item';
 import MobileAddButton from '#/components/Community/AddButton/MobileAddButton';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DesktopAddButton from '#/components/Community/AddButton/DesktopAddButton';
 import banner from '#/assets/banner/일상 배너.svg';
 import styled from 'styled-components';
-import { useCommunityStore } from '#/context/CommunityStore';
+import { useCategoryPosts } from '#/hooks/useCategoryPosts';
 import CommunityPost from '#/components/SkeletonUI/CommunityPost';
 import {
   Container,
@@ -19,10 +19,27 @@ const DailyPage: React.FC = () => {
   const handleClick = (filter: '인기순' | '최신순') => {
     setSelected(filter);
   };
-  const { posts, fetchPosts, isLoading } = useCommunityStore();
+
+  const { data, fetchNextPage, hasNextPage, isLoading } =
+    useCategoryPosts('일상');
+  const observerRef = useRef(null);
+
   useEffect(() => {
-    fetchPosts('일상', selected);
-  }, [fetchPosts, selected]);
+    if (observerRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            console.log(' [IntersectionObserver] fetchNextPage 실행!');
+            fetchNextPage();
+          }
+        },
+        { threshold: 1 }
+      );
+      observer.observe(observerRef.current);
+      return () => observer.disconnect();
+    }
+  }, [hasNextPage, fetchNextPage]);
+
   if (isLoading) return <CommunityPost banner={banner} />;
 
   return (
@@ -57,24 +74,26 @@ const DailyPage: React.FC = () => {
           <DesktopAddButton />
         </div>
         <ItemList>
-          {posts.map((post, id) => (
-            <Item
-              key={id}
-              title='일상'
-              type='daily'
-              postId={post.postId}
-              subText={post.petCategory}
-              description={post.title}
-              contents={post.contents}
-              footerData={[
-                post.userName,
-                post.createdTime.substring(5, 10),
-                post.views,
-                post.likes,
-                post.comments,
-              ]}
-            />
-          ))}
+          {data?.pages
+            .flatMap((page) => page.posts)
+            .map((post, id) => (
+              <Item
+                key={id}
+                title='일상'
+                type='daily'
+                postId={post.postId}
+                subText={post.petCategory}
+                description={post.title}
+                contents={post.contents}
+                footerData={[
+                  post.userName,
+                  post.createdTime.substring(5, 10),
+                  post.views,
+                  post.likes,
+                  post.comments,
+                ]}
+              />
+            ))}
         </ItemList>
       </ContentWrapper>
       <MobileAddButton />

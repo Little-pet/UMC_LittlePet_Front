@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import backIcon from '#/assets/뒤로가기.svg';
 import InfoModal from '#/components/Hospital/InfoModal';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import { useHospitalStore } from '#/context/hospitalStore';
+import { useHospitalStore } from '#/store/hospitalStore';
 import FilterSection from '#/components/Hospital/FilterSection';
 // 타입 정의
 interface Hospital {
