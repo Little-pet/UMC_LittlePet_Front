@@ -10,7 +10,7 @@ import FilterSection from '#/components/Hospital/FilterSection';
 import { useHospitalStore } from '#/store/hospitalStore';
 import { Hospital } from '#/store/hospitalStore';
 const HospitalPage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedArea, setSelectedArea] = useState<string | null>(
     localStorage.getItem('selectedArea') || '강남구'
   );
@@ -41,7 +41,7 @@ const HospitalPage: React.FC = () => {
   useEffect(() => {
     fetchHospitalsByRegion(areaId);
   }, [areaId, fetchHospitalsByRegion]);
-
+  //if (!hospitalList) return <div>로딩중</div>;
   return (
     <>
       <Banner src={banner} />
@@ -59,9 +59,9 @@ const HospitalPage: React.FC = () => {
             <MapText>지도보기</MapText>
           </MapButton>
         </TopActions>
-
-        <FilterSection onSelect={setHospitalList} />
-
+        <List style={{ borderTop: 'none' }}>
+          <FilterSection onSelect={setHospitalList} />
+        </List>
         <FilterContainer>
           {filters.map((filter, idx) => (
             <FilterButton
@@ -73,7 +73,7 @@ const HospitalPage: React.FC = () => {
             </FilterButton>
           ))}
         </FilterContainer>
-        <div className='병원리스트' style={{ borderTop: '1px solid #E6E6E6' }}>
+        <List className='병원리스트'>
           {hospitalList?.map((item, idx) => {
             const openingHoursArray = item.openingHours.split('\n');
             const getTodayDay = () => {
@@ -98,7 +98,7 @@ const HospitalPage: React.FC = () => {
               />
             );
           })}
-        </div>
+        </List>
         {isModalOpen && (
           <Overlay>
             <AreaModal
@@ -114,7 +114,19 @@ const HospitalPage: React.FC = () => {
 };
 
 export default HospitalPage;
-
+const List = styled.div`
+  border-top: 1px solid #E6E6E6;
+  padding-bottom: 10px;
+     //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 71px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 215px;
+  }
+  }
+`;
 const Banner = styled.img`
   width: 100%;
   @media (max-width: 800px) {
@@ -137,8 +149,13 @@ const TopActions = styled.div`
   justify-content: space-between;
   margin-top: 30px;
   padding: 0 25px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 240px;
   }
 `;
 
@@ -146,8 +163,13 @@ const FilterContainer = styled.div`
   display: flex;
   gap: 10px;
   padding: 0 25px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 240px;
   }
 `;
 

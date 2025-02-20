@@ -353,6 +353,7 @@ const PetImg = styled.img`
   width: 20px;
   height: 20px;
   border-radius: 50px;
+  object-fit: cover;
 `;
 
 const ContentContainer = styled.div`
@@ -387,6 +388,7 @@ const PetImgLarge = styled.img`
   height: 60px;
   border-radius: 5%;
   opacity: 90%;
+  object-fit: cover;
 `;
 
 const PetInfo = styled.div`

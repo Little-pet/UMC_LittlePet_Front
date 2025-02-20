@@ -11,7 +11,7 @@ interface CommentWriteBoxProps {
   parentId?: number | null;
   setComments?: (comments: CommentType[]) => void;
   setCommentNum?: (num: number) => void;
-  setOpenCommentId?: (num: number) => void;
+  setOpenCommentId?: (num: number | null) => void;
 }
 import { useAuthStore } from '#/store/AuthStore';
 // 실제 댓글 작성 컴포넌트
@@ -117,7 +117,7 @@ const CommentWriteBox: React.FC<CommentWriteBoxProps> = ({
       console.error('댓글 작성 실패:', error);
     }
   };
-  console.log(pets);
+
   return (
     <CommentForm onSubmit={handleSubmit}>
       <HeaderWrapper>

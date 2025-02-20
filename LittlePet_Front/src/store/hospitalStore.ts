@@ -48,6 +48,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
       console.error('병원 상세 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ hospitalDetail: response.data.result });
+        return response.data.result;
       }
     } catch (error) {
       console.error('병원 상세 조회 실패:', error);
@@ -99,6 +100,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
       console.error('스크랩한 병원 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ scrappedHospitals: response.data.result });
+        return response.data.result;
       }
     } catch (error) {
       console.error('스크랩한 병원 조회 실패:', error);
@@ -133,6 +135,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
       console.log(filter, '병원 필터링해서 조회 성공: ', response.data);
       if (response.data.isSuccess) {
         set({ hospitalsByFilter: response.data.result });
+        return response.data.result;
       }
     } catch (error) {
       console.error('병원 필터링해서 조회 실패:', error);

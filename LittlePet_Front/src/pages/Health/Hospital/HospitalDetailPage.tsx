@@ -6,6 +6,7 @@ import starIcon from '#/assets/star.svg';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import commentIcon from '#/assets/댓글.svg';
 import { useHospitalStore } from '#/store/hospitalStore';
+import { useQuery } from '@tanstack/react-query';
 import HospitalSkeleton from '#/components/SkeletonUI/HospitalSkeleton';
 // 타입 정의
 interface Category {
@@ -48,25 +49,31 @@ const HospitalDetailPage = () => {
     }
   }, [location.pathname]);
 
-  const { hospitalDetail, fetchHospitalDetail, scrappedHospitals } =
-    useHospitalStore();
+  const { fetchHospitalDetail, scrappedHospitals } = useHospitalStore();
+  const { data, isLoading } = useQuery({
+    queryKey: ['hospitalDetail', hospitalId],
+    queryFn: () =>
+      hospitalId
+        ? fetchHospitalDetail(Number(hospitalId))
+        : Promise.resolve(null),
+    enabled: !!hospitalId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    fetchHospitalDetail(Number(hospitalId));
-  }, [hospitalId, fetchHospitalDetail]);
-  if (!hospitalDetail) return <HospitalSkeleton />;
+  if (isLoading) return <HospitalSkeleton />;
   const isFavorited = scrappedHospitals.some(
-    (hospital) => hospital.name === hospitalDetail.name
+    (hospital) => hospital.name === data.name
   );
   return (
     <div>
-      <Img src={hospitalDetail.imageUrl} />
+      <Img src={data.imageUrl} />
       <DetailBox>
         <Details>
           <Header>
-            <HospitalName>{hospitalDetail.name}</HospitalName>
+            <HospitalName>{data.name}</HospitalName>
           </Header>
-          <OpenStatus>{hospitalDetail.address}</OpenStatus>
+          <OpenStatus>{data.address}</OpenStatus>
           <RatingsWrapper>
             <Rating>
               <StarIcon src={starIcon} alt='Star' />
@@ -88,7 +95,7 @@ const HospitalDetailPage = () => {
               to={category.path}
               onClick={() => handleClick(category.type)}
               isActive={selected === category.type}
-              state={{ info: hospitalDetail }}
+              state={{ info: data }}
             >
               {category.title}
             </MenuItem>
@@ -105,8 +112,13 @@ const Img = styled.img`
   width: 100%;
   box-sizing: border-box;
   margin-top: 25px;
-  @media only screen and (min-width: 800px) {
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
     padding: 20px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 20px 240px;
   }
 `;
 const DetailBox = styled.div`
@@ -116,8 +128,13 @@ const DetailBox = styled.div`
   justify-content: space-between;
   margin-top: 18px;
   border-bottom: 1px solid #e6e6e6;
-  @media only screen and (min-width: 800px) {
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
     padding: 20px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 20px 240px;
   }
 `;
 const Details = styled.div`

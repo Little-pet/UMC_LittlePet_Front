@@ -6,30 +6,22 @@ import CommentWriteBox from './commentWriteBox';
 import { useAuthStore } from '#/store/AuthStore';
 import { CommentType } from '#/store/CommunityStore';
 interface CommentProps {
-  userName: string; // 유저 이름
-  animals: string[]; // 동물 이름
-  content: string; // 댓글 내용
-  time: string; // 시간 (HH:mm)
   postId: number;
-  parent: number;
   isOpen: boolean;
+  comment: CommentType;
   toggleReplyBox: () => void;
   setComments?: (comments: CommentType[]) => void;
   setCommentNum?: (num: number) => void;
-  setOpenCommentId?: (num: number) => void;
+  setOpenCommentId?: (num: number | null) => void;
 }
 const Comment: React.FC<CommentProps> = ({
-  userName,
-  animals,
-  content,
-  time,
   postId,
-  parent,
   isOpen,
   toggleReplyBox,
   setComments,
   setCommentNum,
   setOpenCommentId,
+  comment,
 }) => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
@@ -64,8 +56,8 @@ const Comment: React.FC<CommentProps> = ({
   return (
     <CommentContainer>
       <Header>
-        <UserName>{userName}</UserName>
-        {animals?.map((animal, idx) => (
+        <UserName>{comment.name}</UserName>
+        {comment.userPets?.map((animal, idx) => (
           <UserInfo key={idx}>
             <IconGroup>
               <img
@@ -77,15 +69,17 @@ const Comment: React.FC<CommentProps> = ({
           </UserInfo>
         ))}
       </Header>
-      <Content>{content}</Content>
+      <Content>{comment.content}</Content>
       <Footer>
-        <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
+        <TimeStamp>
+          {comment.updatedTime.split(':').slice(0, 2).join(':')}
+        </TimeStamp>
         <ReplyButton onClick={handleReplyClick}>답글 쓰기</ReplyButton>
       </Footer>
       {isOpen && (
         <CommentWriteBox
           postId={postId}
-          parentId={parent}
+          parentId={comment.commentId}
           setComments={setComments}
           setCommentNum={setCommentNum}
           setOpenCommentId={setOpenCommentId}

@@ -86,6 +86,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
           ' 커뮤니티 글 목록 조회 성공',
           response.data
         );
+        return;
       }
     } catch (error) {
       console.error('커뮤니티 글 목록 조회 실패:', error);
@@ -103,6 +104,7 @@ export const useCommunityStore = create<CommunityStore>((set) => ({
       if (response.data.isSuccess) {
         set({ currentPost: response.data.result, isLoading: false });
         console.log('커뮤니티 특정 글 조회 성공', response.data);
+        return response.data.result;
       }
     } catch (error) {
       console.error('커뮤니티 특정 글 조회 실패:', error);

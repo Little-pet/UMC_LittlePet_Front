@@ -8,6 +8,7 @@ import LikeBadge from '@assets/소셜응원왕.svg';
 import MasterWriterBadge from '@assets/글쓰기마스터.svg';
 import CommentBadge from '@assets/소통천재.svg';
 import PopularBadge from '@assets/인기스타.svg';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 interface Badge {
@@ -84,27 +85,30 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
         return AnimalIcons.snake;
     }
   };
-  const userFetch = async (userId: number) => {
-    try {
-      const response = await axios.get(
-        `https://umclittlepet.shop/api/users/${userId}`,
-        { withCredentials: true }
-      );
-      if (response.data.isSuccess) {
-        console.log('사용자 프로필 조회 성공', response.data);
-        const result = response.data.result;
-        setProfilePhoto(result.profilePhoto);
-        setBadges(result.userBadge);
-      }
-    } catch (error) {
-      console.error('사용자 프로필 조회 실패:', error);
-    }
-  };
-  useEffect(() => {
-    userFetch(userId);
-  }, []);
 
-  if (profilePhoto === undefined || badges === undefined) return <Skeleton />;
+  const { data, isLoading } = useQuery({
+    queryKey: ['userInfoInChallengeCard', userId],
+    queryFn: () =>
+      userId
+        ? axios
+            .get(`https://umclittlepet.shop/api/users/${userId}`, {
+              withCredentials: true,
+            })
+            .then((response) => response.data.result) // 데이터를 반환
+        : Promise.resolve(null),
+    enabled: !!userId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+  useEffect(() => {
+    if (!isLoading) {
+      setProfilePhoto(data.profilePhoto);
+      setBadges(data.userBadge);
+    }
+  }, [data]);
+  if (!data || profilePhoto === undefined || badges === undefined)
+    return <Skeleton />;
+
   return (
     <CardContainer
       to={`/community/${type}/${postId}`}

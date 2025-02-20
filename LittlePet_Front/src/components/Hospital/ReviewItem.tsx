@@ -82,9 +82,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  @media only screen and (min-width: 800px) {
-    padding: 25px 96px;
-  }
 `;
 const Footer = styled.div`
   height: 22px;

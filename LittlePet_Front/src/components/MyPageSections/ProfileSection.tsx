@@ -91,6 +91,7 @@ const ProfileImg = styled.img`
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  object-fit: cover;
 `;
 const ProfileBox = styled.div`
   width: 100%;

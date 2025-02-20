@@ -50,6 +50,14 @@ const LocationModal: React.FC<LocationModalProps> = ({ onClose, info }) => {
   );
 };
 export default LocationModal;
+const RealContainer = styled(motion.div)`
+  width: 100%;
+  padding: 0 25px;
+  box-sizing: border-box;
+  @media only screen and (min-width: 800px) {
+    padding: 0 250px;
+  }
+`;
 const Container = styled(motion.div)`
   width: 100%;
   height: 232px;
@@ -65,6 +73,16 @@ const Container = styled(motion.div)`
   left: 0;
   background-color: white;
   z-index: 10;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    margin: 0px 96px;
+    width: calc(100% - 192px);
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    margin: 0 240px;
+    width: calc(100% - 480px); /* 좌우 250px 마진 고려 */
+  }
 `;
 const Header = styled.div`
   position: relative;

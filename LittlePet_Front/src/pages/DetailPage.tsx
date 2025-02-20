@@ -8,11 +8,12 @@ import CommentWriteBox from '#/components/Community/Post/commentWriteBox';
 import { CommentType, useCommunityStore } from '#/store/CommunityStore';
 import CommunityDetail from '#/components/SkeletonUI/CommunityDetail';
 import { useAuthStore } from '#/store/AuthStore';
+import { useQuery } from '@tanstack/react-query';
 
 const DetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const numericPostId = Number(postId);
-  const { fetchPost, isLoading, currentPost, patchViews } = useCommunityStore();
+  const { fetchPost, patchViews } = useCommunityStore();
   const { state } = useLocation();
   const { category, type } = state || {};
   const [openCommentId, setOpenCommentId] = useState<number | null>(null);
@@ -24,16 +25,24 @@ const DetailPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPost(numericPostId);
     patchViews(numericPostId);
   }, [numericPostId]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['postDetail', numericPostId],
+    queryFn: () =>
+      numericPostId ? fetchPost(numericPostId) : Promise.resolve(null), // queryFn을 함수로 래핑
+    enabled: !!numericPostId,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
+
   useEffect(() => {
-    if (currentPost) {
-      setComments(currentPost.comments);
-      setCommentNum(currentPost.commentNum);
+    if (data) {
+      setComments(data.comments);
+      setCommentNum(data.commentNum);
     }
-  }, [currentPost]);
-  const data = currentPost;
+  }, [data]);
 
   if (isLoading || !data) return <CommunityDetail />;
 
@@ -53,11 +62,7 @@ const DetailPage: React.FC = () => {
           <React.Fragment key={idx}>
             <Comment
               key={idx}
-              parent={comment.commentId}
-              userName={comment.name}
-              animals={comment.userPets}
-              content={comment.content}
-              time={comment.updatedTime}
+              comment={comment}
               postId={numericPostId}
               isOpen={openCommentId === comment.commentId}
               toggleReplyBox={() => toggleReplyBox(comment.commentId)}

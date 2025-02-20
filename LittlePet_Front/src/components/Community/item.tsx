@@ -210,7 +210,7 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 259px;
+  //width: 259px;
 `;
 
 const Image = styled.img`

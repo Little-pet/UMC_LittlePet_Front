@@ -294,7 +294,7 @@ const EditPostPage: React.FC = () => {
         }
       );
       console.log('커뮤니티 게시물 수정 성공', response.data);
-      navigate(`/community/${tagSelected.type}`);
+      navigate(`/community/${tagSelected.type}/${id}`);
     } catch (error) {
       console.error('커뮤니티 게시물 수정 실패:', error);
     }

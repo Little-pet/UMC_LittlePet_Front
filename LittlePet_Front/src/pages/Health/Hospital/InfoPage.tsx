@@ -73,8 +73,13 @@ const Details = styled.div`
   flex-direction: column;
   gap: 10px;
   padding: 20px 25px;
-  @media only screen and (min-width: 800px) {
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
     padding: 20px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 20px 240px;
   }
 `;
 

@@ -124,8 +124,13 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 240px;
   }
 `;
 const Header = styled.div`

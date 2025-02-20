@@ -82,8 +82,13 @@ const Top = styled.div`
   display: flex;
   padding: 0 25px;
   justify-content: space-between;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 240px;
   }
 `;
 const ContentWrapper = styled.div`
@@ -120,9 +125,16 @@ const Header = styled.ul`
   margin: 0;
   margin-bottom: 25px;
   margin-top: 10px;
-  @media only screen and (min-width: 800px) {
+
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
     margin: 10px 0;
-    margin-left: 75px;
+    margin-left: 72px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    margin: 10px 0;
+    margin-left: 223px;
   }
 `;
 const ReviewButtonText = styled.div`
@@ -140,4 +152,12 @@ const HeaderFilter = styled.li<{ isActive: boolean }>`
 `;
 const ReviewList = styled.div`
   padding: 0 25px;
+  //테블릿
+  @media only screen and (min-width: 800px) and (max-width: 1179px) {
+    padding: 0px 96px;
+  }
+  // 데스크탑 일반
+  @media (min-width: 1180px) {
+    padding: 0px 240px;
+  }
 `;

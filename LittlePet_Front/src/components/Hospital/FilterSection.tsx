@@ -2,34 +2,40 @@ import { useState, useEffect } from 'react';
 import arrowIcon from '#/assets/arrow.svg';
 import styled from 'styled-components';
 import { useHospitalStore } from '#/store/hospitalStore';
+import { useQuery } from '@tanstack/react-query';
 
 const FilterSection = ({ onSelect }) => {
   const times = ['전체', '영업중', '24시간', '주말'];
   const [view, setView] = useState<boolean>(false);
   const [timeText, setTimeText] = useState<string>('전체');
-  const { hospitalsByRegion, fetchHospitalsByFilter, hospitalsByFilter } =
-    useHospitalStore();
-  useEffect(() => {
-    if (timeText !== '전체') {
-      fetchHospitalsByFilter(timeText);
-    }
-  }, [timeText]);
+  const { hospitalsByRegion, fetchHospitalsByFilter } = useHospitalStore();
+
+  const { data } = useQuery({
+    queryKey: ['hospitalByFilter', timeText],
+    queryFn: async () =>
+      timeText ? fetchHospitalsByFilter(timeText) : Promise.resolve(null),
+
+    enabled: !!timeText,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
-    if (hospitalsByRegion && hospitalsByFilter) {
+    if (hospitalsByRegion && data) {
       const filteredHospitals =
         timeText === '전체'
           ? hospitalsByRegion
-          : hospitalsByFilter.filter((hospital) =>
+          : data.filter((hospital) =>
               hospitalsByRegion.some(
                 (regionHospital) => regionHospital.id === hospital.id
               )
             );
       onSelect(filteredHospitals);
     }
-  }, [hospitalsByFilter, hospitalsByRegion, timeText, onSelect]);
-  if (!hospitalsByRegion) return <div>Loading...</div>;
-
+  }, [data, hospitalsByRegion, timeText, onSelect]);
+  useEffect(() => {
+    setTimeText('전체');
+  }, [hospitalsByRegion]);
   return (
     <MiddleActions>
       <AreaModalButton>
@@ -116,9 +122,6 @@ const MiddleActions = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 25px;
-  @media only screen and (min-width: 800px) {
-    padding: 0 96px;
-  }
 `;
 
 const AreaModalButton = styled.div`
