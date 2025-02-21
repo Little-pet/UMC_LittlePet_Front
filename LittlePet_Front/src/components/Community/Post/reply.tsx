@@ -2,14 +2,32 @@ import React from 'react';
 import styled from 'styled-components';
 import { AnimalIcons } from '#/components/icon';
 import replyArrowIcon from '#/assets/reply-arrow.svg';
-
+import CommentWriteBox from './commentWriteBox';
+import { CommentType } from '#/store/CommunityStore';
 interface ReplyProps {
   userName: string; // 유저 이름
-  animals: string[]; // 동물 이름
+  animal: string; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
+  parent: number;
+  postId: number;
+  isOpen: boolean;
+  toggleReplyBox: () => void;
+  setComments?: (comments: CommentType[]) => void;
+  setCommentNum?: (num: number) => void;
 }
-const Reply: React.FC<ReplyProps> = ({ userName, animals, content, time }) => {
+const Reply: React.FC<ReplyProps> = ({
+  userName,
+  animal,
+  content,
+  time,
+  parent,
+  postId,
+  isOpen,
+  toggleReplyBox,
+  setComments,
+  setCommentNum,
+}) => {
   const getAnimalIcon = (category: string) => {
     switch (category) {
       case '햄스터':
@@ -34,8 +52,8 @@ const Reply: React.FC<ReplyProps> = ({ userName, animals, content, time }) => {
       <Header>
         <img src={replyArrowIcon} />
         <UserName>{userName}</UserName>
-        {animals?.map((animal, idx) => (
-          <UserInfo key={idx}>
+        {animal && (
+          <UserInfo>
             <IconGroup>
               <img
                 src={getAnimalIcon(animal)}
@@ -44,12 +62,21 @@ const Reply: React.FC<ReplyProps> = ({ userName, animals, content, time }) => {
               <IconText>{animal}</IconText>
             </IconGroup>
           </UserInfo>
-        ))}
+        )}
       </Header>
       <Content>{content}</Content>
       <Footer>
         <TimeStamp>{time.split(':').slice(0, 2).join(':')}</TimeStamp>
+        <ReplyButton onClick={toggleReplyBox}>답글 쓰기</ReplyButton>
       </Footer>
+      {isOpen && (
+        <CommentWriteBox
+          postId={postId}
+          parentId={parent}
+          setComments={setComments}
+          setCommentNum={setCommentNum}
+        />
+      )}
     </CommentContainer>
   );
 };
@@ -115,4 +142,17 @@ const TimeStamp = styled.div`
   font-size: 10px;
   font-family: Pretendard-Medium;
   color: #737373;
+`;
+
+const ReplyButton = styled.div`
+  width: 56px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid #e6e6e6;
+  font-size: 10px;
+  font-family: Pretendard-Medium;
+  color: #737373;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
 `;

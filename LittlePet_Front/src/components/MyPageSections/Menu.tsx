@@ -85,6 +85,7 @@ const SettingsPage: React.FC = () => {
           icon={<img src={CancelAccount} alt='회원탈퇴' />}
           text='회원탈퇴'
         />
+        <EmptySpace></EmptySpace>
       </Section>
     </Container>
   );
@@ -99,6 +100,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 29px;
+  margin-bottom: 50px;
 `;
 
 const Section = styled.div`
@@ -127,4 +129,8 @@ const ItemContainer = styled.div`
 const ItemText = styled.div`
   margin-left: 10px;
   font-size: 16px;
+`;
+
+const EmptySpace = styled.div`
+  height: 50px;
 `;

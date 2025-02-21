@@ -45,10 +45,10 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   fetchUser: async (userId: number) => {
     if (!userId) {
-      console.log('❌ userId 없음. fetchUser 실행 안 함.');
+      console.log('userId 없음. fetchUser 실행 안 함.');
       return;
     }
-    console.log(`🚀 fetchUser 실행됨! userId: ${userId}`);
+    console.log(` fetchUser 실행됨! userId: ${userId}`);
 
     set({ isLoading: true });
     try {
@@ -91,16 +91,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
               scrapCount: result.scrapCount ?? 0,
             },
             badges: result.userBadge || [],
-            lastFetchedUserId: userId, // ✅ 마지막으로 불러온 userId 저장
+            lastFetchedUserId: userId, //  마지막으로 불러온 userId 저장
           });
 
-          console.log('🔄 [UserStore] 상태 업데이트 완료:', get().user);
+          console.log(' [UserStore] 상태 업데이트 완료:', get().user);
         } else {
-          console.log('🔹 [UserStore] 변경 없음, 상태 업데이트 생략');
+          console.log(' [UserStore] 변경 없음, 상태 업데이트 생략');
         }
       }
     } catch (error) {
-      console.error('❌ 사용자 프로필 조회 실패:', error);
+      console.error(' 사용자 프로필 조회 실패:', error);
     } finally {
       set({ isLoading: false });
     }
