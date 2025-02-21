@@ -6,7 +6,7 @@ import CommentWriteBox from './commentWriteBox';
 import { CommentType } from '#/store/CommunityStore';
 interface ReplyProps {
   userName: string; // 유저 이름
-  animal: string; // 동물 이름
+  animals: string[]; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
   parent: number;
@@ -18,7 +18,7 @@ interface ReplyProps {
 }
 const Reply: React.FC<ReplyProps> = ({
   userName,
-  animal,
+  animals,
   content,
   time,
   parent,
@@ -52,8 +52,8 @@ const Reply: React.FC<ReplyProps> = ({
       <Header>
         <img src={replyArrowIcon} />
         <UserName>{userName}</UserName>
-        {animal && (
-          <UserInfo>
+        {animals.map((animal, idx) => (
+          <UserInfo key={idx}>
             <IconGroup>
               <img
                 src={getAnimalIcon(animal)}
@@ -62,7 +62,7 @@ const Reply: React.FC<ReplyProps> = ({
               <IconText>{animal}</IconText>
             </IconGroup>
           </UserInfo>
-        )}
+        ))}
       </Header>
       <Content>{content}</Content>
       <Footer>
