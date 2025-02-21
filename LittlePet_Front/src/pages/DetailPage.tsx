@@ -75,7 +75,7 @@ const DetailPage: React.FC = () => {
                 <Reply
                   key={replyIdx}
                   userName={reply.name}
-                  animal={reply.userPets}
+                  animals={reply.userPets}
                   content={reply.content}
                   time={reply.createdTime}
                 />
