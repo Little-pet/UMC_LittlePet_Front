@@ -9,10 +9,7 @@ interface ReplyProps {
   animals: string[]; // 동물 이름
   content: string; // 댓글 내용
   time: string; // 시간 (HH:mm)
-  parent: number;
-  postId: number;
-  isOpen: boolean;
-  toggleReplyBox: () => void;
+  toggleReplyBox?: () => void;
   setComments?: (comments: CommentType[]) => void;
   setCommentNum?: (num: number) => void;
 }
@@ -21,9 +18,6 @@ const Reply: React.FC<ReplyProps> = ({
   animals,
   content,
   time,
-  parent,
-  postId,
-  isOpen,
   toggleReplyBox,
   setComments,
   setCommentNum,
