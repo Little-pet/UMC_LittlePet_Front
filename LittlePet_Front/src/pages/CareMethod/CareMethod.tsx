@@ -60,20 +60,8 @@ const CareMethodPage: React.FC = () => {
     subCategories['전체'] = animals.map((a) => a.id);
   }
 
-  const allowedSpecies = [
-    '햄스터',
-    '고슴도치',
-    '토끼',
-    '앵무새',
-    '거북',
-    '뱀',
-    '페럿',
-  ];
-
-  const handleAnimalClick = (link: string, species: string) => {
-    if (allowedSpecies.includes(species)) {
-      navigate(link);
-    }
+  const handleAnimalClick = (link: string) => {
+    navigate(link);
   };
 
   if (isLoading) return <p>로딩 중...</p>;
@@ -111,10 +99,7 @@ const CareMethodPage: React.FC = () => {
                         key={item.id}
                         src={item.image}
                         alt={item.name}
-                        onClick={() =>
-                          allowedSpecies.includes(item.name) &&
-                          handleAnimalClick(item.link, item.name)
-                        }
+                        onClick={() => handleAnimalClick(item.link)}
                       />
                       <CategoryName>{item.name}</CategoryName>
                     </CategoryItemWrapper>
