@@ -71,7 +71,7 @@ const Title = styled.p`
   font-family: 'Pretendard';
   font-weight: 600;
   font-size: 22px;
-  margin-bottom: 0;
+  margin: 0;
   @media only screen and (min-width: 800px) {
     display: none;
   }
