@@ -49,7 +49,7 @@ const HospitalDetailPage = () => {
     }
   }, [location.pathname]);
 
-  const { fetchHospitalDetail, scrappedHospitals } = useHospitalStore();
+  const { fetchHospitalDetail } = useHospitalStore();
   const { data, isLoading } = useQuery({
     queryKey: ['hospitalDetail', hospitalId],
     queryFn: () =>
@@ -62,9 +62,7 @@ const HospitalDetailPage = () => {
   });
 
   if (isLoading) return <HospitalSkeleton />;
-  const isFavorited = scrappedHospitals.some(
-    (hospital) => hospital.name === data.name
-  );
+
   return (
     <div>
       <Img src={data.imageUrl} />
@@ -85,7 +83,7 @@ const HospitalDetailPage = () => {
             </Comments>
           </RatingsWrapper>
         </Details>
-        <FavoriteButton isSelected={isFavorited} hospitalId={hospitalId} />
+        <FavoriteButton hospitalId={hospitalId} />
       </DetailBox>
       <ItemHeader>
         <ItemContainer>

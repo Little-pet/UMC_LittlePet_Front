@@ -253,6 +253,8 @@ const scrollText = keyframes`
 `;
 
 const ScrollingUsername = styled.div`
+  width: 36.3px;
+
   font-size: 14px;
   margin-right: 12px;
   font-family: 'Pretendard-Medium';

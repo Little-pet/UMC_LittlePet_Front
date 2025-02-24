@@ -45,7 +45,7 @@ export const useHospitalStore = create<HospitalStore>((set) => ({
         `https://umclittlepet.shop/api/hospitals/${hospitalId}`,
         { withCredentials: true }
       );
-      console.error('병원 상세 조회 성공:', response.data);
+      console.log('병원 상세 조회 성공:', response.data);
       if (response.data.isSuccess) {
         set({ hospitalDetail: response.data.result });
         return response.data.result;

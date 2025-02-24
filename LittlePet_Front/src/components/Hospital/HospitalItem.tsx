@@ -3,10 +3,8 @@ import styled from 'styled-components';
 import FavoriteButton from '#/components/Hospital/Favorites';
 import starIcon from '#/assets/star.svg';
 import commentIcon from '#/assets/댓글.svg';
-import { useAuthStore } from '#/store/AuthStore';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { useHospitalStore } from '#/store/hospitalStore';
+
 interface HospitalItemProps {
   imageSrc: string;
   name: string;
@@ -23,19 +21,6 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
   openStatus,
   rating,
 }) => {
-  const { userId, isLoggedIn } = useAuthStore();
-  const { fetchScrappedHospitals } = useHospitalStore();
-  const { data, isLoading } = useQuery({
-    queryKey: ['scrappedHospital', userId],
-    queryFn: () =>
-      userId ? fetchScrappedHospitals(userId) : Promise.resolve(null),
-    enabled: !!userId && !!hospitalId && !!isLoggedIn,
-    staleTime: 0,
-    gcTime: 5 * 60 * 1000,
-  });
-
-  if (isLoading) return <Skeleton />;
-  const isFavorited = data.some((hospital) => hospital.name === name);
   return (
     <Container>
       <ContentWrapper to={`/health/hospital/${hospitalId}`}>
@@ -57,7 +42,7 @@ const HospitalItem: React.FC<HospitalItemProps> = ({
           <OpenStatus>{openStatus}</OpenStatus>
         </Details>
       </ContentWrapper>
-      <FavoriteButton isSelected={isFavorited} hospitalId={hospitalId} />
+      <FavoriteButton hospitalId={hospitalId} />
     </Container>
   );
 };
@@ -143,23 +128,4 @@ const OpenStatus = styled.div`
   font-size: 12px;
   font-family: Pretendard-Medium;
   color: #737373;
-`;
-const Skeleton = styled.div`
-  width: 95%;
-  justify-self: center;
-  height: 110px;
-  margin-bottom: 5px;
-  border-radius: 10px;
-  @keyframes skeleton-gradient {
-    0% {
-      background-color: rgba(165, 165, 165, 0.1);
-    }
-    50% {
-      background-color: rgba(165, 165, 165, 0.3);
-    }
-    100% {
-      background-color: rgba(165, 165, 165, 0.1);
-    }
-  }
-  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;
