@@ -17,7 +17,7 @@ const FavoriteButton = ({ hospitalId }) => {
   const navigate = useNavigate();
 
   // 스크랩된 병원 리스트
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['scrappedHospital', userId],
     queryFn: () =>
       userId ? fetchScrappedHospitals(userId) : Promise.resolve(null),
@@ -77,23 +77,4 @@ const Container = styled.div`
   justify-content: center;
   box-shadow: 0px 2px 5px #00000040;
   cursor: pointer;
-`;
-const Skeleton = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  box-sizing: border-box;
-  box-shadow: 0px 2px 5px #00000040;
-  @keyframes skeleton-gradient {
-    0% {
-      background-color: rgba(165, 165, 165, 0.1);
-    }
-    50% {
-      background-color: rgba(165, 165, 165, 0.3);
-    }
-    100% {
-      background-color: rgba(165, 165, 165, 0.1);
-    }
-  }
-  animation: skeleton-gradient 1.5s infinite ease-in-out;
 `;
